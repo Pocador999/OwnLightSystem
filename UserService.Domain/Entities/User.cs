@@ -12,5 +12,5 @@ public class User : Entity
     public string UserName { get; private set; }
 
     [Required]
-    public string PasswordHash { get; private set; }
+    public string Password { get; private set; }
 }

@@ -5,7 +5,7 @@ namespace UserService.Infrastructure.Repositories;
 
 public class UserRepository : IUserRepository
 {
-    public Task<User> RegisterAsync(string name, string userName, string passwordHash)
+    public Task<User> RegisterAsync(User user)
     {
         throw new NotImplementedException();
     }
