@@ -1,18 +1,26 @@
+using Microsoft.EntityFrameworkCore;
 using UserService.Domain.Entities;
 using UserService.Domain.Interfaces;
+using UserService.Infrastructure.Data;
 
 namespace UserService.Infrastructure.Repositories;
 
-public class UserRepository : IUserRepository
+public class UserRepository(DataContext context) : IUserRepository
 {
-    public Task<User> RegisterAsync(User user)
+    private readonly DbSet<User> _dbSet = context.Set<User>();
+
+    public async Task<User> RegisterAsync(User user)
     {
-        throw new NotImplementedException();
+        await _dbSet.AddAsync(user);
+        await context.SaveChangesAsync();
+        return user;
     }
 
-    public Task<User> UpdateAsync(Guid id, string name, string userName)
+    public async Task<User> UpdateAsync(User user)
     {
-        throw new NotImplementedException();
+        _dbSet.Update(user);
+        await context.SaveChangesAsync();
+        return user;
     }
 
     public Task<User> UpdatePasswordAsync(Guid id, string passwordHash)
@@ -35,9 +43,9 @@ public class UserRepository : IUserRepository
         throw new NotImplementedException();
     }
 
-    public Task<User?> FindByIdAsync(Guid id)
+    public async Task<User?> FindByIdAsync(Guid id)
     {
-        throw new NotImplementedException();
+        return await _dbSet.FindAsync(id);
     }
 
     public Task<User?> FindByUserNameAsync(string userName)

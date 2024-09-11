@@ -4,7 +4,7 @@ using UserService.Application.DTOs;
 using UserService.Application.Features.User.Queries;
 using UserService.Domain.Interfaces;
 
-namespace UserService.Application.Features.User.Commands;
+namespace UserService.Application.Features.User.Handlers;
 
 public class GetByIdQueryHandler(IUserRepository userRepository, IMapper mapper)
     : IRequestHandler<GetByIdQuery, UserResponseDTO>

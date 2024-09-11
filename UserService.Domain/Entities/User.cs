@@ -13,4 +13,5 @@ public class User : Entity
 
     [Required]
     public string Password { get; private set; }
+
 }

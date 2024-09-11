@@ -32,4 +32,16 @@ public class UserController : ControllerBase
         var result = await _mediator.Send(command);
         return CreatedAtAction(nameof(GetById), new { id = result.Id }, result);
     }
+
+    [HttpPut("{id}")]
+    public async Task<ActionResult<UserResponseDTO>> Update(
+        [FromRoute] Guid id,
+        [FromBody] UpdateUserCommand command
+    )
+    {
+        command.Id = id;
+
+        var result = await _mediator.Send(command);
+        return Ok(result);
+    }
 }

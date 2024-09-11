@@ -1,3 +1,5 @@
+using System.Text.Json.Serialization;
+
 namespace UserService.Application.DTOs;
 
 public class UserResponseDTO
@@ -6,4 +8,5 @@ public class UserResponseDTO
     public string Name { get; set; } = null!;
     public string UserName { get; set; } = null!;
     public DateTime CreatedAt { get; set; }
+    public DateTime UpdatedAt { get; set; }
 }

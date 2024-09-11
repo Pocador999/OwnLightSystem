@@ -11,5 +11,6 @@ public class MapperProfile : Profile
     {
         CreateMap<User, UserResponseDTO>().ReverseMap();
         CreateMap<User, CreateCommand>().ReverseMap();
+        CreateMap<User, UpdateUserCommand>().ReverseMap();
     }
 }
