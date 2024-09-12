@@ -9,38 +9,12 @@ public class UserRepository(DataContext context) : IUserRepository
 {
     private readonly DbSet<User> _dbSet = context.Set<User>();
 
-    public async Task<User> RegisterAsync(User user)
-    {
-        await _dbSet.AddAsync(user);
-        await context.SaveChangesAsync();
-        return user;
-    }
+    public async Task<int> CountAsync() => await _dbSet.CountAsync();
 
-    public async Task<User> UpdateAsync(User user)
+    public async Task<IEnumerable<User>> FindAllAsync(int page, int pageSize)
     {
-        _dbSet.Update(user);
-        await context.SaveChangesAsync();
-        return user;
-    }
-
-    public Task<User> UpdatePasswordAsync(Guid id, string passwordHash)
-    {
-        throw new NotImplementedException();
-    }
-
-    public Task<bool?> DeleteAsync(Guid id)
-    {
-        throw new NotImplementedException();
-    }
-
-    public Task<IEnumerable<User>> FindAllAsync(int page, int pageSize)
-    {
-        throw new NotImplementedException();
-    }
-
-    public Task<int> CountAsync()
-    {
-        throw new NotImplementedException();
+        var skipAmount = (page - 1) * pageSize;
+        return await _dbSet.Skip(skipAmount).Take(pageSize).ToListAsync();
     }
 
     public async Task<User?> FindByIdAsync(Guid id)
@@ -48,8 +22,41 @@ public class UserRepository(DataContext context) : IUserRepository
         return await _dbSet.FindAsync(id);
     }
 
-    public Task<User?> FindByUserNameAsync(string userName)
+    public async Task<User?> FindByUserNameAsync(string userName)
+        => await _dbSet.FirstOrDefaultAsync(u => u.UserName == userName);
+
+    public async Task<User> RegisterAsync(User user)
     {
-        throw new NotImplementedException();
+        await _dbSet.AddAsync(user);
+        await context.SaveChangesAsync();
+        return user;
+    }
+
+    public async Task<User?> UpdateAsync(User user)
+    {
+        _dbSet.Update(user);
+        await context.SaveChangesAsync();
+        return user;
+    }
+
+    public Task<User?> UpdatePasswordAsync(Guid id, string password)
+    {
+        var user = _dbSet.Find(id);
+        if (user != null)
+        {
+            user.UpdatePassword(password);
+            return UpdateAsync(user);
+        }
+        return Task.FromResult<User?>(null);
+    }
+
+    public async Task<User?> DeleteAsync(Guid id)
+    {
+        var user = await _dbSet.FindAsync(id);
+        if (user is null)
+            return null;
+        _dbSet.Remove(user);
+        await context.SaveChangesAsync();
+        return user;
     }
 }

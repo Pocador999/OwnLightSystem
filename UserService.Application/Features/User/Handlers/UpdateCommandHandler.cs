@@ -6,14 +6,14 @@ using UserService.Domain.Interfaces;
 
 namespace UserService.Application.Features.User.Handlers;
 
-public class UpdateUserCommandHandler(IUserRepository userRepository, IMapper mapper)
-    : IRequestHandler<UpdateUserCommand, UserResponseDTO>
+public class UpdateCommandHandler(IUserRepository userRepository, IMapper mapper)
+    : IRequestHandler<UpdateCommand, UserResponseDTO>
 {
     private readonly IUserRepository _userRepository = userRepository;
     private readonly IMapper _mapper = mapper;
 
     public async Task<UserResponseDTO> Handle(
-        UpdateUserCommand request,
+        UpdateCommand request,
         CancellationToken cancellationToken
     )
     {

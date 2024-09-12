@@ -4,9 +4,9 @@ namespace UserService.Domain.Interfaces;
 
 public interface IUserRepository
 {
-    public Task<User> UpdatePasswordAsync(Guid id, string passwordHash);
-    public Task<User> UpdateAsync(User user);
-    public Task<bool?> DeleteAsync(Guid id);
+    public Task<User?> UpdatePasswordAsync(Guid id, string passwordHash);
+    public Task<User?> UpdateAsync(User user);
+    public Task<User?> DeleteAsync(Guid id);
     public Task<User> RegisterAsync(User user);
     public Task<User?> FindByIdAsync(Guid id);
     public Task<User?> FindByUserNameAsync(string userName);
