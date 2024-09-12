@@ -2,7 +2,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.OpenApi.Models;
 using UserService.Application;
 using UserService.Domain.Entities;
-using UserService.Infrastructure.IoC;
+using UserService.Infrastructure;
 
 var builder = WebApplication.CreateBuilder(args);
 

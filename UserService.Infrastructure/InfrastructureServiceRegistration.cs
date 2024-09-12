@@ -5,9 +5,9 @@ using UserService.Domain.Interfaces;
 using UserService.Infrastructure.Data;
 using UserService.Infrastructure.Repositories;
 
-namespace UserService.Infrastructure.IoC;
+namespace UserService.Infrastructure;
 
-public static class DependencyInjection
+public static class InfrastructureServiceRegistration
 {
     public static IServiceCollection AddInfrastructure(
         this IServiceCollection services,
