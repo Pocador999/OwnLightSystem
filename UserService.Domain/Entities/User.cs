@@ -6,10 +6,10 @@ namespace UserService.Domain.Entities;
 public class User : Entity
 {
     [Range(3, 50)]
-    public string Name { get; private set; }
+    public string Name { get; protected set; }
 
     [Range(3, 50)]
-    public string UserName { get; private set; }
+    public string UserName { get; protected set; }
 
     [Required]
     public string Password { get; protected set; }
@@ -17,5 +17,11 @@ public class User : Entity
     public void UpdatePassword(string password)
     {
         Password = password;
+    }
+
+    public void UpdateUser(string name, string userName)
+    {
+        Name = name;
+        UserName = userName;
     }
 }
