@@ -6,13 +6,12 @@ using UserService.Domain.Interfaces;
 
 namespace UserService.Application.Features.User.Handlers;
 
-public class UpdateCommandHandler(IUserRepository userRepository, IMapper mapper)
-    : IRequestHandler<UpdateCommand, UserResponseDTO>
+public class UpdateCommandHandler(IUserRepository userRepository)
+    : IRequestHandler<UpdateCommand>
 {
     private readonly IUserRepository _userRepository = userRepository;
-    private readonly IMapper _mapper = mapper;
 
-    public async Task<UserResponseDTO> Handle(
+    public async Task<Unit> Handle(
         UpdateCommand request,
         CancellationToken cancellationToken
     )
@@ -20,9 +19,9 @@ public class UpdateCommandHandler(IUserRepository userRepository, IMapper mapper
         var user =
             await _userRepository.FindByIdAsync(request.Id)
             ?? throw new Exception("User not found");
-        _mapper.Map(request, user);
         user.UpdatedAt = DateTime.UtcNow;
-        var updatedUser = await _userRepository.UpdateAsync(user);
-        return _mapper.Map<UserResponseDTO>(updatedUser);
+        user.UpdateUser(request.Name, request.UserName);
+        await _userRepository.UpdateAsync(user);
+        return Unit.Value;
     }
 }

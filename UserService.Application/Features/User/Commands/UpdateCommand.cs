@@ -4,7 +4,7 @@ using UserService.Application.DTOs;
 
 namespace UserService.Application.Features.User.Commands;
 
-public class UpdateCommand : IRequest<UserResponseDTO>
+public class UpdateCommand : IRequest
 {
     [JsonIgnore]
     public Guid Id { get; set; }
