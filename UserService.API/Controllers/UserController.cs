@@ -21,10 +21,10 @@ public class UserController(IMediator mediator) : ControllerBase
         return Ok(result);
     }
 
-    [HttpGet("{userName}")]
-    public async Task<ActionResult<UserResponseDTO>> GetByUserName(string userName)
+    [HttpGet("{username}")]
+    public async Task<ActionResult<UserResponseDTO>> GetByUsername(string username)
     {
-        var query = new GetByUserNameQuery(userName);
+        var query = new GetByUsernameQuery(username);
         var result = await _mediator.Send(query);
         return Ok(result);
     }
@@ -46,6 +46,21 @@ public class UserController(IMediator mediator) : ControllerBase
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     public async Task<ActionResult> Create([FromBody] CreateCommand command)
     {
+        var successMessage = new
+        {
+            Message = "User created successfully",
+            StatusCode = StatusCodes.Status200OK,
+        };
+        var nullOrEmptyMessage = new
+        {
+            Message = "Bad request, user must not be null or empty",
+            StatusCode = StatusCodes.Status400BadRequest,
+        };
+        var badRequestMessage = new
+        {
+            Message = "Bad request",
+            StatusCode = StatusCodes.Status400BadRequest,
+        };
         if (
             command is null
             || command.Name is null or ""
@@ -61,28 +76,42 @@ public class UserController(IMediator mediator) : ControllerBase
             || command.UserName.Length > 30
             || command.Name.Length > 30
         )
-        {
-            return BadRequest();
-        }
-        return Ok(await _mediator.Send(command));
+            return BadRequest(badRequestMessage);
+
+        await _mediator.Send(command);
+        return Ok(successMessage);
     }
 
     [HttpPut("{id}")]
     public async Task<ActionResult> Update([FromRoute] Guid id, [FromBody] UpdateCommand command)
     {
         command.Id = id;
+        var successMessage = new
+        {
+            Message = "User updated successfully",
+            StatusCode = StatusCodes.Status200OK,
+        };
+        var errorMessage = new
+        {
+            Title = "Bad Request",
+            Message = "name and username cannot be null or empty",
+            Type = "https://tools.ietf.org/html/rfc7231#section-6.5.1",
+            StatusCode = StatusCodes.Status404NotFound,
+            TraceId = Guid.NewGuid(),
+        };
 
         if (command is null || command.Name is null or "" || command.UserName is null or "")
-            return BadRequest();
+            return BadRequest(errorMessage);
         else if (
             command.Name.Length < 3
             || command.UserName.Length < 3
             || command.UserName.Length > 30
             || command.Name.Length > 30
-        ) return BadRequest();
+        )
+            return BadRequest(errorMessage);
 
         await _mediator.Send(command);
-        return Ok();
+        return Ok(successMessage);
     }
 
     [HttpPut("password/{id}")]

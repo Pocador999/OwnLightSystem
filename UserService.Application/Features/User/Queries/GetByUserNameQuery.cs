@@ -3,7 +3,7 @@ using UserService.Application.DTOs;
 
 namespace UserService.Application.Features.User.Queries;
 
-public class GetByUserNameQuery(string userName) : IRequest<UserResponseDTO>
+public class GetByUsernameQuery(string username) : IRequest<UserResponseDTO>
 {
-    public string UserName { get; set; } = userName;
+    public string Username { get; set; } = username;
 }

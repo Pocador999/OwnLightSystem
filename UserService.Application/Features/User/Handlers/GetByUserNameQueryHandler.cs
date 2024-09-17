@@ -6,19 +6,19 @@ using UserService.Domain.Interfaces;
 
 namespace UserService.Application.Features.User.Handlers;
 
-public class GetByUserNameQueryHandler(IUserRepository userRepository, IMapper mapper)
-    : IRequestHandler<GetByUserNameQuery, UserResponseDTO>
+public class GetByUsernameQueryHandler(IUserRepository userRepository, IMapper mapper)
+    : IRequestHandler<GetByUsernameQuery, UserResponseDTO>
 {
     private readonly IUserRepository _userRepository = userRepository;
     private readonly IMapper _mapper = mapper;
 
     public async Task<UserResponseDTO> Handle(
-        GetByUserNameQuery request,
+        GetByUsernameQuery request,
         CancellationToken cancellationToken
     )
     {
         var user =
-            await _userRepository.FindByUsernameAsync(request.UserName)
+            await _userRepository.FindByUsernameAsync(request.Username)
             ?? throw new Exception("User not found");
         return _mapper.Map<UserResponseDTO>(user);
     }
