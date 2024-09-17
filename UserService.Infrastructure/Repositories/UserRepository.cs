@@ -22,8 +22,8 @@ public class UserRepository(DataContext context) : IUserRepository
         return await _dbSet.FindAsync(id);
     }
 
-    public async Task<User?> FindByUserNameAsync(string userName)
-        => await _dbSet.FirstOrDefaultAsync(u => u.UserName == userName);
+    public async Task<User?> FindByUsernameAsync(string username) =>
+        await _dbSet.FirstOrDefaultAsync(u => u.Username == username);
 
     public async Task<User> RegisterAsync(User user)
     {
@@ -64,9 +64,8 @@ public class UserRepository(DataContext context) : IUserRepository
     {
         var users = await _dbSet.ToListAsync();
         foreach (var user in users)
-        {
             _dbSet.Remove(user);
-        }
+
         await context.SaveChangesAsync();
         return users.FirstOrDefault();
     }

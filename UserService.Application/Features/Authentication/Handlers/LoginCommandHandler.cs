@@ -19,7 +19,7 @@ public class LoginCommandHandler(
     public async Task<Unit> Handle(LoginCommand request, CancellationToken cancellationToken)
     {
         var user =
-            await _userRepository.FindByUserNameAsync(request.UserName)
+            await _userRepository.FindByUsernameAsync(request.Username)
             ?? throw new Exception("User not found");
 
         if (

@@ -18,7 +18,7 @@ public class GetByUserNameQueryHandler(IUserRepository userRepository, IMapper m
     )
     {
         var user =
-            await _userRepository.FindByUserNameAsync(request.UserName)
+            await _userRepository.FindByUsernameAsync(request.UserName)
             ?? throw new Exception("User not found");
         return _mapper.Map<UserResponseDTO>(user);
     }

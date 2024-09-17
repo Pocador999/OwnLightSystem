@@ -9,7 +9,7 @@ public class User : Entity
     public string Name { get; protected set; }
 
     [Range(3, 50)]
-    public string UserName { get; protected set; }
+    public string Username { get; protected set; }
 
     [Required]
     public string Password { get; protected set; }
@@ -19,9 +19,9 @@ public class User : Entity
         Password = password;
     }
 
-    public void UpdateUser(string name, string userName)
+    public void UpdateUser(string name, string username)
     {
         Name = name;
-        UserName = userName;
+        Username = username;
     }
 }

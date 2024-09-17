@@ -16,10 +16,10 @@ public class AuthController(IMediator mediator) : ControllerBase
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     public async Task<ActionResult> Login([FromBody] LoginCommand command)
     {
-        if (command is null || command.UserName is null or "" || command.Password is null or "")
+        if (command is null || command.Username is null or "" || command.Password is null or "")
             return BadRequest();
         else if (
-            command.UserName.Length < 3
+            command.Username.Length < 3
             || command.Password.Length < 6
             || command.Password.Length > 20
         )

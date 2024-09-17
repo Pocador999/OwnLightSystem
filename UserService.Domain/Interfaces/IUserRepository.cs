@@ -9,10 +9,8 @@ public interface IUserRepository
     public Task<User?> DeleteAsync(Guid id);
     public Task<User> RegisterAsync(User user);
     public Task<User?> FindByIdAsync(Guid id);
-    public Task<User?> FindByUserNameAsync(string userName);
+    public Task<User?> FindByUsernameAsync(string username);
     public Task<IEnumerable<User>> FindAllAsync(int page, int pageSize);
     public Task<int> CountAsync();
     public Task<User> DeleteAllAsync();
-
-    // public Task<User?> AuthenticateAsync(string userName, string passwordHash);   
 }
