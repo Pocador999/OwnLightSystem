@@ -18,10 +18,4 @@ public class User : Entity
     {
         Password = password;
     }
-
-    public void UpdateUser(string name, string username)
-    {
-        Name = name;
-        Username = username;
-    }
 }

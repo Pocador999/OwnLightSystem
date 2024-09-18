@@ -13,7 +13,7 @@ public class CreateCommandValidator : AbstractValidator<CreateCommand>
             .Length(3, 30)
             .WithMessage("Name must be between 3 and 30 characters");
 
-        RuleFor(x => x.UserName)
+        RuleFor(x => x.Username)
             .NotEmpty()
             .WithMessage("Username must not be empty")
             .Length(3, 30)

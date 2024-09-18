@@ -4,9 +4,9 @@ using UserService.Application.DTOs;
 
 namespace UserService.Application.Features.User.Commands;
 
-public class CreateCommand(string name, string userName, string password) : IRequest<Messages>
+public class CreateCommand(string name, string username, string password) : IRequest<Messages>
 {
     public string Name { get; set; } = name;
-    public string UserName { get; set; } = userName;
+    public string Username { get; set; } = username;
     public string Password { get; set; } = password;
 }

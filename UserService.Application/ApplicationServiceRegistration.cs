@@ -1,6 +1,7 @@
 using System.Reflection;
 using FluentValidation;
 using MediatR;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.DependencyInjection;
 using UserService.Application.Common.Validation;
 using UserService.Application.Features.User.Commands;
@@ -13,7 +14,11 @@ public static class ApplicationServiceRegistration
     {
         services.AddAutoMapper(Assembly.GetExecutingAssembly());
         services.AddMediatR(Assembly.GetExecutingAssembly());
+
         services.AddTransient<IValidator<CreateCommand>, CreateCommandValidator>();
+        services.AddTransient<IValidator<UpdateCommand>, UpdateCommandValidator>();
+        services.AddTransient<IValidator<UpdatePasswordCommand>, UpdatePasswordCommandValidator>();
+
         return services;
     }
 }

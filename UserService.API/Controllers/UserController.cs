@@ -50,9 +50,7 @@ public class UserController(IMediator mediator) : ControllerBase
         var result = await _mediator.Send(command);
 
         if (result.StatusCode == StatusCodes.Status200OK.ToString())
-        {
             return Ok(result);
-        }
 
         return BadRequest(result);
     }
@@ -61,32 +59,15 @@ public class UserController(IMediator mediator) : ControllerBase
     public async Task<ActionResult> Update([FromRoute] Guid id, [FromBody] UpdateCommand command)
     {
         command.Id = id;
-        var successMessage = new
-        {
-            Message = "User updated successfully",
-            StatusCode = StatusCodes.Status200OK,
-        };
-        var errorMessage = new
-        {
-            Title = "Bad Request",
-            Message = "name and username cannot be null or empty",
-            Type = "https://tools.ietf.org/html/rfc7231#section-6.5.1",
-            StatusCode = StatusCodes.Status404NotFound,
-            TraceId = Guid.NewGuid(),
-        };
+        var result = await _mediator.Send(command);
 
-        if (command is null || command.Name is null or "" || command.UserName is null or "")
-            return BadRequest(errorMessage);
-        else if (
-            command.Name.Length < 3
-            || command.UserName.Length < 3
-            || command.UserName.Length > 30
-            || command.Name.Length > 30
-        )
-            return BadRequest(errorMessage);
+        if (result.StatusCode == StatusCodes.Status200OK.ToString())
+            return Ok(result);
 
-        await _mediator.Send(command);
-        return Ok(successMessage);
+        if (result.StatusCode == StatusCodes.Status404NotFound.ToString())
+            return NotFound(result);
+
+        return BadRequest(result);
     }
 
     [HttpPut("password/{id}")]
@@ -96,8 +77,15 @@ public class UserController(IMediator mediator) : ControllerBase
     )
     {
         command.Id = id;
-        await _mediator.Send(command);
-        return Ok();
+        var result = await _mediator.Send(command);
+
+        if (result.StatusCode == StatusCodes.Status200OK.ToString())
+            return Ok(result);
+
+        if (result.StatusCode == StatusCodes.Status404NotFound.ToString())
+            return NotFound(result);
+
+        return BadRequest(result);
     }
 
     [HttpDelete("{id}")]
