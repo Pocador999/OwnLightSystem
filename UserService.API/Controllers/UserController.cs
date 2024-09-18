@@ -1,9 +1,10 @@
+using FluentValidation;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
+using UserService.Application.Common.Messages;
 using UserService.Application.DTOs;
 using UserService.Application.Features.User.Commands;
 using UserService.Application.Features.User.Queries;
-using UserService.Domain.Entities;
 
 namespace UserService.API.Controllers;
 
@@ -46,40 +47,14 @@ public class UserController(IMediator mediator) : ControllerBase
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     public async Task<ActionResult> Create([FromBody] CreateCommand command)
     {
-        var successMessage = new
-        {
-            Message = "User created successfully",
-            StatusCode = StatusCodes.Status200OK,
-        };
-        var nullOrEmptyMessage = new
-        {
-            Message = "Bad request, user must not be null or empty",
-            StatusCode = StatusCodes.Status400BadRequest,
-        };
-        var badRequestMessage = new
-        {
-            Message = "Bad request",
-            StatusCode = StatusCodes.Status400BadRequest,
-        };
-        if (
-            command is null
-            || command.Name is null or ""
-            || command.UserName is null or ""
-            || command.Password is null or ""
-        )
-            return BadRequest();
-        else if (
-            command.Name.Length < 3
-            || command.UserName.Length < 3
-            || command.Password.Length < 6
-            || command.Password.Length > 20
-            || command.UserName.Length > 30
-            || command.Name.Length > 30
-        )
-            return BadRequest(badRequestMessage);
+        var result = await _mediator.Send(command);
 
-        await _mediator.Send(command);
-        return Ok(successMessage);
+        if (result.StatusCode == StatusCodes.Status200OK.ToString())
+        {
+            return Ok(result);
+        }
+
+        return BadRequest(result);
     }
 
     [HttpPut("{id}")]
