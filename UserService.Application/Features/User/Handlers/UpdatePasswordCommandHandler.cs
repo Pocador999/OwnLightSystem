@@ -46,6 +46,16 @@ public class UpdatePasswordCommandHandler(
             );
         }
 
+        if (request.CurrentPassword == request.NewPassword)
+        {
+            return Messages.Error(
+                "validation error",
+                "New password must be different from the current password",
+                "https://tools.ietf.org/html/rfc7231#section-6.5.1",
+                "400"
+            );
+        }
+
         var passwordHasher = new PasswordHasher<Entity.User>();
         var passwordVerificationResult = passwordHasher.VerifyHashedPassword(
             user,

@@ -17,5 +17,6 @@ public class User : Entity
     public void UpdatePassword(string password)
     {
         Password = password;
+        UpdatedAt = DateTime.UtcNow;
     }
 }

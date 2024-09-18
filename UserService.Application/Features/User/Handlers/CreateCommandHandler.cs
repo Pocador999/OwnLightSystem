@@ -27,25 +27,22 @@ public class CreateCommandHandler(
         var validationResult = await _validator.ValidateAsync(request, cancellationToken);
         if (!validationResult.IsValid)
         {
-            var errorMessage = new Messages(
+            return new Messages(
                 "Validation Error",
-                string.Join("; ", validationResult.Errors.Select(e => e.ErrorMessage)),
+                string.Join(", ", validationResult.Errors.Select(e => e.ErrorMessage)),
                 "https://tools.ietf.org/html/rfc7231#section-6.5.1",
                 StatusCodes.Status400BadRequest.ToString()
             );
-            return errorMessage;
         }
 
         request.Password = _passwordHasher.HashPassword(new Entity.User(), request.Password);
         await _userRepository.RegisterAsync(_mapper.Map<Entity.User>(request));
 
-        var successMessage = new Messages(
+        return Messages.Success(
             "Success",
             "User created successfully",
             "https://tools.ietf.org/html/rfc7231#section-6.3.1",
-            StatusCodes.Status200OK.ToString()
+            StatusCodes.Status201Created.ToString()
         );
-
-        return successMessage;
     }
 }

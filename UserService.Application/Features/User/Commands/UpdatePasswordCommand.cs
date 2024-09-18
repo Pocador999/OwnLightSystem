@@ -8,6 +8,9 @@ public class UpdatePasswordCommand : IRequest<Messages>
 {
     [JsonIgnore]
     public Guid Id { get; set; }
+
+    [JsonIgnore]
+    public DateTime UpdatedAt { get; set; }
     public string NewPassword { get; set; }
     public string CurrentPassword { get; set; }
 }

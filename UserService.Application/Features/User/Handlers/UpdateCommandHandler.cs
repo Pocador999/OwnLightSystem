@@ -23,37 +23,33 @@ public class UpdateCommandHandler(
         var validationResult = await _validator.ValidateAsync(request, cancellationToken);
         if (!validationResult.IsValid)
         {
-            var errorMessage = new Messages(
+            return Messages.Error(
                 "Validation Error",
-                string.Join("; ", validationResult.Errors.Select(e => e.ErrorMessage)),
+                string.Join(", ", validationResult.Errors.Select(e => e.ErrorMessage)),
                 "https://tools.ietf.org/html/rfc7231#section-6.5.1",
                 StatusCodes.Status400BadRequest.ToString()
             );
-            return errorMessage;
         }
 
         var user = await _userRepository.FindByIdAsync(request.Id);
         if (user == null)
         {
-            var errorMessage = new Messages(
-                "Error",
+            return Messages.NotFound(
+                "Not Found",
                 "User not found",
                 "https://tools.ietf.org/html/rfc7231#section-6.5.4",
                 StatusCodes.Status404NotFound.ToString()
             );
-            return errorMessage;
         }
         user.UpdatedAt = DateTime.UtcNow;
         _mapper.Map(request, user);
         await _userRepository.UpdateAsync(user);
 
-        var successMessage = new Messages(
-            "Success",
+        return Messages.Success(
+            "Sucess",
             "User updated successfully",
             "https://tools.ietf.org/html/rfc7231#section-6.3.1",
             StatusCodes.Status200OK.ToString()
         );
-
-        return successMessage;
     }
 }
