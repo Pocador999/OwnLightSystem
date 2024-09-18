@@ -91,8 +91,12 @@ public class UserController(IMediator mediator) : ControllerBase
     [HttpDelete("{id}")]
     public async Task<ActionResult> Delete(Guid id)
     {
-        var command = new DeleteCommand { Id = id };
-        await _mediator.Send(command);
-        return Ok();
+        var command = new DeleteCommand(id);
+        var result = await _mediator.Send(command);
+
+        if (result.StatusCode == StatusCodes.Status200OK.ToString())
+            return Ok(result);
+
+        return NotFound(result);
     }
 }
