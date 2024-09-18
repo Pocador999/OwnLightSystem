@@ -3,6 +3,7 @@ using FluentValidation;
 using MediatR;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
+using UserService.Application.Common.Email;
 using UserService.Application.Common.Messages;
 using UserService.Application.Features.User.Commands;
 using UserService.Domain.Interfaces;
@@ -32,6 +33,28 @@ public class CreateCommandHandler(
                 string.Join(", ", validationResult.Errors.Select(e => e.ErrorMessage)),
                 "https://tools.ietf.org/html/rfc7231#section-6.5.1",
                 StatusCodes.Status400BadRequest.ToString()
+            );
+        }
+
+        var existingUser = await _userRepository.FindByUsernameAsync(request.Username);
+        if (existingUser != null)
+        {
+            return Messages.Error(
+                "Conflict",
+                "Username already exists",
+                "https://tools.ietf.org/html/rfc7231#section-6.5.8",
+                StatusCodes.Status409Conflict.ToString()
+            );
+        }
+
+        var existingEmail = await _userRepository.FindByEmailAsync(request.Email);
+        if (existingEmail != null)
+        {
+            return Messages.Error(
+                "Conflict",
+                "Email already exists",
+                "https://tools.ietf.org/html/rfc7231#section-6.5.8",
+                StatusCodes.Status409Conflict.ToString()
             );
         }
 

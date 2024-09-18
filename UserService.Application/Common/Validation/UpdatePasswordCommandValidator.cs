@@ -7,6 +7,10 @@ public class UpdatePasswordCommandValidator : AbstractValidator<UpdatePasswordCo
 {
     public UpdatePasswordCommandValidator()
     {
-        RuleFor(x => x.NewPassword).MinimumLength(6).MaximumLength(30).NotEmpty();
+        RuleFor(x => x.NewPassword)
+            .MinimumLength(6)
+            .MaximumLength(30)
+            .NotEmpty()
+            .WithMessage("Password must be between 6 and 30 characters");
     }
 }

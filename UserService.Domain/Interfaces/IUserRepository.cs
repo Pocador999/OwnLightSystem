@@ -10,6 +10,7 @@ public interface IUserRepository
     public Task<User> RegisterAsync(User user);
     public Task<User?> FindByIdAsync(Guid id);
     public Task<User?> FindByUsernameAsync(string username);
+    public Task<User?> FindByEmailAsync(string email);
     public Task<IEnumerable<User>> FindAllAsync(int page, int pageSize);
     public Task<int> CountAsync();
     public Task<User> DeleteAllAsync();

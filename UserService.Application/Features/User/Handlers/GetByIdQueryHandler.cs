@@ -17,7 +17,9 @@ public class GetByIdQueryHandler(IUserRepository userRepository, IMapper mapper)
         CancellationToken cancellationToken
     )
     {
-        var user = await _userRepository.FindByIdAsync(request.Id);
+        var user =
+            await _userRepository.FindByIdAsync(request.Id)
+            ?? throw new DllNotFoundException("User not found");
         return _mapper.Map<UserResponseDTO>(user);
     }
 }

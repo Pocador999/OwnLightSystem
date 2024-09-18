@@ -20,6 +20,17 @@ public class UpdateCommandHandler(
 
     public async Task<Messages> Handle(UpdateCommand request, CancellationToken cancellationToken)
     {
+        var user = await _userRepository.FindByIdAsync(request.Id);
+        if (user == null)
+        {
+            return Messages.NotFound(
+                "Not Found",
+                "User not found",
+                "https://tools.ietf.org/html/rfc7231#section-6.5.4",
+                StatusCodes.Status404NotFound.ToString()
+            );
+        }
+
         var validationResult = await _validator.ValidateAsync(request, cancellationToken);
         if (!validationResult.IsValid)
         {
@@ -31,16 +42,27 @@ public class UpdateCommandHandler(
             );
         }
 
-        var user = await _userRepository.FindByIdAsync(request.Id);
-        if (user == null)
+        var existingUsername = await _userRepository.FindByUsernameAsync(request.Username);
+        if (existingUsername != null && request.Username != user.Username)
         {
-            return Messages.NotFound(
-                "Not Found",
-                "User not found",
-                "https://tools.ietf.org/html/rfc7231#section-6.5.4",
-                StatusCodes.Status404NotFound.ToString()
+            return Messages.Error(
+                "Conflict",
+                "Username already exists",
+                "https://tools.ietf.org/html/rfc7231#section-6.5.8",
+                StatusCodes.Status409Conflict.ToString()
             );
         }
+        var existingEmail = await _userRepository.FindByEmailAsync(request.Email);
+        if (existingEmail != null && request.Email != user.Email)
+        {
+            return Messages.Error(
+                "Conflict",
+                "Email already exists",
+                "https://tools.ietf.org/html/rfc7231#section-6.5.8",
+                StatusCodes.Status409Conflict.ToString()
+            );
+        }
+
         user.UpdatedAt = DateTime.UtcNow;
         _mapper.Map(request, user);
         await _userRepository.UpdateAsync(user);

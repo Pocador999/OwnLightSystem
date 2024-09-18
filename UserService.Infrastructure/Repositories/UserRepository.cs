@@ -17,13 +17,13 @@ public class UserRepository(DataContext context) : IUserRepository
         return await _dbSet.Skip(skipAmount).Take(pageSize).ToListAsync();
     }
 
-    public async Task<User?> FindByIdAsync(Guid id)
-    {
-        return await _dbSet.FindAsync(id);
-    }
+    public async Task<User?> FindByIdAsync(Guid id) => await _dbSet.FindAsync(id);
 
     public async Task<User?> FindByUsernameAsync(string username) =>
         await _dbSet.FirstOrDefaultAsync(u => u.Username == username);
+
+    public async Task<User?> FindByEmailAsync(string email) =>
+        await _dbSet.FirstOrDefaultAsync(u => u.Email == email);
 
     public async Task<User> RegisterAsync(User user)
     {

@@ -1,4 +1,5 @@
 using FluentValidation;
+using UserService.Application.Common.Email;
 using UserService.Application.Features.User.Commands;
 
 namespace UserService.Application.Common.Validation;
@@ -26,5 +27,17 @@ public class CreateCommandValidator : AbstractValidator<CreateCommand>
             .WithMessage("Password must not be empty")
             .Length(6, 20)
             .WithMessage("Password must be between 6 and 20 characters");
+
+        RuleFor(x => x.Email)
+            .NotEmpty()
+            .WithMessage("Email must not be empty")
+            .EmailAddress()
+            .WithMessage("Email must be a valid email address")
+            .Must(x => !x.Contains(' '))
+            .WithMessage("Email must not contain spaces");
+
+        RuleFor(x => x.Email)
+            .Must(EmailVerifier.IsValidDomain)
+            .WithMessage("Email domain is invalid");
     }
 }

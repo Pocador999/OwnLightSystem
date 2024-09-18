@@ -23,11 +23,10 @@ public class UpdatePasswordCommandHandler(
     )
     {
         var validationResult = await validator.ValidateAsync(request, cancellationToken);
-
         if (!validationResult.IsValid)
         {
             return Messages.Error(
-                "validation error",
+                "Validation error",
                 string.Join(", ", validationResult.Errors.Select(e => e.ErrorMessage)),
                 "https://tools.ietf.org/html/rfc7231#section-6.5.1",
                 "400"
@@ -35,7 +34,6 @@ public class UpdatePasswordCommandHandler(
         }
 
         var user = await _userRepository.FindByIdAsync(request.Id);
-
         if (user == null)
         {
             return Messages.NotFound(
@@ -49,7 +47,7 @@ public class UpdatePasswordCommandHandler(
         if (request.CurrentPassword == request.NewPassword)
         {
             return Messages.Error(
-                "validation error",
+                "Validation error",
                 "New password must be different from the current password",
                 "https://tools.ietf.org/html/rfc7231#section-6.5.1",
                 "400"
