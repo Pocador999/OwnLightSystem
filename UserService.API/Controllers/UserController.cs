@@ -1,7 +1,5 @@
-using FluentValidation;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
-using UserService.Application.Common.Messages;
 using UserService.Application.DTOs;
 using UserService.Application.Features.User.Commands;
 using UserService.Application.Features.User.Queries;
@@ -43,14 +41,14 @@ public class UserController(IMediator mediator) : ControllerBase
 
     [HttpPost]
     [Route("create")]
-    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status201Created)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     public async Task<ActionResult> Create([FromBody] CreateCommand command)
     {
         var result = await _mediator.Send(command);
 
-        if (result.StatusCode == StatusCodes.Status200OK.ToString())
-            return Ok(result);
+        if (result.StatusCode == StatusCodes.Status201Created.ToString())
+            return CreatedAtAction(nameof(GetById), new { id = result.Id }, result);
 
         return BadRequest(result);
     }

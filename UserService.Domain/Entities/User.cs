@@ -12,6 +12,9 @@ public class User : Entity
     public string Username { get; protected set; }
 
     [Required]
+    public string Email { get; protected set; }
+
+    [Required]
     public string Password { get; protected set; }
 
     public void UpdatePassword(string password)

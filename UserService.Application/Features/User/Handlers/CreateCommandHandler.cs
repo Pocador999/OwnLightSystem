@@ -27,7 +27,7 @@ public class CreateCommandHandler(
         var validationResult = await _validator.ValidateAsync(request, cancellationToken);
         if (!validationResult.IsValid)
         {
-            return new Messages(
+            return Messages.Error(
                 "Validation Error",
                 string.Join(", ", validationResult.Errors.Select(e => e.ErrorMessage)),
                 "https://tools.ietf.org/html/rfc7231#section-6.5.1",
