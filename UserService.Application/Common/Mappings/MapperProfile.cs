@@ -3,7 +3,7 @@ using UserService.Application.DTOs;
 using UserService.Application.Features.User.Commands;
 using UserService.Domain.Entities;
 
-namespace UserService.Application.Mappings;
+namespace UserService.Application.Common.Mappings;
 
 public class MapperProfile : Profile
 {
