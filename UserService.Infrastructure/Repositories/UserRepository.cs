@@ -60,7 +60,7 @@ public class UserRepository(DataContext context) : IUserRepository
         return user;
     }
 
-    public async Task<User> DeleteAllAsync()
+    public async Task<User?> DeleteAllAsync()
     {
         var users = await _dbSet.ToListAsync();
         foreach (var user in users)

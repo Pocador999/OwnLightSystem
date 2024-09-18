@@ -1,5 +1,6 @@
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
+using UserService.Application.Common.Messages;
 using UserService.Application.Features.Authentication.Command;
 
 namespace UserService.API.Controllers;
@@ -14,23 +15,30 @@ public class AuthController(IMediator mediator) : ControllerBase
     [Route("login")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<ActionResult> Login([FromBody] LoginCommand command)
     {
-        if (command is null || command.Username is null or "" || command.Password is null or "")
-            return BadRequest();
-        else if (
-            command.Username.Length < 3
-            || command.Password.Length < 6
-            || command.Password.Length > 20
-        )
-            return BadRequest();
-        else
-        {
-            var result = await _mediator.Send(command);
-            var message = result.ToString() ?? "Login failed";
-            message = result.ToString() != null ? "Login successful" : message;
+        var result = await _mediator.Send(command);
 
-            return Ok(message);
-        }
+        if (result.StatusCode == StatusCodes.Status200OK.ToString())
+            return Ok(result);
+        else if (result.StatusCode == StatusCodes.Status401Unauthorized.ToString())
+            return Unauthorized(result);
+        else if (result.StatusCode == StatusCodes.Status404NotFound.ToString())
+            return NotFound(result);
+        else
+            return BadRequest(result);
+    }
+
+    [HttpPost]
+    [Route("logout/{id:guid}")]
+    public async Task<ActionResult> Logout([FromRoute] Guid id)
+    {
+        var result = await _mediator.Send(new LogoutCommand(id));
+        if (result.StatusCode == StatusCodes.Status200OK.ToString())
+            return Ok(result);
+        else
+            return BadRequest(result);
     }
 }

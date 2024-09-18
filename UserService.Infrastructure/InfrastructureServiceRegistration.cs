@@ -15,6 +15,7 @@ public static class InfrastructureServiceRegistration
     )
     {
         services.AddScoped<IUserRepository, UserRepository>();
+        services.AddScoped<IAuthRepository, AuthRepository>();
         services.AddDbContext<DataContext>(options =>
             options.UseNpgsql(configuration.GetConnectionString("DefaultConnection"))
         );
