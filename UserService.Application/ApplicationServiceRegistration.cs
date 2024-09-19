@@ -3,6 +3,7 @@ using FluentValidation;
 using MediatR;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.DependencyInjection;
+using UserService.Application.Common.Services.Auth;
 using UserService.Application.Common.Services.Messages;
 using UserService.Application.Common.Validation;
 using UserService.Application.Features.User.Commands;
@@ -23,6 +24,7 @@ public static class ApplicationServiceRegistration
 
         services.AddScoped<IMessageService, MessageService>();
         services.AddScoped<IPasswordHasher<User>, PasswordHasher<User>>();
+        services.AddScoped<AuthServices>();
 
         return services;
     }
