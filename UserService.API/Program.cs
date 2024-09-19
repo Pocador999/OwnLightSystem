@@ -1,35 +1,7 @@
-using Microsoft.AspNetCore.Identity;
-using Microsoft.OpenApi.Models;
-using UserService.Application;
-using UserService.Domain.Entities;
-using UserService.Infrastructure;
+using UserService.API;
 
 var builder = WebApplication.CreateBuilder(args);
-
-builder.Services.AddCors(options =>
-{
-    options.AddPolicy(
-        "CorsPolicy",
-        builder => builder.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader()
-    );
-});
-builder.Services.AddControllers();
-builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen(c =>
-    c.SwaggerDoc(
-        "v1",
-        new OpenApiInfo
-        {
-            Title = "User Service API",
-            Version = "v1",
-            Description = "API para gerenciamento de usuários no User Service",
-        }
-    )
-);
-builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
-builder.Services.AddApplicationServices();
-builder.Services.AddInfrastructure(builder.Configuration);
-builder.Services.AddScoped<IPasswordHasher<User>, PasswordHasher<User>>();
+builder.Services.AddAPIServices();
 
 var app = builder.Build();
 
