@@ -6,13 +6,14 @@ using UserService.Infrastructure;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Definindo a política de CORS
-var myAllowSpecificOrigins = "_myAllowSpecificOrigins";
-
-// Add services to the container
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy(
+        "CorsPolicy",
+        builder => builder.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader()
+    );
+});
 builder.Services.AddControllers();
-
-// Configurando o Swagger/OpenAPI
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(c =>
     c.SwaggerDoc(
@@ -25,7 +26,6 @@ builder.Services.AddSwaggerGen(c =>
         }
     )
 );
-
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 builder.Services.AddApplicationServices();
 builder.Services.AddInfrastructure(builder.Configuration);
@@ -33,7 +33,6 @@ builder.Services.AddScoped<IPasswordHasher<User>, PasswordHasher<User>>();
 
 var app = builder.Build();
 
-// Ativando o middleware do Swagger e SwaggerUI
 if (app.Environment.IsDevelopment())
 {
     app.UseDeveloperExceptionPage();
@@ -41,18 +40,10 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "User Service API V1"));
 }
 
-// Habilitar redirecionamento HTTPS
+app.UseCors("CorsPolicy");
 app.UseHttpsRedirection();
-
-// Aplicando a política de CORS
-app.UseCors(myAllowSpecificOrigins);
-
-// Middlewares de autenticação e autorização
 app.UseAuthentication();
 app.UseAuthorization();
-
-// Mapeamento dos controllers
 app.MapControllers();
 
-// Executar a aplicação
 app.Run();
