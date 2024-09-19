@@ -54,4 +54,14 @@ public class MessageService : IMessageService
             StatusCodes.Status200OK.ToString()
         );
     }
+
+    public Message CreateBadRequestMessage(string message)
+    {
+        return Message.Error(
+            "Bad Request",
+            message,
+            "https://tools.ietf.org/html/rfc7231#section-6.5.1",
+            StatusCodes.Status400BadRequest.ToString()
+        );
+    }
 }
