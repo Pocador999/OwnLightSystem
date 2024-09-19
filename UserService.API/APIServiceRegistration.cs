@@ -1,7 +1,5 @@
-using Microsoft.AspNetCore.Identity;
 using Microsoft.OpenApi.Models;
 using UserService.Application;
-using UserService.Domain.Entities;
 using UserService.Infrastructure;
 
 namespace UserService.API;
@@ -38,7 +36,6 @@ public static class APIServiceRegistration
             services.AddInfrastructure(configuration);
         else
             throw new InvalidOperationException("Configuration service is not available.");
-        services.AddScoped<IPasswordHasher<User>, PasswordHasher<User>>();
 
         return services;
     }

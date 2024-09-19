@@ -1,10 +1,12 @@
 using System.Reflection;
 using FluentValidation;
 using MediatR;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.DependencyInjection;
 using UserService.Application.Common.Services.Messages;
 using UserService.Application.Common.Validation;
 using UserService.Application.Features.User.Commands;
+using UserService.Domain.Entities;
 
 namespace UserService.Application;
 
@@ -20,6 +22,7 @@ public static class ApplicationServiceRegistration
         services.AddTransient<IValidator<UpdatePasswordCommand>, UpdatePasswordCommandValidator>();
 
         services.AddScoped<IMessageService, MessageService>();
+        services.AddScoped<IPasswordHasher<User>, PasswordHasher<User>>();
 
         return services;
     }
