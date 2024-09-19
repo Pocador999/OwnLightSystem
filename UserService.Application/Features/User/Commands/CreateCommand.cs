@@ -1,11 +1,10 @@
 using MediatR;
-using UserService.Application.Common.Messages;
-using UserService.Application.DTOs;
+using UserService.Application.Common.Services.Messages;
 
 namespace UserService.Application.Features.User.Commands;
 
 public class CreateCommand(string name, string username, string email, string password)
-    : IRequest<Messages>
+    : IRequest<Message>
 {
     public string Name { get; set; } = name;
     public string Username { get; set; } = username;

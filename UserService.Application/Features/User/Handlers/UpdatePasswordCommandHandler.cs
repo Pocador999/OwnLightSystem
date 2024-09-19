@@ -2,8 +2,8 @@ using FluentValidation;
 using MediatR;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
-using UserService.Application.Common.Messages;
 using UserService.Application.Common.Services.Auth;
+using UserService.Application.Common.Services.Messages;
 using UserService.Application.Common.Validation;
 using UserService.Application.Features.User.Commands;
 using UserService.Domain.Interfaces;
@@ -15,13 +15,13 @@ public class UpdatePasswordCommandHandler(
     IUserRepository userRepository,
     IAuthRepository authRepository,
     IValidator<UpdatePasswordCommand> validator
-) : IRequestHandler<UpdatePasswordCommand, Messages>
+) : IRequestHandler<UpdatePasswordCommand, Message>
 {
     private readonly IUserRepository _userRepository = userRepository;
     private readonly IAuthRepository _authRepository = authRepository;
     private readonly IValidator<UpdatePasswordCommand> validator = validator;
 
-    public async Task<Messages> Handle(
+    public async Task<Message> Handle(
         UpdatePasswordCommand request,
         CancellationToken cancellationToken
     )
@@ -29,7 +29,7 @@ public class UpdatePasswordCommandHandler(
         var validationResult = await validator.ValidateAsync(request, cancellationToken);
         if (!validationResult.IsValid)
         {
-            return Messages.Error(
+            return Message.Error(
                 "Validation error",
                 string.Join(", ", validationResult.Errors.Select(e => e.ErrorMessage)),
                 "https://tools.ietf.org/html/rfc7231#section-6.5.1",
@@ -40,7 +40,7 @@ public class UpdatePasswordCommandHandler(
         var user = await _userRepository.FindByIdAsync(request.Id);
         if (user == null)
         {
-            return Messages.NotFound(
+            return Message.NotFound(
                 "not found",
                 "User not found",
                 "https://tools.ietf.org/html/rfc7231#section-6.5.4",
@@ -54,7 +54,7 @@ public class UpdatePasswordCommandHandler(
 
         if (request.CurrentPassword == request.NewPassword)
         {
-            return Messages.Error(
+            return Message.Error(
                 "Validation error",
                 "New password must be different from the current password",
                 "https://tools.ietf.org/html/rfc7231#section-6.5.1",
@@ -71,7 +71,7 @@ public class UpdatePasswordCommandHandler(
 
         if (passwordVerificationResult == PasswordVerificationResult.Failed)
         {
-            return Messages.Error(
+            return Message.Error(
                 "validation error",
                 "Current password is incorrect",
                 "https://tools.ietf.org/html/rfc7231#section-6.5.1",
@@ -83,7 +83,7 @@ public class UpdatePasswordCommandHandler(
         await _userRepository.UpdatePasswordAsync(user.Id, request.NewPassword);
         await _authRepository.LogoutAsync(user.Id);
 
-        return Messages.Success(
+        return Message.Success(
             "success",
             "Password updated successfully",
             "https://tools.ietf.org/html/rfc7231#section-6.3.1",

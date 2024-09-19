@@ -54,6 +54,11 @@ public class UserController(IMediator mediator) : ControllerBase
     }
 
     [HttpPut("{id}")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    [ProducesResponseType(StatusCodes.Status409Conflict)]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
     public async Task<ActionResult> Update([FromRoute] Guid id, [FromBody] UpdateCommand command)
     {
         command.Id = id;
@@ -69,6 +74,10 @@ public class UserController(IMediator mediator) : ControllerBase
     }
 
     [HttpPut("password/{id}")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
     public async Task<ActionResult> ChangePassword(
         [FromRoute] Guid id,
         [FromBody] UpdatePasswordCommand command
@@ -87,6 +96,9 @@ public class UserController(IMediator mediator) : ControllerBase
     }
 
     [HttpDelete("{id}")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
     public async Task<ActionResult> Delete(Guid id)
     {
         var command = new DeleteCommand(id);

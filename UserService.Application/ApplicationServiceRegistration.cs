@@ -2,6 +2,7 @@ using System.Reflection;
 using FluentValidation;
 using MediatR;
 using Microsoft.Extensions.DependencyInjection;
+using UserService.Application.Common.Services.Messages;
 using UserService.Application.Common.Validation;
 using UserService.Application.Features.User.Commands;
 
@@ -17,6 +18,8 @@ public static class ApplicationServiceRegistration
         services.AddTransient<IValidator<CreateCommand>, CreateCommandValidator>();
         services.AddTransient<IValidator<UpdateCommand>, UpdateCommandValidator>();
         services.AddTransient<IValidator<UpdatePasswordCommand>, UpdatePasswordCommandValidator>();
+
+        services.AddScoped<IMessageService, MessageService>();
 
         return services;
     }

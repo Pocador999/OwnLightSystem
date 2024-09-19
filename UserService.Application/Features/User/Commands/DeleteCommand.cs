@@ -1,10 +1,9 @@
-using System;
 using MediatR;
-using UserService.Application.Common.Messages;
+using UserService.Application.Common.Services.Messages;
 
 namespace UserService.Application.Features.User.Commands;
 
-public class DeleteCommand(Guid id) : IRequest<Messages>
+public class DeleteCommand(Guid id) : IRequest<Message>
 {
     public Guid Id { get; set; } = id;
 }

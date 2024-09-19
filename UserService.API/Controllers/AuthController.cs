@@ -1,6 +1,5 @@
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
-using UserService.Application.Common.Messages;
 using UserService.Application.Features.Authentication.Command;
 
 namespace UserService.API.Controllers;
@@ -33,6 +32,9 @@ public class AuthController(IMediator mediator) : ControllerBase
 
     [HttpPost]
     [Route("logout/{id:guid}")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<ActionResult> Logout([FromRoute] Guid id)
     {
         var result = await _mediator.Send(new LogoutCommand(id));

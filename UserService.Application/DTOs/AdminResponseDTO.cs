@@ -8,5 +8,5 @@ public class AdminResponseDTO
     public string Email { get; set; } = null!;
     public DateTime CreatedAt { get; set; }
     public DateTime UpdatedAt { get; set; }
-    public bool IsActive { get; set; }
+    public bool IsLogedIn { get; set; }
 }

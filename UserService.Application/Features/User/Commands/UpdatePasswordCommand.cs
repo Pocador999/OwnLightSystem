@@ -1,10 +1,10 @@
 using System.Text.Json.Serialization;
 using MediatR;
-using UserService.Application.Common.Messages;
+using UserService.Application.Common.Services.Messages;
 
 namespace UserService.Application.Features.User.Commands;
 
-public class UpdatePasswordCommand : IRequest<Messages>
+public class UpdatePasswordCommand : IRequest<Message>
 {
     [JsonIgnore]
     public Guid Id { get; set; }

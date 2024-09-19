@@ -1,11 +1,10 @@
 using System.Text.Json.Serialization;
 using MediatR;
-using UserService.Application.Common.Messages;
-using UserService.Application.DTOs;
+using UserService.Application.Common.Services.Messages;
 
 namespace UserService.Application.Features.User.Commands;
 
-public class UpdateCommand : IRequest<Messages>
+public class UpdateCommand : IRequest<Message>
 {
     [JsonIgnore]
     public Guid Id { get; set; }
