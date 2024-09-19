@@ -15,6 +15,7 @@ public class UpdateCommandHandler(
     IAuthRepository authRepository,
     IValidator<UpdateCommand> validator,
     IMessageService messageService,
+    AuthServices authServices,
     IMapper mapper
 ) : IRequestHandler<UpdateCommand, Message>
 {
@@ -23,6 +24,7 @@ public class UpdateCommandHandler(
     private readonly IValidator<UpdateCommand> _validator = validator;
     private readonly IMapper _mapper = mapper;
     private readonly IMessageService _messageService = messageService;
+    private readonly AuthServices _authServices = authServices;
 
     public async Task<Message> Handle(UpdateCommand request, CancellationToken cancellationToken)
     {
@@ -31,7 +33,7 @@ public class UpdateCommandHandler(
         if (user == null)
             return _messageService.CreateNotFoundMessage("user not found");
 
-        var authResult = AuthServices.Authenticate(user);
+        var authResult = _authServices.Authenticate(user);
         if (authResult.StatusCode != StatusCodes.Status200OK.ToString())
             return authResult;
 

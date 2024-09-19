@@ -14,13 +14,15 @@ public class UpdatePasswordCommandHandler(
     IUserRepository userRepository,
     IAuthRepository authRepository,
     IValidator<UpdatePasswordCommand> validator,
-    IMessageService messageService
+    IMessageService messageService,
+    AuthServices authServices
 ) : IRequestHandler<UpdatePasswordCommand, Message>
 {
     private readonly IUserRepository _userRepository = userRepository;
     private readonly IAuthRepository _authRepository = authRepository;
     private readonly IValidator<UpdatePasswordCommand> validator = validator;
     private readonly IMessageService _messageService = messageService;
+    private readonly AuthServices _authServices = authServices;
 
     public async Task<Message> Handle(
         UpdatePasswordCommand request,
@@ -32,7 +34,7 @@ public class UpdatePasswordCommandHandler(
         if (user == null)
             return _messageService.CreateNotFoundMessage("user not found");
 
-        var authResult = AuthServices.Authenticate(user);
+        var authResult = _authServices.Authenticate(user);
         if (authResult.StatusCode != StatusCodes.Status200OK.ToString())
             return authResult;
 
@@ -50,7 +52,7 @@ public class UpdatePasswordCommandHandler(
         );
         if (passwordVerificationResult == PasswordVerificationResult.Failed)
             return _messageService.CreateBadRequestMessage("current password is incorrect");
-            
+
         if (request.CurrentPassword == request.NewPassword)
             return _messageService.CreateBadRequestMessage(
                 "new password cannot be the same as the current password"
