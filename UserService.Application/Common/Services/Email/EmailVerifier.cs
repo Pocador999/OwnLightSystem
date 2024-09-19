@@ -1,8 +1,6 @@
-using System.Net;
-using System.Net.Sockets;
 using DnsClient;
 
-namespace UserService.Application.Common.Email;
+namespace UserService.Application.Common.Services.Email;
 
 public class EmailVerifier
 {

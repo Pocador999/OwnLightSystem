@@ -1,7 +1,9 @@
 using FluentValidation;
 using MediatR;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using UserService.Application.Common.Messages;
+using UserService.Application.Common.Services.Auth;
 using UserService.Application.Common.Validation;
 using UserService.Application.Features.User.Commands;
 using UserService.Domain.Interfaces;
@@ -11,10 +13,12 @@ namespace UserService.Application.Features.User.Handlers;
 
 public class UpdatePasswordCommandHandler(
     IUserRepository userRepository,
+    IAuthRepository authRepository,
     IValidator<UpdatePasswordCommand> validator
 ) : IRequestHandler<UpdatePasswordCommand, Messages>
 {
     private readonly IUserRepository _userRepository = userRepository;
+    private readonly IAuthRepository _authRepository = authRepository;
     private readonly IValidator<UpdatePasswordCommand> validator = validator;
 
     public async Task<Messages> Handle(
@@ -43,6 +47,10 @@ public class UpdatePasswordCommandHandler(
                 "404"
             );
         }
+
+        var authResult = AuthServices.Authenticate(user);
+        if (authResult.StatusCode != StatusCodes.Status200OK.ToString())
+            return authResult;
 
         if (request.CurrentPassword == request.NewPassword)
         {
@@ -73,6 +81,7 @@ public class UpdatePasswordCommandHandler(
 
         request.NewPassword = passwordHasher.HashPassword(user, request.NewPassword);
         await _userRepository.UpdatePasswordAsync(user.Id, request.NewPassword);
+        await _authRepository.LogoutAsync(user.Id);
 
         return Messages.Success(
             "success",

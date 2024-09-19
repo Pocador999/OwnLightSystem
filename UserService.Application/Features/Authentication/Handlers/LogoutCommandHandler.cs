@@ -14,16 +14,6 @@ public class LogoutCommandHandler(IAuthRepository authRepository, IUserRepositor
 
     public async Task<Messages> Handle(LogoutCommand request, CancellationToken cancellationToken)
     {
-        if (request.Id == Guid.Empty)
-        {
-            return Messages.Error(
-                "Invalid ID",
-                "The provided user ID is empty",
-                "https://tools.ietf.org/html/rfc7231#section-6.5.1",
-                StatusCodes.Status400BadRequest.ToString()
-            );
-        }
-
         var user = await _userRepository.FindByIdAsync(request.Id);
         if (user == null)
         {
@@ -35,12 +25,11 @@ public class LogoutCommandHandler(IAuthRepository authRepository, IUserRepositor
             );
         }
 
-        // User already logged out
         if (user.IsLogedIn == false)
         {
             return Messages.Error(
                 "Already logged out",
-                "User already logged out",
+                $"User {user.Username} is already logged out",
                 "https://tools.ietf.org/html/rfc7231#section-6.5.1",
                 StatusCodes.Status400BadRequest.ToString()
             );
@@ -50,7 +39,7 @@ public class LogoutCommandHandler(IAuthRepository authRepository, IUserRepositor
 
         return Messages.Success(
             "Success",
-            "User logged out",
+            $"User {user.Username} logged out successfully",
             "https://tools.ietf.org/html/rfc7231#section-6.3.5",
             StatusCodes.Status200OK.ToString()
         );

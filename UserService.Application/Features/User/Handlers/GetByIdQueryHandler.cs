@@ -7,12 +7,12 @@ using UserService.Domain.Interfaces;
 namespace UserService.Application.Features.User.Handlers;
 
 public class GetByIdQueryHandler(IUserRepository userRepository, IMapper mapper)
-    : IRequestHandler<GetByIdQuery, UserResponseDTO>
+    : IRequestHandler<GetByIdQuery, AdminResponseDTO>
 {
     private readonly IUserRepository _userRepository = userRepository;
     private readonly IMapper _mapper = mapper;
 
-    public async Task<UserResponseDTO> Handle(
+    public async Task<AdminResponseDTO> Handle(
         GetByIdQuery request,
         CancellationToken cancellationToken
     )
@@ -20,6 +20,6 @@ public class GetByIdQueryHandler(IUserRepository userRepository, IMapper mapper)
         var user =
             await _userRepository.FindByIdAsync(request.Id)
             ?? throw new DllNotFoundException("User not found");
-        return _mapper.Map<UserResponseDTO>(user);
+        return _mapper.Map<AdminResponseDTO>(user);
     }
 }

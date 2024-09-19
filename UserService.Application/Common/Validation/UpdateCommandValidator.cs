@@ -1,5 +1,5 @@
 using FluentValidation;
-using UserService.Application.Common.Email;
+using UserService.Application.Common.Services.Email;
 using UserService.Application.Features.User.Commands;
 
 namespace UserService.Application.Common.Validation;

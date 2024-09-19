@@ -1,5 +1,7 @@
 using MediatR;
+using Microsoft.AspNetCore.Http;
 using UserService.Application.Common.Messages;
+using UserService.Application.Common.Services.Auth;
 using UserService.Application.Features.User.Commands;
 using UserService.Domain.Interfaces;
 
@@ -22,6 +24,10 @@ public class DeleteCommandHandler(IUserRepository userRepository)
                 "404"
             );
         }
+
+        var authResult = AuthServices.Authenticate(user);
+        if (authResult.StatusCode != StatusCodes.Status200OK.ToString())
+            return authResult;
 
         return Messages.Success(
             "user deleted",

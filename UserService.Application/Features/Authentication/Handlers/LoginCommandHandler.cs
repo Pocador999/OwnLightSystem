@@ -41,6 +41,16 @@ public class LoginCommandHandler(
             );
         }
 
+        if (user.IsLogedIn == true)
+        {
+            return Messages.Error(
+                "Unauthorized",
+                $"User {user.Username} is already logged in",
+                "https://tools.ietf.org/html/rfc7235#section-3.1",
+                StatusCodes.Status401Unauthorized.ToString()
+            );
+        }
+
         var passwordVerificationResult = _passwordHasher.VerifyHashedPassword(
             user,
             user.Password,
@@ -60,7 +70,7 @@ public class LoginCommandHandler(
 
         return Messages.Success(
             "Success",
-            "Login successful",
+            $"User {user.Username} logged in successfully",
             "https://tools.ietf.org/html/rfc7231#section-6.3.1",
             StatusCodes.Status200OK.ToString()
         );
