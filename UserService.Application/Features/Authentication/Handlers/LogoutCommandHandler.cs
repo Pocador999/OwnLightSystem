@@ -1,47 +1,33 @@
 using MediatR;
-using Microsoft.AspNetCore.Http;
 using UserService.Application.Common.Services.Messages;
 using UserService.Application.Features.Authentication.Command;
 using UserService.Domain.Interfaces;
 
 namespace UserService.Application.Features.Authentication.Handlers;
 
-public class LogoutCommandHandler(IAuthRepository authRepository, IUserRepository userRepository)
-    : IRequestHandler<LogoutCommand, Message>
+public class LogoutCommandHandler(
+    IAuthRepository authRepository,
+    IUserRepository userRepository,
+    IMessageService messageService
+) : IRequestHandler<LogoutCommand, Message>
 {
     private readonly IAuthRepository _authRepository = authRepository;
     private readonly IUserRepository _userRepository = userRepository;
+    private readonly IMessageService _messageService = messageService;
 
     public async Task<Message> Handle(LogoutCommand request, CancellationToken cancellationToken)
     {
         var user = await _userRepository.FindByIdAsync(request.Id);
         if (user == null)
-        {
-            return Message.NotFound(
-                "Not Found",
-                "User not found",
-                "https://tools.ietf.org/html/rfc7231#section-6.5.4",
-                StatusCodes.Status404NotFound.ToString()
-            );
-        }
+            return _messageService.CreateNotFoundMessage($"User with id {request.Id} not found");
 
         if (user.IsLogedIn == false)
-        {
-            return Message.Error(
-                "Already logged out",
-                $"User {user.Username} is already logged out",
-                "https://tools.ietf.org/html/rfc7231#section-6.5.1",
-                StatusCodes.Status400BadRequest.ToString()
+            return _messageService.CreateNotAuthorizedMessage(
+                $"User {user.Username} is not logged in"
             );
-        }
 
         await _authRepository.LogoutAsync(user.Id);
 
-        return Message.Success(
-            "Success",
-            $"User {user.Username} logged out successfully",
-            "https://tools.ietf.org/html/rfc7231#section-6.3.5",
-            StatusCodes.Status200OK.ToString()
-        );
+        return _messageService.CreateSuccessMessage($"User {user.Username} logged out");
     }
 }
