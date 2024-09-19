@@ -13,10 +13,13 @@ public class AdminController(IMediator mediator) : ControllerBase
     private readonly IMediator _mediator = mediator;
 
     [HttpDelete("delete/all")]
-    public async Task<ActionResult> DeleteAll()
+    public async Task<ActionResult> DeleteAll(
+        [FromQuery] Guid adminId,
+        [FromQuery] string adminPassword
+    )
     {
-        var command = new DeleteAllCommand(new List<User>());
+        var command = new DeleteAllCommand { AdminId = adminId, AdminPassword = adminPassword };
         await _mediator.Send(command);
-        return Ok();
+        return NoContent();
     }
 }

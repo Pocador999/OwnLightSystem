@@ -14,13 +14,17 @@ public class UserRepository(DataContext context) : IUserRepository
     public async Task<IEnumerable<User>> FindAllAsync(int page, int pageSize)
     {
         var skipAmount = (page - 1) * pageSize;
-        return await _dbSet.Skip(skipAmount).Take(pageSize).ToListAsync();
+        return await _dbSet
+            .Where(u => u.Username != "admin")
+            .Skip(skipAmount)
+            .Take(pageSize)
+            .ToListAsync();
     }
 
     public async Task<User?> FindByIdAsync(Guid id) => await _dbSet.FindAsync(id);
 
     public async Task<User?> FindByUsernameAsync(string username) =>
-        await _dbSet.FirstOrDefaultAsync(u => u.Username == username);
+        await _dbSet.FirstOrDefaultAsync(u => u.Username == username && u.Username != "admin");
 
     public async Task<User?> FindByEmailAsync(string email) =>
         await _dbSet.FirstOrDefaultAsync(u => u.Email == email);
@@ -60,13 +64,12 @@ public class UserRepository(DataContext context) : IUserRepository
         return user;
     }
 
+    // Delete all users except with name "admin"
     public async Task<User?> DeleteAllAsync()
     {
-        var users = await _dbSet.ToListAsync();
-        foreach (var user in users)
-            _dbSet.Remove(user);
-
+        var users = await _dbSet.Where(u => u.Username != "admin").ToListAsync();
+        _dbSet.RemoveRange(users);
         await context.SaveChangesAsync();
-        return users.FirstOrDefault();
+        return null;
     }
 }

@@ -5,10 +5,6 @@ namespace UserService.Application.Features.Admin.Commands;
 
 public class DeleteAllCommand : IRequest
 {
-    public IEnumerable<Entity.User> Users { get; set; }
-
-    public DeleteAllCommand(IEnumerable<Entity.User> users)
-    {
-        Users = users;
-    }
+    public Guid AdminId { get; set; }
+    public string AdminPassword { get; set; }
 }
