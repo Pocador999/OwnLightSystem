@@ -7,33 +7,24 @@ using UserService.Domain.Interfaces;
 
 namespace UserService.Application.Features.User.Handlers;
 
-public class DeleteCommandHandler(IUserRepository userRepository)
+public class DeleteCommandHandler(IUserRepository userRepository, IMessageService messageService)
     : IRequestHandler<DeleteCommand, Message>
 {
     private readonly IUserRepository _userRepository = userRepository;
+    private readonly IMessageService _messageService = messageService;
 
     public async Task<Message> Handle(DeleteCommand request, CancellationToken cancellationToken)
     {
-        var user = await _userRepository.DeleteAsync(request.Id);
+        var user = await _userRepository.FindByIdAsync(request.Id);
         if (user == null)
-        {
-            return Message.NotFound(
-                "not found",
-                "User not found",
-                "https://tools.ietf.org/html/rfc7231#section-6.5.4",
-                "404"
-            );
-        }
+            return _messageService.CreateNotFoundMessage("user not found");
 
         var authResult = AuthServices.Authenticate(user);
         if (authResult.StatusCode != StatusCodes.Status200OK.ToString())
             return authResult;
 
-        return Message.Success(
-            "user deleted",
-            $"User {user.Username} deleted successfully",
-            "https://tools.ietf.org/html/rfc7231#section-6.5.1",
-            "200"
-        );
+        await _userRepository.DeleteAsync(request.Id);
+
+        return _messageService.CreateSuccessMessage("user deleted successfully");
     }
 }
