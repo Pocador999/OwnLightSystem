@@ -6,5 +6,5 @@ namespace UserService.Application.Features.Admin.Commands;
 public class DeleteAllCommand : IRequest
 {
     public Guid AdminId { get; set; }
-    public string AdminPassword { get; set; }
+    public required string AdminPassword { get; set; }
 }
