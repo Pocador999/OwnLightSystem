@@ -12,13 +12,15 @@ public class LoginCommandHandler(
     IUserRepository userRepository,
     IAuthRepository authRepository,
     IMessageService messageService,
-    IPasswordHasher<Entity.User> passwordHasher
+    IPasswordHasher<Entity.User> passwordHasher,
+    IHttpContextAccessor httpContextAccessor
 ) : IRequestHandler<LoginCommand, Message>
 {
     private readonly IUserRepository _userRepository = userRepository;
     private readonly IAuthRepository _authRepository = authRepository;
     private readonly IPasswordHasher<Entity.User> _passwordHasher = passwordHasher;
     private readonly IMessageService _messageService = messageService;
+    private readonly IHttpContextAccessor _httpContextAccessor = httpContextAccessor;
 
     public async Task<Message> Handle(LoginCommand request, CancellationToken cancellationToken)
     {
@@ -33,6 +35,12 @@ public class LoginCommandHandler(
         );
         if (passwordVerificationResult == PasswordVerificationResult.Failed)
             return _messageService.CreateNotAuthorizedMessage("Senha incorreta.");
+
+        _httpContextAccessor.HttpContext.Session.SetString("UserId", user.Id.ToString());
+
+        var sessionUserId = _httpContextAccessor.HttpContext.Session.GetString("UserId");
+        if (string.IsNullOrEmpty(sessionUserId))
+            return _messageService.CreateInternalErrorMessage("Erro ao criar a sessão do usuário.");
 
         await _authRepository.LoginAsync(request.Username, request.Password);
 

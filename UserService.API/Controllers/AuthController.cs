@@ -1,6 +1,8 @@
+using System.Security.Claims;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using UserService.Application.Features.Authentication.Command;
+using UserService.Domain.Entities;
 
 namespace UserService.API.Controllers;
 
@@ -18,6 +20,10 @@ public class AuthController(IMediator mediator) : ControllerBase
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<ActionResult> Login([FromBody] LoginCommand command)
     {
+        var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+        if (userId != null)
+            HttpContext.Session.SetString("UserId", userId);
+
         var result = await _mediator.Send(command);
 
         if (result.StatusCode == StatusCodes.Status200OK.ToString())

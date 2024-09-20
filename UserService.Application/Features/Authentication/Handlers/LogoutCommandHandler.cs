@@ -1,4 +1,5 @@
 using MediatR;
+using Microsoft.AspNetCore.Http;
 using UserService.Application.Common.Services.Messages;
 using UserService.Application.Features.Authentication.Command;
 using UserService.Domain.Interfaces;
@@ -8,12 +9,14 @@ namespace UserService.Application.Features.Authentication.Handlers;
 public class LogoutCommandHandler(
     IAuthRepository authRepository,
     IUserRepository userRepository,
-    IMessageService messageService
+    IMessageService messageService,
+    IHttpContextAccessor httpContextAccessor
 ) : IRequestHandler<LogoutCommand, Message>
 {
     private readonly IAuthRepository _authRepository = authRepository;
     private readonly IUserRepository _userRepository = userRepository;
     private readonly IMessageService _messageService = messageService;
+    private readonly IHttpContextAccessor _httpContextAccessor = httpContextAccessor;
 
     public async Task<Message> Handle(LogoutCommand request, CancellationToken cancellationToken)
     {
@@ -27,6 +30,7 @@ public class LogoutCommandHandler(
             );
 
         await _authRepository.LogoutAsync(user.Id);
+        _httpContextAccessor.HttpContext.Session.Clear();
 
         return _messageService.CreateSuccessMessage($"User {user.Username} logged out");
     }
