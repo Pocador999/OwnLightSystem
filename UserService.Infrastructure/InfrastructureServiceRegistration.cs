@@ -2,6 +2,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using UserService.Domain.Interfaces;
+using UserService.Infrastructure.Background;
 using UserService.Infrastructure.Data;
 using UserService.Infrastructure.Repositories;
 
@@ -14,6 +15,7 @@ public static class InfrastructureServiceRegistration
         IConfiguration configuration
     )
     {
+        services.AddHostedService<SessionTimeoutBackgroundService>();
         services.AddScoped<IUserRepository, UserRepository>();
         services.AddScoped<IAuthRepository, AuthRepository>();
         services.AddDbContext<DataContext>(options =>
