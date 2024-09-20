@@ -1,6 +1,7 @@
 using System.Reflection;
 using FluentValidation;
 using MediatR;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.DependencyInjection;
 using UserService.Application.Common.Services.Auth;
@@ -17,6 +18,7 @@ public static class ApplicationServiceRegistration
     {
         services.AddAutoMapper(Assembly.GetExecutingAssembly());
         services.AddMediatR(Assembly.GetExecutingAssembly());
+        services.AddHttpContextAccessor();
 
         services.AddTransient<IValidator<CreateCommand>, CreateCommandValidator>();
         services.AddTransient<IValidator<UpdateCommand>, UpdateCommandValidator>();

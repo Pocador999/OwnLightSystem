@@ -8,6 +8,16 @@ public static class APIServiceRegistration
 {
     public static IServiceCollection AddAPIServices(this IServiceCollection services)
     {
+        services.AddDistributedMemoryCache();
+        services.AddHttpContextAccessor();
+        services.AddSession(options =>
+        {
+            options.IdleTimeout = TimeSpan.FromMinutes(60);
+            options.Cookie.HttpOnly = true;
+            options.Cookie.IsEssential = true;
+            options.Cookie.Name = "UserService.Session";
+        });
+
         services.AddCors(options =>
         {
             options.AddPolicy(
