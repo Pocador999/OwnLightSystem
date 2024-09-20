@@ -6,4 +6,5 @@ public interface IAuthRepository
 {
     public Task<User?> LoginAsync(string username, string password);
     public Task<User?> LogoutAsync(Guid id);
+    public Task<IEnumerable<User>> GetAllLogedInUsersAsync();
 }

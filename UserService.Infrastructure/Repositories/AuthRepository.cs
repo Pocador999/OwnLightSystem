@@ -20,8 +20,15 @@ public class AuthRepository(DataContext context) : IAuthRepository
     public async Task<User?> LogoutAsync(Guid id)
     {
         var user = await _dbSet.FindAsync(id);
-        user!.Logout();
-        await context.SaveChangesAsync();
-        return user;
+        if (user != null && user.Username != "admin")
+        {
+            user.Logout();
+            await context.SaveChangesAsync();
+            return user;
+        }
+        return null;
     }
+
+    public async Task<IEnumerable<User>> GetAllLogedInUsersAsync() =>
+        await _dbSet.Where(u => u.IsLogedIn && u.Username != "admin").ToListAsync();
 }
