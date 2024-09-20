@@ -141,7 +141,7 @@ Contributions are welcome! Please follow the standard Git workflow:
 This project is licensed under the MIT License. See the LICENSE file for more details.
 
 
-### Final Thoughts:
+## Final Thoughts:
 
 This api is part of a microservice architecture based project, for my college (FACENS) upx subject
 later it will be conected to a Ocelot API Gateway, and will be related with other asp.net api's such as:
