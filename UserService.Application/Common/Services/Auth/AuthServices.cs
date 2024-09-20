@@ -1,4 +1,3 @@
-using Microsoft.AspNetCore.Http;
 using UserService.Application.Common.Services.Messages;
 using UserService.Domain.Entities;
 
@@ -13,9 +12,9 @@ public class AuthServices(IMessageService messageService)
         if (user.IsLogedIn == false)
         {
             return _messageService.CreateNotAuthorizedMessage(
-                $"User {user.Username} is not logged in"
+                $"Usuário {user.Username} não está autenticado"
             );
         }
-        return _messageService.CreateSuccessMessage($"User {user.Username} is logged in");
+        return _messageService.CreateSuccessMessage($"Usuário {user.Username} autenticado");
     }
 }
