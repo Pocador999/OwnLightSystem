@@ -49,4 +49,18 @@ public class AuthController(IMediator mediator) : ControllerBase
         else
             return BadRequest(result);
     }
+
+    [HttpGet]
+    [Route("current_user")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    public ActionResult<Guid> GetCurrentUserId()
+    {
+        var userId = HttpContext.Session.GetString("UserId");
+        if (string.IsNullOrEmpty(userId))
+            return NotFound();
+
+        return Ok(Guid.Parse(userId));
+    }
 }
