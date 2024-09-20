@@ -24,6 +24,8 @@ public static class ApplicationServiceRegistration
         services.AddTransient<IValidator<CreateCommand>, CreateCommandValidator>();
         services.AddTransient<IValidator<UpdateCommand>, UpdateCommandValidator>();
         services.AddTransient<IValidator<UpdatePasswordCommand>, UpdatePasswordCommandValidator>();
+        services.AddTransient<IValidator<UpdateEmailCommand>, UpdateEmailCommandValidator>();
+        services.AddTransient<IValidator<UpdateUsernameCommand>, UpdateUsernameCommandValidator>();
 
         services.AddScoped<IMessageService, MessageService>();
         services.AddScoped<IPasswordHasher<User>, PasswordHasher<User>>();

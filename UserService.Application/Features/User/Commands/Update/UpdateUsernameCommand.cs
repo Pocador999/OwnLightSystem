@@ -4,9 +4,9 @@ using UserService.Application.Common.Services.Messages;
 
 namespace UserService.Application.Features.User.Commands.Update;
 
-public class UpdateCommand : IRequest<Message>
+public class UpdateUsernameCommand : IRequest<Message>
 {
     [JsonIgnore]
     public Guid Id { get; set; }
-    public required string Name { get; set; }
+    public required string Username { get; set; }
 }

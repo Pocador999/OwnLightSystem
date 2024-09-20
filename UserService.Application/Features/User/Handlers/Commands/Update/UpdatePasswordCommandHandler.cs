@@ -56,7 +56,7 @@ public class UpdatePasswordCommandHandler(
             return _messageService.CreateBadRequestMessage("Senha atual incorreta");
 
         if (request.CurrentPassword == request.NewPassword)
-            return _messageService.CreateBadRequestMessage(
+            return _messageService.CreateConflictMessage(
                 "Nova senha não pode ser igual a senha atual"
             );
 

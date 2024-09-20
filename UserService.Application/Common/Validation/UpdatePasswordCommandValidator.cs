@@ -11,6 +11,6 @@ public class UpdatePasswordCommandValidator : AbstractValidator<UpdatePasswordCo
             .MinimumLength(6)
             .MaximumLength(30)
             .NotEmpty()
-            .WithMessage("Password must be between 6 and 30 characters");
+            .WithMessage("Senha deve ter entre 6 e 30 caracteres");
     }
 }

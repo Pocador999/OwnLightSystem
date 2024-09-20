@@ -2,50 +2,47 @@ using AutoMapper;
 using FluentValidation;
 using MediatR;
 using Microsoft.AspNetCore.Http;
-using UserService.Application.Common.Services.Auth;
 using UserService.Application.Common.Services.Messages;
 using UserService.Application.Features.User.Commands.Update;
 using UserService.Domain.Interfaces;
 
 namespace UserService.Application.Features.User.Handlers.Commands.Update;
 
-public class UpdateCommandHandler(
+public class UpdateEmailCommandHandler(
     IUserRepository userRepository,
     IAuthRepository authRepository,
-    IValidator<UpdateCommand> validator,
+    IValidator<UpdateEmailCommand> validator,
     IMessageService messageService,
-    AuthServices authServices,
-    IMapper mapper,
-    IHttpContextAccessor httpContextAccessor
-) : IRequestHandler<UpdateCommand, Message>
+    IHttpContextAccessor httpContextAccessor,
+    IMapper mapper
+) : IRequestHandler<UpdateEmailCommand, Message>
 {
     private readonly IUserRepository _userRepository = userRepository;
     private readonly IAuthRepository _authRepository = authRepository;
-    private readonly IValidator<UpdateCommand> _validator = validator;
-    private readonly IMapper _mapper = mapper;
+    private readonly IValidator<UpdateEmailCommand> _validator = validator;
     private readonly IMessageService _messageService = messageService;
-    private readonly AuthServices _authServices = authServices;
     private readonly IHttpContextAccessor _httpContextAccessor = httpContextAccessor;
+    private readonly IMapper _mapper = mapper;
 
-    public async Task<Message> Handle(UpdateCommand request, CancellationToken cancellationToken)
+    public async Task<Message> Handle(
+        UpdateEmailCommand request,
+        CancellationToken cancellationToken
+    )
     {
         var user = await _userRepository.FindByIdAsync(request.Id);
 
         if (user == null)
             return _messageService.CreateNotFoundMessage("Usuário não encontrado");
 
-        var authResult = _authServices.Authenticate(user);
-        if (authResult.StatusCode != StatusCodes.Status200OK.ToString())
-            return authResult;
-            
         var validationResult = await _validator.ValidateAsync(request, cancellationToken);
         if (!validationResult.IsValid)
             return _messageService.CreateValidationMessage(
                 validationResult.Errors.Select(e => e.ErrorMessage)
             );
 
-        if (request.Name == user.Name)
-            return _messageService.CreateConflictMessage($"{request.Name} já existe");
+        var existingEmail = await _userRepository.FindByEmailAsync(request.Email);
+        if (existingEmail != null && request.Email == user.Email)
+            return _messageService.CreateConflictMessage($"{request.Email} já existe");
 
         user.UpdatedAt = DateTime.UtcNow;
         _mapper.Map(request, user);
@@ -54,6 +51,6 @@ public class UpdateCommandHandler(
         await _authRepository.LogoutAsync(user.Id);
         _httpContextAccessor.HttpContext.Session.Clear();
 
-        return _messageService.CreateSuccessMessage("Usuário atualizado com sucesso");
+        return _messageService.CreateSuccessMessage("Email atualizado com sucesso");
     }
 }

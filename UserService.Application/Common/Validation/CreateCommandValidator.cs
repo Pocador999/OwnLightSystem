@@ -10,34 +10,25 @@ public class CreateCommandValidator : AbstractValidator<CreateCommand>
     {
         RuleFor(x => x.Name)
             .NotEmpty()
-            .WithMessage("Name must not be empty")
             .Length(3, 30)
-            .WithMessage("Name must be between 3 and 30 characters");
+            .WithMessage("Nome deve ter entre 3 e 30 caracteres");
 
         RuleFor(x => x.Username)
             .NotEmpty()
-            .WithMessage("Username must not be empty")
             .Length(3, 30)
-            .WithMessage("Username must be between 3 and 30 characters")
             .Matches("^[a-zA-Z0-9]*$")
-            .WithMessage("Username must not contain special characters or spaces");
+            .WithMessage("Nome de usuário inválido");
 
         RuleFor(x => x.Password)
             .NotEmpty()
-            .WithMessage("Password must not be empty")
             .Length(6, 20)
-            .WithMessage("Password must be between 6 and 20 characters");
+            .WithMessage("Senha deve ter entre 6 e 20 caracteres");
 
         RuleFor(x => x.Email)
             .NotEmpty()
-            .WithMessage("Email must not be empty")
             .EmailAddress()
-            .WithMessage("Email must be a valid email address")
             .Must(x => !x.Contains(' '))
-            .WithMessage("Email must not contain spaces");
-
-        RuleFor(x => x.Email)
             .Must(EmailVerifier.IsValidDomain)
-            .WithMessage("Email domain is invalid");
+            .WithMessage("Endereço de email inválido");
     }
 }

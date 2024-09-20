@@ -12,24 +12,6 @@ public class UpdateCommandValidator : AbstractValidator<UpdateCommand>
             .MinimumLength(3)
             .MaximumLength(30)
             .NotEmpty()
-            .WithMessage("Name must be between 3 and 30 characters");
-
-        RuleFor(x => x.Username)
-            .MinimumLength(3)
-            .MaximumLength(30)
-            .NotEmpty()
-            .WithMessage("Username must be between 3 and 30 characters");
-
-        RuleFor(x => x.Email)
-            .NotEmpty()
-            .WithMessage("Email must not be empty")
-            .EmailAddress()
-            .WithMessage("Email must be a valid email address")
-            .Must(x => !x.Contains(' '))
-            .WithMessage("Email must not contain spaces");
-
-        RuleFor(x => x.Email)
-            .Must(EmailVerifier.IsValidDomain)
-            .WithMessage("Email domain is invalid");
+            .WithMessage("Nome deve ter entre 3 e 30 caracteres");
     }
 }

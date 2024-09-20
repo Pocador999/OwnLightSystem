@@ -14,5 +14,7 @@ public class MapperProfile : Profile
         CreateMap<User, AdminResponseDTO>().ReverseMap();
         CreateMap<User, CreateCommand>().ReverseMap();
         CreateMap<User, UpdateCommand>().ReverseMap();
+        CreateMap<User, UpdateEmailCommand>().ReverseMap();
+        CreateMap<User, UpdateUsernameCommand>().ReverseMap();
     }
 }

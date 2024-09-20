@@ -2,50 +2,47 @@ using AutoMapper;
 using FluentValidation;
 using MediatR;
 using Microsoft.AspNetCore.Http;
-using UserService.Application.Common.Services.Auth;
 using UserService.Application.Common.Services.Messages;
 using UserService.Application.Features.User.Commands.Update;
 using UserService.Domain.Interfaces;
 
 namespace UserService.Application.Features.User.Handlers.Commands.Update;
 
-public class UpdateCommandHandler(
+public class UpdateUsernameCommandHandler(
     IUserRepository userRepository,
     IAuthRepository authRepository,
-    IValidator<UpdateCommand> validator,
     IMessageService messageService,
-    AuthServices authServices,
-    IMapper mapper,
-    IHttpContextAccessor httpContextAccessor
-) : IRequestHandler<UpdateCommand, Message>
+    IValidator<UpdateUsernameCommand> validator,
+    IHttpContextAccessor httpContextAccessor,
+    IMapper mapper
+) : IRequestHandler<UpdateUsernameCommand, Message>
 {
     private readonly IUserRepository _userRepository = userRepository;
     private readonly IAuthRepository _authRepository = authRepository;
-    private readonly IValidator<UpdateCommand> _validator = validator;
-    private readonly IMapper _mapper = mapper;
     private readonly IMessageService _messageService = messageService;
-    private readonly AuthServices _authServices = authServices;
+    private readonly IValidator<UpdateUsernameCommand> _validator = validator;
     private readonly IHttpContextAccessor _httpContextAccessor = httpContextAccessor;
+    private readonly IMapper _mapper = mapper;
 
-    public async Task<Message> Handle(UpdateCommand request, CancellationToken cancellationToken)
+    public async Task<Message> Handle(
+        UpdateUsernameCommand request,
+        CancellationToken cancellationToken
+    )
     {
         var user = await _userRepository.FindByIdAsync(request.Id);
 
         if (user == null)
             return _messageService.CreateNotFoundMessage("Usuário não encontrado");
 
-        var authResult = _authServices.Authenticate(user);
-        if (authResult.StatusCode != StatusCodes.Status200OK.ToString())
-            return authResult;
-            
         var validationResult = await _validator.ValidateAsync(request, cancellationToken);
         if (!validationResult.IsValid)
             return _messageService.CreateValidationMessage(
                 validationResult.Errors.Select(e => e.ErrorMessage)
             );
 
-        if (request.Name == user.Name)
-            return _messageService.CreateConflictMessage($"{request.Name} já existe");
+        var existingUsername = await _userRepository.FindByUsernameAsync(request.Username);
+        if (existingUsername != null && request.Username == user.Username)
+            return _messageService.CreateConflictMessage($"{request.Username} já existe");
 
         user.UpdatedAt = DateTime.UtcNow;
         _mapper.Map(request, user);
@@ -54,6 +51,6 @@ public class UpdateCommandHandler(
         await _authRepository.LogoutAsync(user.Id);
         _httpContextAccessor.HttpContext.Session.Clear();
 
-        return _messageService.CreateSuccessMessage("Usuário atualizado com sucesso");
+        return _messageService.CreateSuccessMessage("Nome de usuário atualizado com sucesso");
     }
 }
