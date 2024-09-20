@@ -2,6 +2,7 @@ using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using UserService.Application.DTOs;
 using UserService.Application.Features.User.Commands;
+using UserService.Application.Features.User.Commands.Update;
 using UserService.Application.Features.User.Queries;
 
 namespace UserService.API.Controllers;

@@ -8,6 +8,7 @@ using UserService.Application.Common.Services.Auth;
 using UserService.Application.Common.Services.Messages;
 using UserService.Application.Common.Validation;
 using UserService.Application.Features.User.Commands;
+using UserService.Application.Features.User.Commands.Update;
 using UserService.Domain.Entities;
 
 namespace UserService.Application;

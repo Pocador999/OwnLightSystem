@@ -1,6 +1,7 @@
 using AutoMapper;
 using UserService.Application.DTOs;
 using UserService.Application.Features.User.Commands;
+using UserService.Application.Features.User.Commands.Update;
 using UserService.Domain.Entities;
 
 namespace UserService.Application.Common.Mappings;

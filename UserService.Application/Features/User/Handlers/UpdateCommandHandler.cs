@@ -2,10 +2,9 @@ using AutoMapper;
 using FluentValidation;
 using MediatR;
 using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Http.Features.Authentication;
 using UserService.Application.Common.Services.Auth;
 using UserService.Application.Common.Services.Messages;
-using UserService.Application.Features.User.Commands;
+using UserService.Application.Features.User.Commands.Update;
 using UserService.Domain.Interfaces;
 
 namespace UserService.Application.Features.User.Handlers;

@@ -2,7 +2,7 @@ using System.Text.Json.Serialization;
 using MediatR;
 using UserService.Application.Common.Services.Messages;
 
-namespace UserService.Application.Features.User.Commands;
+namespace UserService.Application.Features.User.Commands.Update;
 
 public class UpdateCommand : IRequest<Message>
 {

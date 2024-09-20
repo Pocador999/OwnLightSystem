@@ -1,6 +1,6 @@
 using FluentValidation;
 using UserService.Application.Common.Services.Email;
-using UserService.Application.Features.User.Commands;
+using UserService.Application.Features.User.Commands.Update;
 
 namespace UserService.Application.Common.Validation;
 
