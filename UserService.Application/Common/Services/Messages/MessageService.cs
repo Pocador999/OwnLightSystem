@@ -64,4 +64,14 @@ public class MessageService : IMessageService
             StatusCodes.Status400BadRequest.ToString()
         );
     }
+
+    public Message CreateInternalErrorMessage(string message)
+    {
+        return Message.Error(
+            "Internal Server Error",
+            message,
+            "https://tools.ietf.org/html/rfc7231#section-6.6.1",
+            StatusCodes.Status500InternalServerError.ToString()
+        );
+    }
 }

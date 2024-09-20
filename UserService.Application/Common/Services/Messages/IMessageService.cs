@@ -8,4 +8,5 @@ public interface IMessageService
     Message CreateConflictMessage(string message);
     Message CreateNotFoundMessage(string message);
     Message CreateSuccessMessage(string message);
+    Message CreateInternalErrorMessage(string message);
 }
