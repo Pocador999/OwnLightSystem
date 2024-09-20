@@ -1,4 +1,5 @@
 using UserService.API;
+using UserService.API.Middlewares;
 
 var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddAPIServices();
@@ -19,5 +20,6 @@ app.UseHttpsRedirection();
 app.UseAuthentication();
 app.UseAuthorization();
 app.MapControllers();
+app.UseMiddleware<SessionCheckMiddleware>();
 
 app.Run();
