@@ -7,7 +7,7 @@ using UserService.Application.Common.Services.Messages;
 using UserService.Application.Features.User.Commands.Update;
 using UserService.Domain.Interfaces;
 
-namespace UserService.Application.Features.User.Handlers;
+namespace UserService.Application.Features.User.Handlers.Commands.Update;
 
 public class UpdateCommandHandler(
     IUserRepository userRepository,

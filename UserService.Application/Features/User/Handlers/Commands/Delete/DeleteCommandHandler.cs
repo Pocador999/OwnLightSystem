@@ -5,7 +5,7 @@ using UserService.Application.Common.Services.Messages;
 using UserService.Application.Features.User.Commands;
 using UserService.Domain.Interfaces;
 
-namespace UserService.Application.Features.User.Handlers;
+namespace UserService.Application.Features.User.Handlers.Commands.Delete;
 
 public class DeleteCommandHandler(
     IUserRepository userRepository,

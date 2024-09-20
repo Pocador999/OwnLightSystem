@@ -8,7 +8,7 @@ using UserService.Application.Features.User.Commands.Update;
 using UserService.Domain.Interfaces;
 using Entity = UserService.Domain.Entities;
 
-namespace UserService.Application.Features.User.Handlers;
+namespace UserService.Application.Features.User.Handlers.Commands.Update;
 
 public class UpdatePasswordCommandHandler(
     IUserRepository userRepository,
