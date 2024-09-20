@@ -33,7 +33,7 @@ public class UpdateCommandHandler(
         var user = await _userRepository.FindByIdAsync(request.Id);
 
         if (user == null)
-            return _messageService.CreateNotFoundMessage("user not found");
+            return _messageService.CreateNotFoundMessage("Usuário não encontrado");
 
         var authResult = _authServices.Authenticate(user);
         if (authResult.StatusCode != StatusCodes.Status200OK.ToString())
@@ -47,11 +47,11 @@ public class UpdateCommandHandler(
 
         var existingUsername = await _userRepository.FindByUsernameAsync(request.Username);
         if (existingUsername != null && request.Username != user.Username)
-            return _messageService.CreateConflictMessage($"{request.Username} already exists");
+            return _messageService.CreateConflictMessage($"{request.Username} já existe");
 
         var existingEmail = await _userRepository.FindByEmailAsync(request.Email);
         if (existingEmail != null && request.Email != user.Email)
-            return _messageService.CreateConflictMessage("Email already exists");
+            return _messageService.CreateConflictMessage("Endereço de email já está em uso");
 
         user.UpdatedAt = DateTime.UtcNow;
         _mapper.Map(request, user);
@@ -60,6 +60,6 @@ public class UpdateCommandHandler(
         await _authRepository.LogoutAsync(user.Id);
         _httpContextAccessor.HttpContext.Session.Clear();
 
-        return _messageService.CreateSuccessMessage("user updated successfully");
+        return _messageService.CreateSuccessMessage("Usuário atualizado com sucesso");
     }
 }

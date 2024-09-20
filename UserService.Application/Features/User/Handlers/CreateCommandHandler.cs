@@ -33,17 +33,17 @@ public class CreateCommandHandler(
 
         var existingUser = await _userRepository.FindByUsernameAsync(request.Username);
         if (existingUser != null)
-            return _messageService.CreateConflictMessage($"user {request.Username} already exists");
+            return _messageService.CreateConflictMessage($"Usuário {request.Username} já existe");
 
         var existingEmail = await _userRepository.FindByEmailAsync(request.Email);
         if (existingEmail != null)
-            return _messageService.CreateConflictMessage("this email address already exists");
+            return _messageService.CreateConflictMessage("Esse email já está em uso");
 
         request.Password = _passwordHasher.HashPassword(new Entity.User(), request.Password);
         await _userRepository.RegisterAsync(_mapper.Map<Entity.User>(request));
 
         return _messageService.CreateSuccessMessage(
-            $"user {request.Username} created successfully"
+            $"Usuário {request.Username} criado com sucesso"
         );
     }
 }

@@ -21,7 +21,7 @@ public class DeleteCommandHandler(
     {
         var user = await _userRepository.FindByIdAsync(request.Id);
         if (user == null)
-            return _messageService.CreateNotFoundMessage("user not found");
+            return _messageService.CreateNotFoundMessage("Usuário não encontrado");
 
         var authResult = _authServices.Authenticate(user);
         if (authResult.StatusCode != StatusCodes.Status200OK.ToString())
@@ -29,6 +29,6 @@ public class DeleteCommandHandler(
 
         await _userRepository.DeleteAsync(request.Id);
 
-        return _messageService.CreateSuccessMessage("user deleted successfully");
+        return _messageService.CreateSuccessMessage("Usuário deletado com sucesso");
     }
 }

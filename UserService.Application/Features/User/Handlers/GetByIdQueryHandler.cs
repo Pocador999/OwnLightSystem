@@ -19,7 +19,7 @@ public class GetByIdQueryHandler(IUserRepository userRepository, IMapper mapper)
     {
         var user =
             await _userRepository.FindByIdAsync(request.Id)
-            ?? throw new DllNotFoundException("User not found");
+            ?? throw new DllNotFoundException("Usuário não encontrado");
         return _mapper.Map<AdminResponseDTO>(user);
     }
 }

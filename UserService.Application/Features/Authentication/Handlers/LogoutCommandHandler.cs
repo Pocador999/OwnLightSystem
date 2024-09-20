@@ -22,16 +22,20 @@ public class LogoutCommandHandler(
     {
         var user = await _userRepository.FindByIdAsync(request.Id);
         if (user == null)
-            return _messageService.CreateNotFoundMessage($"User with id {request.Id} not found");
+            return _messageService.CreateNotFoundMessage(
+                $"Usuário com id {request.Id} não encontrado"
+            );
 
         if (user.IsLogedIn == false)
             return _messageService.CreateNotAuthorizedMessage(
-                $"User {user.Username} is not logged in"
+                $"Usuário {user.Username} não está logado"
             );
 
         await _authRepository.LogoutAsync(user.Id);
         _httpContextAccessor.HttpContext.Session.Clear();
 
-        return _messageService.CreateSuccessMessage($"User {user.Username} logged out");
+        return _messageService.CreateSuccessMessage(
+            $"Usuário {user.Username} deslogado com sucesso"
+        );
     }
 }

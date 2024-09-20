@@ -34,7 +34,7 @@ public class UpdatePasswordCommandHandler(
         var user = await _userRepository.FindByIdAsync(request.Id);
 
         if (user == null)
-            return _messageService.CreateNotFoundMessage("user not found");
+            return _messageService.CreateNotFoundMessage("Usuário não encontrado");
 
         var authResult = _authServices.Authenticate(user);
         if (authResult.StatusCode != StatusCodes.Status200OK.ToString())
@@ -53,11 +53,11 @@ public class UpdatePasswordCommandHandler(
             request.CurrentPassword
         );
         if (passwordVerificationResult == PasswordVerificationResult.Failed)
-            return _messageService.CreateBadRequestMessage("current password is incorrect");
+            return _messageService.CreateBadRequestMessage("Senha atual incorreta");
 
         if (request.CurrentPassword == request.NewPassword)
             return _messageService.CreateBadRequestMessage(
-                "new password cannot be the same as the current password"
+                "Nova senha não pode ser igual a senha atual"
             );
 
         request.NewPassword = passwordHasher.HashPassword(user, request.NewPassword);
@@ -65,6 +65,6 @@ public class UpdatePasswordCommandHandler(
         await _authRepository.LogoutAsync(user.Id);
         _httpsContextAccessor.HttpContext.Session.Clear();
 
-        return _messageService.CreateSuccessMessage("password updated successfully");
+        return _messageService.CreateSuccessMessage("Senha atualizada com sucesso");
     }
 }
