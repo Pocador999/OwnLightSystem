@@ -138,7 +138,8 @@ Contributions are welcome! Please follow the standard Git workflow:
 
 ## License
 
-This project does not use any license, and is made by João Vítor Aguiar (Pocador999). 
+This project is licensed under the MIT License. See the LICENSE file for more details.
+
 
 ### Final Thoughts:
 
