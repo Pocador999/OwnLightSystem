@@ -64,7 +64,6 @@ public class UserRepository(DataContext context) : IUserRepository
         return user;
     }
 
-    // Delete all users except with name "admin"
     public async Task<User?> DeleteAllAsync()
     {
         var users = await _dbSet.Where(u => u.Username != "admin").ToListAsync();

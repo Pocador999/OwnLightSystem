@@ -17,7 +17,9 @@ public class User : Entity
 
     [Required]
     public string Password { get; protected set; }
+
     public bool IsLogedIn { get; protected set; } = false;
+    public DateTime LastLoginAt { get; protected set; }
 
     public void UpdatePassword(string password)
     {
@@ -25,15 +27,11 @@ public class User : Entity
         UpdatedAt = DateTime.UtcNow;
     }
 
-    public void Login() => IsLogedIn = true;
+    public void Login()
+    {
+        IsLogedIn = true;
+        LastLoginAt = DateTime.UtcNow;
+    }
 
     public void Logout() => IsLogedIn = false;
-
-    public bool IsUserLogedIn()
-    {
-        if (IsLogedIn == true)
-            return true;
-        else
-            return false;
-    }
 }
