@@ -25,6 +25,7 @@ The project is organized into multiple layers based on the responsibilities, ens
 OwnLight.UserService/
 ├── UserService.API/
 │   ├── Controllers/               # Handles HTTP requests (Auth/Admin/User controllers)
+│   ├── Middlewares/               # Configuration of the middlewares for the API
 │   ├── Program.cs                 # Application startup configuration
 │   ├── APIServiceRegistration.cs  # Registers services and dependencies
 │   └── Properties/
@@ -48,7 +49,8 @@ OwnLight.UserService/
 │   └── Primitives/                # Basic domain concepts and value objects
 │
 ├── UserService.Infrastructure/
-│   ├── Data/                      # Database context (DbContext)
+│   ├── Data/
+│   ├── Background/                # Configuration of the background services
 │   ├── Repositories/              # Concrete implementations of the domain repositories
 │   └── InfrastructureServiceRegistration.cs  # Registers infrastructure services
 │
@@ -57,7 +59,7 @@ OwnLight.UserService/
 
 ## Getting Started
 
-### Prerequisites
+### Pre-requisites
 
 Ensure you have the following installed:
 
