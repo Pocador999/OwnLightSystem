@@ -18,7 +18,10 @@ public class Device : Entity
 
     [ForeignKey(nameof(RoomId))]
     public Guid RoomId { get; set; }
+
+    [Range(3, 50)]
     public required string Name { get; set; }
+
+    [DefaultValue(false)]
     public bool? IsDimmable { get; set; }
-    public DateTime? UpdatedAt { get; set; } = DateTime.UtcNow;
 }
