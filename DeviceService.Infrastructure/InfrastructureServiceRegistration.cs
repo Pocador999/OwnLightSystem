@@ -1,4 +1,6 @@
+using DeviceService.Domain.Interfaces;
 using DeviceService.Infrastructure.Data;
+using DeviceService.Infrastructure.Repositories;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -12,10 +14,12 @@ public static class InfrastructureServiceRegistration
         IConfiguration configuration
     )
     {
+        services.AddScoped<IDeviceRepository, DeviceRepository>();
+        services.AddScoped<IDeviceTypeRepository, DeviceTypeRepository>();
+        services.AddScoped<IDeviceActionRepository, DeviceActionRepository>();
         services.AddDbContext<DataContext>(options =>
-        {
-            options.UseNpgsql(configuration.GetConnectionString("DefaultConnection"));
-        });
+            options.UseNpgsql(configuration.GetConnectionString("DefaultConnection"))
+        );
 
         return services;
     }
