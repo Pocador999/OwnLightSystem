@@ -63,12 +63,4 @@ public class UserRepository(DataContext context) : IUserRepository
         await context.SaveChangesAsync();
         return user;
     }
-
-    public async Task<User?> DeleteAllAsync()
-    {
-        var users = await _dbSet.Where(u => u.Username != "admin").ToListAsync();
-        _dbSet.RemoveRange(users);
-        await context.SaveChangesAsync();
-        return null;
-    }
 }

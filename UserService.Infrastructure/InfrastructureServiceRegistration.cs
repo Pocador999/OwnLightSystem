@@ -18,6 +18,7 @@ public static class InfrastructureServiceRegistration
         services.AddHostedService<SessionTimeoutBackgroundService>();
         services.AddScoped<IUserRepository, UserRepository>();
         services.AddScoped<IAuthRepository, AuthRepository>();
+        services.AddScoped<IAdminRepository, AdminRepository>();
         services.AddDbContext<DataContext>(options =>
             options.UseNpgsql(configuration.GetConnectionString("DefaultConnection"))
         );

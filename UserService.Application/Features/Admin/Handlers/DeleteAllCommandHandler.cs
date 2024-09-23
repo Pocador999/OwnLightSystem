@@ -8,10 +8,12 @@ namespace UserService.Application.Features.Admin.Handlers;
 
 public class DeleteAllCommandHandler(
     IUserRepository userRepository,
+    IAdminRepository adminRepository,
     IPasswordHasher<Entity.User> passwordHasher
 ) : IRequestHandler<DeleteAllCommand>
 {
     private readonly IUserRepository _userRepository = userRepository;
+    private readonly IAdminRepository _adminRepository = adminRepository;
     private readonly IPasswordHasher<Entity.User> _passwordHasher = passwordHasher;
 
     public async Task<Unit> Handle(DeleteAllCommand request, CancellationToken cancellationToken)
@@ -24,7 +26,7 @@ public class DeleteAllCommandHandler(
         )
             throw new UnauthorizedAccessException("Invalid admin credentials");
 
-        await _userRepository.DeleteAllAsync();
+        await _adminRepository.DeleteAllAsync();
         return Unit.Value;
     }
 }
