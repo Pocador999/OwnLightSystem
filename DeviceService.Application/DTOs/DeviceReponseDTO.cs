@@ -1,3 +1,5 @@
+using DeviceService.Domain.Enums;
+
 namespace DeviceService.Application.DTOs;
 
 public class DeviceReponseDTO
@@ -9,4 +11,6 @@ public class DeviceReponseDTO
     public Guid? GroupId { get; set; }
     public required string Name { get; set; }
     public bool? IsDimmable { get; set; }
+    public int? Brightness { get; set; }
+    public DeviceStatus Status { get; set; }
 }

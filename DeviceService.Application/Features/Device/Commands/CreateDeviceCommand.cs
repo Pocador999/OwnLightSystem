@@ -3,7 +3,7 @@ using MediatR;
 
 namespace DeviceService.Application.Features.Device.Commands;
 
-public class CreateDeviceCommand(string deviceType, string name, bool? isDimmable) : IRequest<Guid>
+public class CreateDeviceCommand(string deviceType, string name) : IRequest<Guid>
 {
     public required string DeviceType { get; set; } = deviceType;
 
@@ -16,5 +16,6 @@ public class CreateDeviceCommand(string deviceType, string name, bool? isDimmabl
     [JsonIgnore]
     public Guid? GroupId { get; set; } = Guid.Empty;
     public required string Name { get; set; } = name;
-    public bool? IsDimmable { get; set; } = isDimmable;
+    public bool? IsDimmable { get; set; }
+    public int? Brightness { get; set; }
 }

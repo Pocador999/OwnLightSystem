@@ -1,6 +1,7 @@
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using DeviceService.Domain.Enums;
 using DeviceService.Domain.Primitives;
 
 namespace DeviceService.Domain.Entities;
@@ -21,6 +22,11 @@ public class Device : Entity
 
     [DefaultValue(false)]
     public bool? IsDimmable { get; set; }
+
+    [Range(0, 100)]
+    public int? Brightness { get; set; }
+    
+    public DeviceStatus Status { get; set; }
 
     public ICollection<DeviceAction> DeviceActions { get; set; } = [];
 }

@@ -36,6 +36,8 @@ namespace DeviceService.Infrastructure.Migrations
                     GroupId = table.Column<Guid>(type: "uuid", nullable: true),
                     Name = table.Column<string>(type: "text", nullable: false),
                     IsDimmable = table.Column<bool>(type: "boolean", nullable: true),
+                    Brightness = table.Column<int>(type: "integer", nullable: true),
+                    Status = table.Column<int>(type: "integer", nullable: false),
                     CreatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
                     UpdatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: true)
                 },

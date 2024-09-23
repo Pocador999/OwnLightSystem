@@ -23,8 +23,10 @@ public class CreateDeviceCommandHandler(
             ?? throw new ArgumentException($"Device type '{request.DeviceType}' not found.");
 
         var device = _mapper.Map<Entity.Device>(request);
-
         device.DeviceType = deviceType;
+
+        device.Status = Domain.Enums.DeviceStatus.On;
+        device.Brightness = (bool)request.IsDimmable! ? request.Brightness ?? 0 : 0;
 
         await _deviceRepository.CreateAsync(device);
 
