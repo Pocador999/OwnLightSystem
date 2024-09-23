@@ -11,10 +11,8 @@ public class DeviceTypeRepository(DataContext dataContext)
 {
     private readonly DbSet<DeviceType> _dbSet = dataContext.Set<DeviceType>();
 
-    public Task<DeviceType?> GetDeviceTypeByNameAsync(string typeName)
-    {
-        throw new NotImplementedException();
-    }
+    public Task<DeviceType?> GetDeviceTypeByNameAsync(string typeName) =>
+        _dbSet.FirstOrDefaultAsync(x => x.TypeName == typeName);
 
     public Task<IEnumerable<DeviceType>> GetUserDeviceTypesAsync(Guid userId)
     {

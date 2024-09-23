@@ -3,11 +3,8 @@ using Microsoft.EntityFrameworkCore;
 
 namespace DeviceService.Infrastructure.Data;
 
-public class DataContext : DbContext
+public class DataContext(DbContextOptions<DataContext> options) : DbContext(options)
 {
-    public DataContext(DbContextOptions<DataContext> options)
-        : base(options) { }
-
     public DbSet<Device> Devices { get; set; }
     public DbSet<DeviceAction> DeviceActions { get; set; }
     public DbSet<DeviceType> DeviceTypes { get; set; }
@@ -16,8 +13,16 @@ public class DataContext : DbContext
     {
         modelBuilder
             .Entity<Device>()
-            .HasOne<DeviceType>()
+            .HasOne(d => d.DeviceType)
             .WithMany(dt => dt.Devices)
             .HasForeignKey(d => d.DeviceTypeId);
+
+        modelBuilder
+            .Entity<DeviceAction>()
+            .HasOne<Device>()
+            .WithMany(d => d.DeviceActions)
+            .HasForeignKey(da => da.DeviceId);
+
+        base.OnModelCreating(modelBuilder);
     }
 }
