@@ -57,6 +57,36 @@ OwnLight.UserService/
 └── Migrations/                    # Database migrations for setting up and updating the schema
 ```
 
+## Database Schema
+
+The OwnLight.UserService uses a PostgreSQL database to manage user-related data. Below is the schema for the User table:
+
+### User Table
+
+| Column Name | Data Type | Constraints          |
+|-------------|-----------|----------------------|
+| Id          | uuid      | Primary Key          |
+| Name        | varchar(30) | Not Null           |
+| UserName    | varchar(30) | Not Null, Unique   |
+| Email       | varchar(255) | Not Null, Unique  |
+| Password    | varchar(255) | Not Null          |
+| CreatedAt   | timestamp | Default: Utc.Now     |
+| UpdatedAt   | timestamp |                      |
+| IsLoggedIn  | bool      | Default: false       |
+| LastLoginAt | timestamp |                      |
+
+### Description of Columns
+
+- **Id**: A unique identifier for each user.
+- **Name**: The full name of the user.
+- **UserName**: A unique username for the user, used for login purposes.
+- **Email**: The user's email address, which must be unique in the system.
+- **Password**: A hashed password for secure authentication.
+- **CreatedAt**: Timestamp of when the user was created.
+- **UpdatedAt**: Timestamp of the last update to the user's information.
+- **IsLoggedIn**: A boolean value indicating whether the user is currently logged in.
+- **LastLoginAt**: The timestamp of the user's last login.
+
 ## Getting Started
 
 ### Pre-requisites
@@ -142,16 +172,15 @@ Contributions are welcome! Please follow the standard Git workflow:
 
 This project is licensed under the MIT License. See the LICENSE file for more details.
 
+## Final Thoughts
 
-## Final Thoughts:
+This API is part of a microservice architecture based project, for my college (FACENS) UPX subject. Later it will be connected to an Ocelot API Gateway, and will be related with other ASP.NET APIs such as:
 
-This api is part of a microservice architecture based project, for my college (FACENS) upx subject
-later it will be conected to a Ocelot API Gateway, and will be related with other asp.net api's such as:
+- `DeviceService`: Responsible for registering and controlling the devices.
+- `AutomationService`: Responsible for registering rooms, groups, and schedules for the devices.
+- `EnergyService`: Responsible for monitoring the energy costs of all the devices.
 
-- `DeviceService`: Responsible for registering and controlling the devices
-- `AutomationService`: Responsible for registering rooms, groups, and schedules for the devices 
-- `EnergyService`: Responsible for monitoring the energy costs of all the devices
-
-the mix of all the microservices, Ocelot Gateway, Databases and the front-end will be our app called **OwnLight** 
+The mix of all the microservices, Ocelot Gateway, databases, and the front-end will be our app called **OwnLight**.
 
 Thanks for the attention, and see you on my next projects!
+
