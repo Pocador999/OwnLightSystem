@@ -47,4 +47,21 @@ public class DeviceController(IMediator mediator) : ControllerBase
 
         return Ok(device);
     }
+
+    [HttpGet("all")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    public async Task<ActionResult<PaginatedResultDTO>> GetAll(
+        [FromQuery] int page,
+        [FromQuery] int pageSize
+    )
+    {
+        var query = new GetAllDevicesQuery(page, pageSize);
+        var devices = await _mediator.Send(query);
+
+        if (!devices.Items.Any())
+            return NotFound();
+
+        return Ok(devices);
+    }
 }
