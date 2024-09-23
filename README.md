@@ -57,7 +57,7 @@ OwnLight.DeviceService/
 
 ## Database Schema
 
-The OwnLight.DeviceService uses a PostgreSQL database to manage device-related data. Below are the schemas for the Device, DeviceActions, and DeviceTypes tables:
+The OwnLight.DeviceService uses a PostgreSQL database to manage device-related data. Below are the schemas for the Device, DeviceAction, and DeviceType tables:
 
 ### Device Table
 
@@ -65,22 +65,22 @@ The OwnLight.DeviceService uses a PostgreSQL database to manage device-related d
 |-------------|-------------|----------------------|
 | Id          | uuid        | Primary Key          |
 | Name        | varchar(30) | Not Null             |
-| Type        | varchar(30) | Not Null             |
+| TypeId      | uuid        | Foreign Key          |
 | Status      | varchar(30) | Not Null             |
-| CreatedAt   | timestamp   | Default: Utc.Now     |
+| CreatedAt   | timestamp   | Default: UtcNow      |
 | UpdatedAt   | timestamp   |                      |
 | UserId      | uuid        | Foreign Key          |
 
-### DeviceActions Table
+### DeviceAction Table
 
 | Column Name | Data Type   | Constraints          |
 |-------------|-------------|----------------------|
 | Id          | uuid        | Primary Key          |
 | DeviceId    | uuid        | Foreign Key          |
 | Action      | varchar(30) | Not Null             |
-| Timestamp   | timestamp   | Default: Utc.Now     |
+| Timestamp   | timestamp   | Default: UtcNow      |
 
-### DeviceTypes Table
+### DeviceType Table
 
 | Column Name | Data Type   | Constraints          |
 |-------------|-------------|----------------------|
@@ -93,19 +93,19 @@ The OwnLight.DeviceService uses a PostgreSQL database to manage device-related d
 - **Device Table**:
     - **Id**: A unique identifier for each device.
     - **Name**: The name of the device.
-    - **Type**: The type of the device (e.g., luminaire, sensor).
+    - **TypeId**: The unique identifier for the type of the device.
     - **Status**: The current status of the device (e.g., active, inactive).
     - **CreatedAt**: Timestamp of when the device was created.
     - **UpdatedAt**: Timestamp of the last update to the device's information.
     - **UserId**: A unique identifier for the user associated with the device.
 
-- **DeviceActions Table**:
+- **DeviceAction Table**:
     - **Id**: A unique identifier for each action.
     - **DeviceId**: A unique identifier for the device associated with the action.
     - **Action**: The action performed on the device (e.g., turn on, turn off).
     - **Timestamp**: Timestamp of when the action was performed.
 
-- **DeviceTypes Table**:
+- **DeviceType Table**:
     - **Id**: A unique identifier for each device type.
     - **TypeName**: The name of the device type.
     - **Description**: A description of the device type.
