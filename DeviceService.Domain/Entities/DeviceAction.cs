@@ -6,13 +6,12 @@ namespace DeviceService.Domain.Entities;
 
 public class DeviceAction : Entity
 {
-    [ForeignKey(nameof(UserId))]
     public Guid UserId { get; set; }
 
-    [ForeignKey(nameof(DeviceId))]
     public Guid DeviceId { get; set; }
 
     public DeviceActions Action { get; set; }
 
-    public DateTime PerformedAt { get; set; } = DateTime.UtcNow;
+    [Column("PerformedAt")]
+    public override DateTime CreatedAt { get; protected set; }
 }
