@@ -29,8 +29,8 @@ public class DeviceController(IMediator mediator) : ControllerBase
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<ActionResult<PaginatedResultDTO>> GetAll(
-        [FromQuery] int page,
-        [FromQuery] int pageSize
+        [FromQuery] int page = 1,
+        [FromQuery] int pageSize = 10
     )
     {
         var query = new GetAllDevicesQuery(page, pageSize);
@@ -53,6 +53,33 @@ public class DeviceController(IMediator mediator) : ControllerBase
         {
             var deviceId = await _mediator.Send(command);
             return CreatedAtAction(nameof(GetById), new { id = deviceId }, deviceId);
+        }
+        catch (ArgumentException ex)
+        {
+            return BadRequest(ex.Message);
+        }
+        catch (Exception ex)
+        {
+            return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
+        }
+    }
+
+    [HttpPut("{id:guid}")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+    public async Task<ActionResult> Update(Guid id, [FromBody] UpdateDeviceCommand command)
+    {
+        try
+        {
+            command.Id = id;
+            await _mediator.Send(command);
+            return Ok();
+        }
+        catch (KeyNotFoundException ex)
+        {
+            return NotFound(ex.Message);
         }
         catch (ArgumentException ex)
         {

@@ -14,5 +14,6 @@ public class MapperProfile : Profile
         CreateMap<CreateDeviceCommand, Device>()
             .ForMember(dest => dest.DeviceType, opt => opt.Ignore())
             .ForMember(dest => dest.DeviceActions, opt => opt.Ignore());
+        CreateMap<UpdateDeviceCommand, Device>();
     }
 }
