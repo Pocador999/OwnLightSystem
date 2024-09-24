@@ -1,4 +1,4 @@
-# OwnLight.UserService Documentation
+# OwnLight.DeviceService Documentation
 
 # Overview
 
