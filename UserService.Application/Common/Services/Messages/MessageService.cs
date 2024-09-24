@@ -74,4 +74,14 @@ public class MessageService : IMessageService
             StatusCodes.Status500InternalServerError.ToString()
         );
     }
+
+    public Message CreateCreatedMessage(string message)
+    {
+        return Message.Success(
+            "Created",
+            message,
+            "https://tools.ietf.org/html/rfc7231#section-6.3.2",
+            StatusCodes.Status201Created.ToString()
+        );
+    }
 }
