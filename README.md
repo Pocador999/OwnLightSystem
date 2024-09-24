@@ -2,11 +2,11 @@
 
 # Overview
 
-The OwnLight.DeviceService is a component of the OwnLightSystem (a microservice-based system), developed as part of the second semester project. It is responsible for managing all device-related functionalities, such as registration, control, and monitoring of devices (like luminaires) within the system. This service also manages associations between devices and users for control and monitoring purposes.
+The OwnLight.DeviceService is a crucial component of the OwnLightSystem, a microservice-based architecture developed for the second semester project. This service handles all device-related functionalities, including registration, control, and monitoring of devices such as luminaires. Additionally, it manages the associations between devices and users, enabling seamless control and monitoring within the system.
 
 ## Architecture
 
-The OwnLight.DeviceService is built following Domain-Driven Design (DDD) principles and uses a CQRS (Command Query Responsibility Segregation) pattern to separate reading and writing operations. The architecture is designed to ensure scalability, maintainability, and flexibility for future expansion. The microservice architecture promotes modularity, and the service interacts with other services via well-defined APIs.
+The OwnLight.DeviceService is designed with a focus on scalability, maintainability, and flexibility, adhering to Domain-Driven Design (DDD) principles. It employs the CQRS (Command Query Responsibility Segregation) pattern to distinctly separate read and write operations, enhancing performance and simplifying the codebase. The microservice architecture ensures modularity, allowing the service to interact seamlessly with other services through well-defined APIs, facilitating future expansion and integration.
 
 ## Key Components
 
@@ -25,7 +25,6 @@ The project is organized into multiple layers based on the responsibilities, ens
 OwnLight.DeviceService/
 ├── DeviceService.API/
 │   ├── Controllers/               # Handles HTTP requests (Device controllers)
-│   ├── Middlewares/               # Configuration of the middlewares for the API
 │   ├── Program.cs                 # Application startup configuration
 │   ├── APIServiceRegistration.cs  # Registers services and dependencies
 │   └── Properties/
@@ -42,13 +41,12 @@ OwnLight.DeviceService/
 │   └── ApplicationServiceRegistration.cs  # Registers application services
 │
 ├── DeviceService.Domain/
-│   ├── Entities/                  # Domain entities (Device, etc.)
-│   ├── Interfaces/                # Domain interfaces (IDeviceRepository)
+│   ├── Entities/                  # Domain entities (e.g., Device, DeviceType)
+│   ├── Interfaces/                # Domain interfaces (e.g., IDeviceRepository)
 │   └── Primitives/                # Basic domain concepts and value objects
 │
 ├── DeviceService.Infrastructure/
-│   ├── Data/
-│   ├── Background/                # Configuration of the background services
+│   ├── Data/                      # Database context and configurations
 │   ├── Repositories/              # Concrete implementations of the domain repositories
 │   └── InfrastructureServiceRegistration.cs  # Registers infrastructure services
 │
@@ -78,7 +76,7 @@ The OwnLight.DeviceService uses a PostgreSQL database to manage device-related d
 | Id          | uuid        | Primary Key          |
 | DeviceId    | uuid        | Foreign Key          |
 | Action      | varchar(30) | Not Null             |
-| Timestamp   | timestamp   | Default: UtcNow      |
+| PerformedAt | timestamp   | Default: UtcNow      |
 
 ### DeviceType Table
 
@@ -103,14 +101,133 @@ The OwnLight.DeviceService uses a PostgreSQL database to manage device-related d
     - **Id**: A unique identifier for each action.
     - **DeviceId**: A unique identifier for the device associated with the action.
     - **Action**: The action performed on the device (e.g., turn on, turn off).
-    - **Timestamp**: Timestamp of when the action was performed.
+    - **PerformedAt**: Timestamp of when the action was performed.
 
 - **DeviceType Table**:
     - **Id**: A unique identifier for each device type.
     - **TypeName**: The name of the device type.
-    - **Description**: A description of the device type.
+    - **Description**: A description of the device type. (yet to implement)
 
 ## Getting Started
+
+### Starting a DDD Project
+
+To start a Domain-Driven Design (DDD) project with the described pattern, follow these steps:
+
+1. **Create the Solution and Projects**
+
+First, create a new solution and the necessary projects:
+
+```sh
+dotnet new sln -n OwnLightSystem
+dotnet new classlib -n DeviceService.Domain
+dotnet new classlib -n DeviceService.Infrastructure
+dotnet new classlib -n DeviceService.Application
+dotnet new webapi -n DeviceService.API
+```
+
+2. **Add Projects to the Solution**
+
+Add the created projects to the solution:
+
+```sh
+dotnet sln OwnLightSystem.sln add DeviceService.Domain/DeviceService.Domain.csproj
+dotnet sln OwnLightSystem.sln add DeviceService.Infrastructure/DeviceService.Infrastructure.csproj
+dotnet sln OwnLightSystem.sln add DeviceService.Application/DeviceService.Application.csproj
+dotnet sln OwnLightSystem.sln add DeviceService.API/DeviceService.API.csproj
+```
+
+3. **Set Up Project References**
+
+Set up the necessary project references:
+
+### Domain Layer
+
+> The Domain Layer does not have any project references because it follows the Domain-Driven Design (DDD) pattern, which emphasizes the independence of the domain model from other layers.
+
+### Infrastructure Layer
+
+```sh
+dotnet add DeviceService.Infrastructure/DeviceService.Infrastructure.csproj reference DeviceService.Domain/DeviceService.Domain.csproj
+```
+
+### Application Layer
+
+```sh
+dotnet add DeviceService.Application/DeviceService.Application.csproj reference DeviceService.Domain/DeviceService.Domain.csproj
+```
+
+### API Layer
+
+```sh
+dotnet add DeviceService.API/DeviceService.API.csproj reference DeviceService.Domain/DeviceService.Domain.csproj
+dotnet add DeviceService.API/DeviceService.API.csproj reference DeviceService.Application/DeviceService.Application.csproj
+dotnet add DeviceService.API/DeviceService.API.csproj reference DeviceService.Infrastructure/DeviceService.Infrastructure.csproj
+```
+
+
+4. **Install Required Packages**
+
+Install the required packages for each project:
+
+### Domain Layer
+
+> The Domain Layer does not have any required packages. However, if you prefer to include validation logic within the domain, you can add the FluentValidation package:
+
+```sh
+dotnet add DeviceService.Domain package FluentValidation
+```
+
+### Infrastructure Layer
+
+```sh
+# Install necessary packages for Infrastructure project
+dotnet add OwnLight.Infrastructure package Npgsql.EntityFrameworkCore.PostgreSQL
+```
+
+### Application Layer
+
+```sh
+# Install necessary packages for Application project
+dotnet add DeviceService.Application package AutoMapper
+dotnet add DeviceService.Application package MediatR.Extensions.Microsoft.DependencyInjection
+dotnet add DeviceService.Application package FluentValidation.AspNetCore
+```
+
+### API Layer
+
+```sh
+# Install necessary packages for API project
+dotnet add OwnLight.Application package MediatR.Extensions.Microsoft.DependencyInjection
+```
+
+> **Observation**: Including Entity Framework Core Design in the API project is my personal choice. If you prefer, you can add it to the Infrastructure project instead. In that case, when applying migrations, ensure you reference the Infrastructure project as the startup project instead of the API project.
+
+5. **Configure the API Project**
+
+Configure the `DeviceService.API` project to use the services and dependencies from the other layers. Update the `Program.cs` and `Startup.cs` (if applicable) to register services from the `Application` and `Infrastructure` layers. In this project I adopted a pattern of `LayerServiceRegistration`, basically every dependency of the layer is registered on its class. And then, the APIServiceRegistration instantiate both Infrastructure and Application registration methods, in order to make the program.cs way cleaner. If you prefer, you could use a `Startup.cs` class to modularize dependency injection logic. I recommend following this projects pattern though.
+
+6. **Run the Application**
+
+Finally, run the application to ensure everything is set up correctly:
+
+```sh
+dotnet run --project DeviceService.API/DeviceService.API.csproj
+```
+
+By following these steps, you will have a basic setup for a DDD project with a clean architecture, ready for further development.
+
+### Libraries Guide
+
+Ensure you have the following libraries installed for the project:
+
+- **Entity Framework Core**: This library is used for database interactions, allowing you to perform CRUD operations and manage database migrations seamlessly.
+- **AutoMapper**: AutoMapper is utilized for object-object mapping, simplifying the process of converting domain entities to Data Transfer Objects (DTOs) and vice versa.
+- **MediatR**: MediatR is implemented to support the CQRS (Command Query Responsibility Segregation) pattern, helping to decouple the execution logic from the controllers by handling commands and queries.
+- **FluentValidation**: FluentValidation is used to define and enforce validation rules for your models, ensuring data integrity and consistency throughout the application.
+- **Swashbuckle.AspNetCore**: This library integrates Swagger into your ASP.NET Core project, providing interactive API documentation and testing capabilities.
+
+These libraries collectively enhance the functionality, maintainability, and scalability of the project by addressing various concerns such as data access, object mapping, command/query handling, validation, and API documentation.
 
 ### Pre-requisites
 
@@ -170,10 +287,23 @@ The OwnLight.DeviceService exposes several endpoints to handle device functional
 - `PUT /api/devices/{id}`: Update a device by ID.
 - `DELETE /api/devices/{id}`: Delete a device by ID.
 
-### Monitoring Endpoints:
+### DeviceType Endpoints:
 
-- `GET /api/devices/{id}/status`: Retrieve the status of a device.
+- `GET /api/devicetypes`: Retrieve a list of device types.
+- `POST /api/devicetypes`: Create a new device type.
+- `GET /api/devicetypes/{id}`: Retrieve a device type by ID.
+- `PUT /api/devicetypes/{id}`: Update a device type by ID.
+- `DELETE /api/devicetypes/{id}`: Delete a device type by ID.
+
+### DeviceAction Endpoints:
+
+- `GET /api/deviceactions`: Retrieve a list of device actions.
+- `POST /api/deviceactions`: Create a new device action.
+- `GET /api/deviceactions/{id}`: Retrieve a device action by ID.
+- `PUT /api/deviceactions/{id}`: Update a device action by ID.
+- `DELETE /api/deviceactions/{id}`: Delete a device action by ID.
 - `POST /api/devices/{id}/control`: Control a device (e.g., turn on/off).
+- `GET /api/devices/{id}/status`: Retrieve the status of a device.
 
 All responses follow standard REST patterns, returning appropriate HTTP status codes (200, 400, 404, etc.) and messages.
 
