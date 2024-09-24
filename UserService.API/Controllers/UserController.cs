@@ -57,8 +57,13 @@ public class UserController(IMediator mediator) : ControllerBase
     {
         var result = await _mediator.Send(command);
 
-        if (result.StatusCode == StatusCodes.Status201Created.ToString())
-            return CreatedAtAction(nameof(GetById), new { id = result.Id }, result);
+        if (int.TryParse(result.StatusCode, out var statusCode))
+        {
+            if (statusCode == StatusCodes.Status201Created)
+                return CreatedAtAction(nameof(GetById), new { id = result.Id }, result);
+            if (statusCode == StatusCodes.Status409Conflict)
+                return Conflict(result);
+        }
 
         return BadRequest(result);
     }

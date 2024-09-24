@@ -42,8 +42,6 @@ public class CreateCommandHandler(
         request.Password = _passwordHasher.HashPassword(new Entity.User(), request.Password);
         await _userRepository.RegisterAsync(_mapper.Map<Entity.User>(request));
 
-        return _messageService.CreateSuccessMessage(
-            $"Usuário {request.Username} criado com sucesso"
-        );
+        return _messageService.CreateCreatedMessage("Usuário criado com sucesso");
     }
 }
