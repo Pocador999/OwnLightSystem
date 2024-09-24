@@ -2,20 +2,24 @@
 
 # Overview
 
-The OwnLight.UserService is a component of the OwnLightSystem (a microservice based system), developed as part of the second semester project. It is responsible for managing all user-related functionalities, such as registration, authentication, role-based authorization, and profile management within the system. This service also manages associations between users and devices (like luminaires) for control and monitoring purposes.
+The OwnLight.DeviceService is a crucial component of the OwnLightSystem, a microservice-based architecture developed for the second semester project. This service handles all device-related functionalities, including registration, control, and monitoring of devices such as luminaires. Additionally, it manages the associations between devices and users, enabling seamless control and monitoring within the system.
 
 ## Architecture
 
-The OwnLight.UserService is built following Domain-Driven Design (DDD) principles and uses a CQRS (Command Query Responsibility Segregation) pattern to separate reading and writing operations. The architecture is designed to ensure scalability, maintainability, and flexibility for future expansion. The microservice architecture promotes modularity, and the service interacts with other services via well-defined APIs.
+The OwnLight.DeviceService is designed with a focus on scalability, maintainability, and flexibility, adhering to Domain-Driven Design (DDD) principles. It employs the CQRS (Command Query Responsibility Segregation) pattern to distinctly separate read and write operations, enhancing performance and simplifying the codebase. The microservice architecture ensures modularity, allowing the service to interact seamlessly with other services through well-defined APIs, facilitating future expansion and integration.
 
 ## Key Components
 
-- **Controllers**: Handle incoming HTTP requests and route them to the appropriate handlers. They are organized by user roles and functionalities (e.g., authentication, user management, admin operations).
-- **Services**: Centralize business logic, such as authentication, message handling, email services, and validation. These services act as intermediaries between controllers and repositories.
-- **Repositories**: Manage the database interaction using Entity Framework to perform CRUD operations on user-related data, including user authentication and role management.
-- **Entities**: Represent the core domain models like User and other related domain objects.
+- **Controllers**: Handle incoming HTTP requests and route them to the appropriate handlers. They are organized by device functionalities (e.g., registration, control, monitoring).
+- **Services**: Centralize business logic, such as device management, message handling, and validation. These services act as intermediaries between controllers and repositories.
+- **Repositories**: Manage the database interaction using Entity Framework to perform CRUD operations on device-related data.
+- **Entities**: Represent the core domain models like Device and other related domain objects.
 - **Mappings**: Use AutoMapper to map between domain entities and DTOs (Data Transfer Objects), simplifying data handling between layers.
 - **MediatR Handlers**: Handle the commands and queries defined in the CQRS architecture, decoupling the execution logic from controllers.
+- **Middlewares**: Configure and manage middleware components for handling cross-cutting concerns such as logging, authentication, and error handling.
+- **Background Services**: Execute long-running tasks or scheduled operations in the background, ensuring the main application remains responsive.
+- **Validation**: Implement validation logic to ensure data integrity and enforce business rules before processing requests.
+- **DTOs**: Define Data Transfer Objects for API responses and requests, ensuring a clear contract between the API and its consumers.
 
 ## Project Structure
 
