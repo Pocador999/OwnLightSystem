@@ -2,18 +2,18 @@
 
 # Overview
 
-The OwnLight.DeviceService is a crucial component of the OwnLightSystem, a microservice-based architecture developed for the second semester project. This service handles all device-related functionalities, including registration, control, and monitoring of devices such as luminaires. Additionally, it manages the associations between devices and users, enabling seamless control and monitoring within the system.
+The OwnLight.UserService is a crucial component of the OwnLightSystem, a microservice-based architecture developed for the second semester project. This service handles all user-related functionalities, including registration, authentication, and management of user data. Additionally, it manages the associations between users and devices, enabling seamless control and monitoring within the system.
 
 ## Architecture
 
-The OwnLight.DeviceService is designed with a focus on scalability, maintainability, and flexibility, adhering to Domain-Driven Design (DDD) principles. It employs the CQRS (Command Query Responsibility Segregation) pattern to distinctly separate read and write operations, enhancing performance and simplifying the codebase. The microservice architecture ensures modularity, allowing the service to interact seamlessly with other services through well-defined APIs, facilitating future expansion and integration.
+The OwnLight.UserService is designed with a focus on scalability, maintainability, and flexibility, adhering to Domain-Driven Design (DDD) principles. It employs the CQRS (Command Query Responsibility Segregation) pattern to distinctly separate read and write operations, enhancing performance and simplifying the codebase. The microservice architecture ensures modularity, allowing the service to interact seamlessly with other services through well-defined APIs, facilitating future expansion and integration.
 
 ## Key Components
 
-- **Controllers**: Handle incoming HTTP requests and route them to the appropriate handlers. They are organized by device functionalities (e.g., registration, control, monitoring).
-- **Services**: Centralize business logic, such as device management, message handling, and validation. These services act as intermediaries between controllers and repositories.
-- **Repositories**: Manage the database interaction using Entity Framework to perform CRUD operations on device-related data.
-- **Entities**: Represent the core domain models like Device and other related domain objects.
+- **Controllers**: Handle incoming HTTP requests and route them to the appropriate handlers. They are organized by user functionalities (e.g., registration, authentication, management).
+- **Services**: Centralize business logic, such as user management, authentication, and validation. These services act as intermediaries between controllers and repositories.
+- **Repositories**: Manage the database interaction using Entity Framework to perform CRUD operations on user-related data.
+- **Entities**: Represent the core domain models like User and other related domain objects.
 - **Mappings**: Use AutoMapper to map between domain entities and DTOs (Data Transfer Objects), simplifying data handling between layers.
 - **MediatR Handlers**: Handle the commands and queries defined in the CQRS architecture, decoupling the execution logic from controllers.
 - **Middlewares**: Configure and manage middleware components for handling cross-cutting concerns such as logging, authentication, and error handling.
@@ -100,6 +100,86 @@ Ensure you have the following installed:
 - .NET 8.0 SDK
 - PostgreSQL
 
+### Setting Up a DDD Project
+
+To set up a Domain-Driven Design (DDD) project with three class libraries (Domain, Infrastructure, and Application) and one Web API (API), follow these steps:
+
+1. **Create the Solution and Projects:**
+
+```sh
+# Create the solution
+dotnet new sln -n OwnLightSystem
+
+# Create the Domain project
+dotnet new classlib -n OwnLight.Domain
+dotnet sln add OwnLight.Domain/OwnLight.Domain.csproj
+
+# Create the Infrastructure project
+dotnet new classlib -n OwnLight.Infrastructure
+dotnet sln add OwnLight.Infrastructure/OwnLight.Infrastructure.csproj
+
+# Create the Application project
+dotnet new classlib -n OwnLight.Application
+dotnet sln add OwnLight.Application/OwnLight.Application.csproj
+
+# Create the API project
+dotnet new webapi -n OwnLight.API
+dotnet sln add OwnLight.API/OwnLight.API.csproj
+```
+
+2. **Add Project References:**
+
+```sh
+# Add references to the Domain project
+dotnet add OwnLight.Infrastructure/OwnLight.Infrastructure.csproj reference OwnLight.Domain/OwnLight.Domain.csproj
+
+# Add references to the Application project
+dotnet add OwnLight.Application/OwnLight.Application.csproj reference OwnLight.Domain/OwnLight.Domain.csproj
+
+# Add references to the API project
+dotnet add OwnLight.API/OwnLight.API.csproj reference OwnLight.Application/OwnLight.Application.csproj
+dotnet add OwnLight.API/OwnLight.API.csproj reference OwnLight.Infrastructure/OwnLight.Infrastructure.csproj
+dotnet add OwnLight.API/OwnLight.API.csproj reference OwnLight.Domain/OwnLight.Domain.csproj
+```
+
+### Required Packages
+
+Each project requires specific packages to function correctly. Below are the required packages and their respective CLI installation commands:
+
+1. **Domain Project:**
+
+```sh
+# No additional packages required for Domain project
+```
+
+2. **Infrastructure Project:**
+
+```sh
+# Install necessary packages for Infrastructure project
+dotnet add OwnLight.Infrastructure package Npgsql.EntityFrameworkCore.PostgreSQL
+dotnet add OwnLight.Infrastructure package Microsoft.Extensions.Hosting
+```
+
+3. **Application Project:**
+
+```sh
+# Install necessary packages for Application project
+dotnet add OwnLight.Application package AutoMapper
+dotnet add OwnLight.Application package DnsClient
+dotnet add OwnLight.Application package FluentValidation
+dotnet add OwnLight.Application package MediatR.Extensions.Microsoft.DependencyInjection
+dotnet add OwnLight.Application package Microsoft.AspNetCore.Identity
+```
+
+4. **API Project:**
+
+```sh
+# Install necessary packages for API project
+dotnet add OwnLight.API package Microsoft.EntityFrameworkCore.Design
+```
+
+> **Observation:** The FluentValidation package and therefore the validation service can be implemented in the Domain layer instead of the Application.
+
 ### Installation
 
 Clone the repository:
@@ -155,6 +235,7 @@ The OwnLight.UserService exposes several endpoints to handle user and admin func
 
 - `POST /api/auth/login`: Log a user into the system.
 - `POST /api/auth/logout`: Log out a user.
+- `GET /api/auth/getCurrentUser`: Retrieve the currently logged-in user's id.
 
 ### Admin Endpoints:
 
@@ -187,4 +268,3 @@ This API is part of a microservice architecture based project, for my college (F
 The mix of all the microservices, Ocelot Gateway, databases, and the front-end will be our app called **OwnLight**.
 
 Thanks for the attention, and see you on my next projects!
-
