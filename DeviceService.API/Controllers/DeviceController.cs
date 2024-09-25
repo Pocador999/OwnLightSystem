@@ -15,29 +15,50 @@ public class DeviceController(IMediator mediator) : ControllerBase
     [HttpGet("{id:guid}")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
-    public async Task<ActionResult<DeviceReponseDTO>> GetById(Guid id)
+    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+    public async Task<ActionResult<DeviceResponseDTO>> GetById(Guid id)
     {
-        var device = await _mediator.Send(new GetDeviceByIdQuery(id));
-
-        if (device == null)
-            return NotFound();
-
-        return Ok(device);
+        try
+        {
+            var device = await _mediator.Send(new GetDeviceByIdQuery(id));
+            return Ok(device);
+        }
+        catch (KeyNotFoundException ex)
+        {
+            return NotFound(ex.Message);
+        }
+        catch (Exception ex)
+        {
+            return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
+        }
     }
 
     [HttpGet("all")]
     [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
-    public async Task<ActionResult<PaginatedResultDTO>> GetAll(
+    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+    public async Task<ActionResult<PaginatedResultDTO<DeviceResponseDTO>>> GetAll(
         [FromQuery] int page = 1,
         [FromQuery] int pageSize = 10
     )
     {
+        if (page <= 0 || pageSize <= 0)
+            return BadRequest("Page and PageSize must be greater than zero.");
+
         var query = new GetAllDevicesQuery(page, pageSize);
         var devices = await _mediator.Send(query);
 
+        if (devices == null)
+        {
+            return StatusCode(
+                StatusCodes.Status500InternalServerError,
+                "An error occurred while retrieving devices."
+            );
+        }
+
         if (!devices.Items.Any())
-            return NotFound();
+            return Ok(devices);
 
         return Ok(devices);
     }
