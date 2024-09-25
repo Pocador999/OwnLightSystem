@@ -6,7 +6,7 @@ using MediatR;
 
 namespace DeviceService.Application.Features.Device.Handlers.QueryHandlers;
 
-public class GetAllDevicesQueryHandler : IRequestHandler<GetAllDevicesQuery, PaginatedResultDTO>
+public class GetAllDevicesQueryHandler : IRequestHandler<GetAllDevicesQuery, PaginatedResultDTO<DeviceResponseDTO>>
 {
     private readonly IDeviceRepository _deviceRepository;
     private readonly IMapper _mapper;
@@ -17,15 +17,15 @@ public class GetAllDevicesQueryHandler : IRequestHandler<GetAllDevicesQuery, Pag
         _mapper = mapper;
     }
 
-    public async Task<PaginatedResultDTO> Handle(
+    public async Task<PaginatedResultDTO<DeviceResponseDTO>> Handle(
         GetAllDevicesQuery request,
         CancellationToken cancellationToken
     )
     {
         var devices = await _deviceRepository.GetAllAsync(request.Page, request.PageSize);
-        var devicesResponse = _mapper.Map<IEnumerable<DeviceReponseDTO>>(devices);
+        var devicesResponse = _mapper.Map<IEnumerable<DeviceResponseDTO>>(devices);
 
-        return new PaginatedResultDTO(
+        return new PaginatedResultDTO<DeviceResponseDTO>(
             devicesResponse.Count(),
             request.Page,
             request.PageSize,

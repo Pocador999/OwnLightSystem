@@ -7,18 +7,18 @@ using MediatR;
 namespace DeviceService.Application.Features.Device.Handlers.QueryHandlers;
 
 public class GetDeviceByIdQueryHandler(IDeviceRepository deviceRepository, IMapper mapper)
-    : IRequestHandler<GetDeviceByIdQuery, DeviceReponseDTO>
+    : IRequestHandler<GetDeviceByIdQuery, DeviceResponseDTO>
 {
     private readonly IDeviceRepository _deviceRepository = deviceRepository;
     private readonly IMapper _mapper = mapper;
 
-    public async Task<DeviceReponseDTO> Handle(
+    public async Task<DeviceResponseDTO> Handle(
         GetDeviceByIdQuery request,
         CancellationToken cancellationToken
     )
     {
         var device = await _deviceRepository.GetByIdAsync(request.Id);
 
-        return _mapper.Map<DeviceReponseDTO>(device);
+        return _mapper.Map<DeviceResponseDTO>(device);
     }
 }

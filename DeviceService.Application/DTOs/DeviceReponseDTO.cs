@@ -2,7 +2,7 @@ using DeviceService.Domain.Enums;
 
 namespace DeviceService.Application.DTOs;
 
-public class DeviceReponseDTO
+public class DeviceResponseDTO
 {
     public Guid Id { get; set; }
     public required string DeviceType { get; set; }
