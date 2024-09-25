@@ -22,9 +22,9 @@ public static class APIServiceRegistration
                 "v1",
                 new OpenApiInfo
                 {
-                    Title = "User Service API",
+                    Title = "Device Service API",
                     Version = "v1",
-                    Description = "API para gerenciamento de usuários no User Service",
+                    Description = "API de serviço de gerenciamento de Dispositivos",
                 }
             )
         );
