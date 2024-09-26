@@ -4,14 +4,10 @@ using MediatR;
 
 namespace DeviceService.Application.Features.Device.Handlers.CommandHandlers;
 
-public class DeleteDeviceCommandHandler : IRequestHandler<DeleteDeviceCommand>
+public class DeleteDeviceCommandHandler(IDeviceRepository deviceRepository)
+    : IRequestHandler<DeleteDeviceCommand>
 {
-    private readonly IDeviceRepository _deviceRepository;
-
-    public DeleteDeviceCommandHandler(IDeviceRepository deviceRepository)
-    {
-        _deviceRepository = deviceRepository;
-    }
+    private readonly IDeviceRepository _deviceRepository = deviceRepository;
 
     public async Task<Unit> Handle(DeleteDeviceCommand request, CancellationToken cancellationToken)
     {
