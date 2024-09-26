@@ -1,4 +1,5 @@
 using DeviceService.Domain.Entities;
+using DeviceService.Domain.Enums;
 using DeviceService.Domain.Interfaces;
 using DeviceService.Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
@@ -11,43 +12,33 @@ public class DeviceRepository(DataContext dataContext)
 {
     private readonly DbSet<Device> _dbSet = dataContext.Set<Device>();
 
-    public Task<IEnumerable<Device>> DeleteUserDevicesAsync(Guid userId)
+    public async Task<Device> ControlDeviceAsync(Guid deviceId, DeviceStatus status)
     {
-        throw new NotImplementedException();
+        var device =
+            await _dbSet.FindAsync(deviceId) ?? throw new KeyNotFoundException("Device not found");
+
+        device.Status = status;
+        await SaveChangesAsync();
+        return device;
     }
 
-    public Task<IEnumerable<Device>> DeleteUserDevicesByGroupAsync(Guid userId, Guid groupId)
+    public async Task<Device> SwitchAsync(Guid deviceId, DeviceStatus status)
     {
-        throw new NotImplementedException();
+        var device =
+            await _dbSet.FindAsync(deviceId) ?? throw new KeyNotFoundException("Device not found");
+
+        device.Status = device.Status == DeviceStatus.On ? DeviceStatus.Off : DeviceStatus.On;
+        await SaveChangesAsync();
+        return device;
     }
 
-    public Task<IEnumerable<Device>> DeleteUserDevicesByRoomAsync(Guid userId, Guid roomId)
+    public async Task<Device> ControlBrightnessAsync(Guid deviceId, int brightness)
     {
-        throw new NotImplementedException();
-    }
+        var device =
+            await _dbSet.FindAsync(deviceId) ?? throw new KeyNotFoundException("Device not found");
 
-    public Task<IEnumerable<Device>> DeleteUserDevicesByTypeAsync(Guid userId, Guid deviceType)
-    {
-        throw new NotImplementedException();
-    }
-
-    public Task<IEnumerable<Device>> GetUserDevicesAsync(Guid userId, int page, int pageSize)
-    {
-        throw new NotImplementedException();
-    }
-
-    public Task<IEnumerable<Device>> GetUserDevicesByGroupAsync(Guid userId, Guid groupId)
-    {
-        throw new NotImplementedException();
-    }
-
-    public Task<IEnumerable<Device>> GetUserDevicesByRoomAsync(Guid userId, Guid roomId)
-    {
-        throw new NotImplementedException();
-    }
-
-    public Task<IEnumerable<Device>> GetUserDevicesByTypeAsync(Guid userId, Guid deviceType)
-    {
-        throw new NotImplementedException();
+        device.Brightness = brightness;
+        await SaveChangesAsync();
+        return device;
     }
 }

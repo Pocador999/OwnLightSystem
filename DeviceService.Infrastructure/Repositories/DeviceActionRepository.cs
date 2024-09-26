@@ -11,41 +11,10 @@ public class DeviceActionRepository(DataContext dataContext)
 {
     private readonly DbSet<DeviceAction> _dbSet = dataContext.Set<DeviceAction>();
 
-    public Task<IEnumerable<DeviceAction>> GetUserDeviceActionsAsync(
-        Guid userId,
-        int page,
-        int pageSize
-    )
+    public async Task<DeviceAction> AddDeviceActionAsync(DeviceAction deviceAction)
     {
-        throw new NotImplementedException();
-    }
-
-    public Task<IEnumerable<DeviceAction>> GetUserDeviceActionsByDeviceAsync(
-        Guid userId,
-        Guid deviceId
-    )
-    {
-        throw new NotImplementedException();
-    }
-
-    public Task<IEnumerable<DeviceAction>> GetUserDeviceActionsByGroupAsync(
-        Guid userId,
-        Guid groupId
-    )
-    {
-        throw new NotImplementedException();
-    }
-
-    public Task<IEnumerable<DeviceAction>> GetUserDeviceActionsByRoomAsync(Guid userId, Guid roomId)
-    {
-        throw new NotImplementedException();
-    }
-
-    public Task<IEnumerable<DeviceAction>> GetUserDeviceActionsByTypeAsync(
-        Guid userId,
-        Guid deviceType
-    )
-    {
-        throw new NotImplementedException();
+        await _dbSet.AddAsync(deviceAction);
+        await SaveChangesAsync();
+        return deviceAction;
     }
 }
