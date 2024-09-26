@@ -11,15 +11,17 @@ public class DataContext(DbContextOptions<DataContext> options) : DbContext(opti
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
+        // Relacionamento entre Device e DeviceType (1:N)
         modelBuilder
             .Entity<Device>()
             .HasOne(d => d.DeviceType)
             .WithMany(dt => dt.Devices)
             .HasForeignKey(d => d.DeviceTypeId);
 
+        // Relacionamento entre Device e DeviceAction (1:N)
         modelBuilder
             .Entity<DeviceAction>()
-            .HasOne<Device>()
+            .HasOne(da => da.Device)
             .WithMany(d => d.DeviceActions)
             .HasForeignKey(da => da.DeviceId);
 
