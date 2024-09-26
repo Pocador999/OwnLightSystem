@@ -11,7 +11,11 @@ public class DeviceAction : Entity
     public Guid DeviceId { get; set; }
 
     public DeviceActions Action { get; set; }
+    
+    public ActionStatus Status { get; set; }
 
     [Column("PerformedAt")]
-    public override DateTime CreatedAt { get; protected set; }
+    public override DateTime CreatedAt { get; protected set; } = DateTime.UtcNow;
+
+    public Device Device { get; set; } = null!;
 }
