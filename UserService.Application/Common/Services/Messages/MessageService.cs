@@ -85,15 +85,15 @@ public class MessageService : IMessageService
         );
     }
 
-    public Message CreateLoginMessage(string message, string accessToken, string refreshToken)
+    public Message CreateLoginMessage(string message, string accessToken)
     {
         return Message.LogedIn(
             "Success",
             message,
             "https://tools.ietf.org/html/rfc7231#section-6.3.1",
             StatusCodes.Status200OK.ToString(),
-            accessToken,
-            refreshToken
+            accessToken
         );
     }
+
 }

@@ -7,7 +7,6 @@ public class Message(string title, string content, string type, string statusCod
     public string Type { get; set; } = type;
     public string StatusCode { get; set; } = statusCode;
     public string? AccessToken { get; set; }
-    public string? RefreshToken { get; set; }
 
     public static Message NotFound(string title, string message, string type, string statusCode) =>
         new(title, message, type, statusCode);
@@ -23,7 +22,6 @@ public class Message(string title, string content, string type, string statusCod
         string message,
         string type,
         string statusCode,
-        string accessToken,
-        string refreshToken
-    ) => new(title, message, type, statusCode) { AccessToken = accessToken, RefreshToken = refreshToken };
+        string accessToken
+    ) => new(title, message, type, statusCode) { AccessToken = accessToken };
 }
