@@ -63,7 +63,7 @@ OwnLight.UserService/
 
 ## Database Schema
 
-The OwnLight.UserService uses a PostgreSQL database to manage user-related data. Below is the schema for the User table:
+The OwnLight.UserService uses a PostgreSQL database to manage user-related data. Below is the User Service API tables schema:
 
 ### Users Table
 
