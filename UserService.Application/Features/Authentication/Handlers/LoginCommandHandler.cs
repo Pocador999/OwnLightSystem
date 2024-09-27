@@ -1,7 +1,8 @@
+using System.Text.Json;
 using MediatR;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using UserService.Application.Common.Services.Messages;
+using UserService.Application.Common.Services.Token;
 using UserService.Application.Features.Authentication.Command;
 using UserService.Domain.Interfaces;
 using Entity = UserService.Domain.Entities;
@@ -11,16 +12,18 @@ namespace UserService.Application.Features.Authentication.Handlers;
 public class LoginCommandHandler(
     IUserRepository userRepository,
     IAuthRepository authRepository,
+    IRefreshTokenRepository refreshTokenRepository,
     IMessageService messageService,
     IPasswordHasher<Entity.User> passwordHasher,
-    IHttpContextAccessor httpContextAccessor
+    ITokenService tokenService
 ) : IRequestHandler<LoginCommand, Message>
 {
     private readonly IUserRepository _userRepository = userRepository;
     private readonly IAuthRepository _authRepository = authRepository;
+    private readonly IRefreshTokenRepository _refreshTokenRepository = refreshTokenRepository;
     private readonly IPasswordHasher<Entity.User> _passwordHasher = passwordHasher;
     private readonly IMessageService _messageService = messageService;
-    private readonly IHttpContextAccessor _httpContextAccessor = httpContextAccessor;
+    private readonly ITokenService _tokenService = tokenService;
 
     public async Task<Message> Handle(LoginCommand request, CancellationToken cancellationToken)
     {
@@ -36,14 +39,20 @@ public class LoginCommandHandler(
         if (passwordVerificationResult == PasswordVerificationResult.Failed)
             return _messageService.CreateNotAuthorizedMessage("Senha incorreta.");
 
-        _httpContextAccessor.HttpContext.Session.SetString("UserId", user.Id.ToString());
+        var token = _tokenService.GenerateToken(user);
 
-        var sessionUserId = _httpContextAccessor.HttpContext.Session.GetString("UserId");
-        if (string.IsNullOrEmpty(sessionUserId))
-            return _messageService.CreateInternalErrorMessage("Erro ao criar a sessão do usuário.");
+        var refreshToken = new Entity.RefreshToken
+        {
+            UserId = user.Id,
+            Token = _tokenService.GenerateRefreshToken(),
+            ExpiresAt = DateTime.UtcNow.AddDays(7),
+        };
 
+        await _refreshTokenRepository.CreateAsync(refreshToken);
         await _authRepository.LoginAsync(request.Username, request.Password);
 
-        return _messageService.CreateSuccessMessage("Login realizado com sucesso.");
+        return _messageService.CreateLoginMessage(
+            "Login efetuado com sucesso.", token, refreshToken.Token 
+        );
     }
 }
