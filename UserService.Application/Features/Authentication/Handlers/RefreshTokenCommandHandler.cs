@@ -11,13 +11,13 @@ public class RefreshTokenCommandHandler : IRequestHandler<RefreshTokenCommand, M
     private readonly IRefreshTokenRepository _refreshTokenRepository;
     private readonly IUserRepository _userRepository;
     private readonly ITokenService _tokenService;
-    private readonly IMessageService _messageService; // Injeção do IMessageService
+    private readonly IMessageService _messageService;
 
     public RefreshTokenCommandHandler(
         IRefreshTokenRepository refreshTokenRepository,
         IUserRepository userRepository,
         ITokenService tokenService,
-        IMessageService messageService // Injeção do IMessageService
+        IMessageService messageService
     )
     {
         _refreshTokenRepository = refreshTokenRepository;
@@ -52,7 +52,6 @@ public class RefreshTokenCommandHandler : IRequestHandler<RefreshTokenCommand, M
         // Gera um novo Access Token para o usuário
         var newAccessToken = _tokenService.GenerateToken(user);
 
-        // Retorna o novo Access Token usando o IMessageService
         return _messageService.CreateSuccessMessage(
             $"Token atualizado com sucesso. Token: {newAccessToken}"
         );
