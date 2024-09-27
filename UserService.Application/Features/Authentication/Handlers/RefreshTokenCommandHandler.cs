@@ -6,25 +6,17 @@ using UserService.Domain.Interfaces;
 
 namespace UserService.Application.Features.Authentication.Handlers;
 
-public class RefreshTokenCommandHandler : IRequestHandler<RefreshTokenCommand, Message>
+public class RefreshTokenCommandHandler(
+    IRefreshTokenRepository refreshTokenRepository,
+    IUserRepository userRepository,
+    ITokenService tokenService,
+    IMessageService messageService
+) : IRequestHandler<RefreshTokenCommand, Message>
 {
-    private readonly IRefreshTokenRepository _refreshTokenRepository;
-    private readonly IUserRepository _userRepository;
-    private readonly ITokenService _tokenService;
-    private readonly IMessageService _messageService;
-
-    public RefreshTokenCommandHandler(
-        IRefreshTokenRepository refreshTokenRepository,
-        IUserRepository userRepository,
-        ITokenService tokenService,
-        IMessageService messageService
-    )
-    {
-        _refreshTokenRepository = refreshTokenRepository;
-        _userRepository = userRepository;
-        _tokenService = tokenService;
-        _messageService = messageService;
-    }
+    private readonly IRefreshTokenRepository _refreshTokenRepository = refreshTokenRepository;
+    private readonly IUserRepository _userRepository = userRepository;
+    private readonly ITokenService _tokenService = tokenService;
+    private readonly IMessageService _messageService = messageService;
 
     public async Task<Message> Handle(
         RefreshTokenCommand request,

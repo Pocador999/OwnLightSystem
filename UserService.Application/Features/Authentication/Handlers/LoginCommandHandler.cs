@@ -1,5 +1,6 @@
 using System.Text.Json;
 using MediatR;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using UserService.Application.Common.Services.Messages;
 using UserService.Application.Common.Services.Token;
@@ -15,7 +16,8 @@ public class LoginCommandHandler(
     IRefreshTokenRepository refreshTokenRepository,
     IMessageService messageService,
     IPasswordHasher<Entity.User> passwordHasher,
-    ITokenService tokenService
+    ITokenService tokenService,
+    IHttpContextAccessor httpContextAccessor
 ) : IRequestHandler<LoginCommand, Message>
 {
     private readonly IUserRepository _userRepository = userRepository;
@@ -24,6 +26,7 @@ public class LoginCommandHandler(
     private readonly IPasswordHasher<Entity.User> _passwordHasher = passwordHasher;
     private readonly IMessageService _messageService = messageService;
     private readonly ITokenService _tokenService = tokenService;
+    private readonly IHttpContextAccessor _httpContextAccessor = httpContextAccessor;
 
     public async Task<Message> Handle(LoginCommand request, CancellationToken cancellationToken)
     {
@@ -39,7 +42,7 @@ public class LoginCommandHandler(
         if (passwordVerificationResult == PasswordVerificationResult.Failed)
             return _messageService.CreateNotAuthorizedMessage("Senha incorreta.");
 
-        var token = _tokenService.GenerateToken(user);
+        var accessToken = _tokenService.GenerateToken(user);
 
         var refreshToken = new Entity.RefreshToken
         {
@@ -49,10 +52,16 @@ public class LoginCommandHandler(
         };
 
         await _refreshTokenRepository.CreateAsync(refreshToken);
+
+        var cookieOptions = new CookieOptions { HttpOnly = true, Expires = refreshToken.ExpiresAt };
+        _httpContextAccessor.HttpContext.Response.Cookies.Append(
+            "RefreshToken",
+            refreshToken.Token,
+            cookieOptions
+        );
+
         await _authRepository.LoginAsync(request.Username, request.Password);
 
-        return _messageService.CreateLoginMessage(
-            "Login efetuado com sucesso.", token, refreshToken.Token 
-        );
+        return _messageService.CreateLoginMessage("Login efetuado com sucesso.", accessToken);
     }
 }
