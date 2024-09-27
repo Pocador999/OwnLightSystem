@@ -15,8 +15,7 @@ public class UpdatePasswordCommandHandler(
     IAuthRepository authRepository,
     IValidator<UpdatePasswordCommand> validator,
     IMessageService messageService,
-    AuthServices authServices,
-    IHttpContextAccessor httpContextAccessor
+    AuthServices authServices
 ) : IRequestHandler<UpdatePasswordCommand, Message>
 {
     private readonly IUserRepository _userRepository = userRepository;
@@ -24,7 +23,6 @@ public class UpdatePasswordCommandHandler(
     private readonly IValidator<UpdatePasswordCommand> validator = validator;
     private readonly IMessageService _messageService = messageService;
     private readonly AuthServices _authServices = authServices;
-    private readonly IHttpContextAccessor _httpsContextAccessor = httpContextAccessor;
 
     public async Task<Message> Handle(
         UpdatePasswordCommand request,
@@ -63,7 +61,6 @@ public class UpdatePasswordCommandHandler(
         request.NewPassword = passwordHasher.HashPassword(user, request.NewPassword);
         await _userRepository.UpdatePasswordAsync(user.Id, request.NewPassword);
         await _authRepository.LogoutAsync(user.Id);
-        _httpsContextAccessor.HttpContext.Session.Clear();
 
         return _messageService.CreateSuccessMessage("Senha atualizada com sucesso");
     }

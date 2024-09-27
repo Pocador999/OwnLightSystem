@@ -13,7 +13,6 @@ public class UpdateUsernameCommandHandler(
     IAuthRepository authRepository,
     IMessageService messageService,
     IValidator<UpdateUsernameCommand> validator,
-    IHttpContextAccessor httpContextAccessor,
     IMapper mapper
 ) : IRequestHandler<UpdateUsernameCommand, Message>
 {
@@ -21,7 +20,6 @@ public class UpdateUsernameCommandHandler(
     private readonly IAuthRepository _authRepository = authRepository;
     private readonly IMessageService _messageService = messageService;
     private readonly IValidator<UpdateUsernameCommand> _validator = validator;
-    private readonly IHttpContextAccessor _httpContextAccessor = httpContextAccessor;
     private readonly IMapper _mapper = mapper;
 
     public async Task<Message> Handle(
@@ -49,7 +47,6 @@ public class UpdateUsernameCommandHandler(
 
         await _userRepository.UpdateAsync(user);
         await _authRepository.LogoutAsync(user.Id);
-        _httpContextAccessor.HttpContext.Session.Clear();
 
         return _messageService.CreateSuccessMessage("Nome de usuário atualizado com sucesso");
     }

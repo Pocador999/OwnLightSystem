@@ -9,14 +9,12 @@ namespace UserService.Application.Features.Authentication.Handlers;
 public class LogoutCommandHandler(
     IAuthRepository authRepository,
     IUserRepository userRepository,
-    IMessageService messageService,
-    IHttpContextAccessor httpContextAccessor
+    IMessageService messageService
 ) : IRequestHandler<LogoutCommand, Message>
 {
     private readonly IAuthRepository _authRepository = authRepository;
     private readonly IUserRepository _userRepository = userRepository;
     private readonly IMessageService _messageService = messageService;
-    private readonly IHttpContextAccessor _httpContextAccessor = httpContextAccessor;
 
     public async Task<Message> Handle(LogoutCommand request, CancellationToken cancellationToken)
     {
@@ -32,7 +30,6 @@ public class LogoutCommandHandler(
             );
 
         await _authRepository.LogoutAsync(user.Id);
-        _httpContextAccessor.HttpContext.Session.Clear();
 
         return _messageService.CreateSuccessMessage(
             $"Usuário {user.Username} deslogado com sucesso"

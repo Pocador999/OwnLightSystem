@@ -15,8 +15,7 @@ public class UpdateCommandHandler(
     IValidator<UpdateCommand> validator,
     IMessageService messageService,
     AuthServices authServices,
-    IMapper mapper,
-    IHttpContextAccessor httpContextAccessor
+    IMapper mapper
 ) : IRequestHandler<UpdateCommand, Message>
 {
     private readonly IUserRepository _userRepository = userRepository;
@@ -25,7 +24,6 @@ public class UpdateCommandHandler(
     private readonly IMapper _mapper = mapper;
     private readonly IMessageService _messageService = messageService;
     private readonly AuthServices _authServices = authServices;
-    private readonly IHttpContextAccessor _httpContextAccessor = httpContextAccessor;
 
     public async Task<Message> Handle(UpdateCommand request, CancellationToken cancellationToken)
     {
@@ -52,7 +50,6 @@ public class UpdateCommandHandler(
 
         await _userRepository.UpdateAsync(user);
         await _authRepository.LogoutAsync(user.Id);
-        _httpContextAccessor.HttpContext.Session.Clear();
 
         return _messageService.CreateSuccessMessage("Usuário atualizado com sucesso");
     }

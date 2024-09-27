@@ -13,7 +13,6 @@ public class UpdateEmailCommandHandler(
     IAuthRepository authRepository,
     IValidator<UpdateEmailCommand> validator,
     IMessageService messageService,
-    IHttpContextAccessor httpContextAccessor,
     IMapper mapper
 ) : IRequestHandler<UpdateEmailCommand, Message>
 {
@@ -21,7 +20,6 @@ public class UpdateEmailCommandHandler(
     private readonly IAuthRepository _authRepository = authRepository;
     private readonly IValidator<UpdateEmailCommand> _validator = validator;
     private readonly IMessageService _messageService = messageService;
-    private readonly IHttpContextAccessor _httpContextAccessor = httpContextAccessor;
     private readonly IMapper _mapper = mapper;
 
     public async Task<Message> Handle(
@@ -49,7 +47,6 @@ public class UpdateEmailCommandHandler(
 
         await _userRepository.UpdateAsync(user);
         await _authRepository.LogoutAsync(user.Id);
-        _httpContextAccessor.HttpContext.Session.Clear();
 
         return _messageService.CreateSuccessMessage("Email atualizado com sucesso");
     }
