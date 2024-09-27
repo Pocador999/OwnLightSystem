@@ -79,6 +79,16 @@ The OwnLight.UserService uses a PostgreSQL database to manage user-related data.
 | IsLoggedIn  | bool      | Default: false       |
 | LastLoginAt | timestamp |                      |
 
+### Tokens Table
+
+| Column Name | Data Type   | Constraints                |
+|-------------|-------------|----------------------------|
+| Id          | uuid        | Primary Key                |
+| UserId      | uuid        | Foreign Key (User)         |
+| Token       | varchar(255)| Not Null, Unique           |
+| ExpiresAt   | timestamp   | Not Null                   |
+| IsRevoked   | bool        | Default: false             |
+
 ### Description of Columns
 
 #### Users Table
@@ -92,18 +102,6 @@ The OwnLight.UserService uses a PostgreSQL database to manage user-related data.
 - **UpdatedAt**: Timestamp of the last update to the user's information.
 - **IsLoggedIn**: A boolean value indicating whether the user is currently logged in.
 - **LastLoginAt**: The timestamp of the user's last login.
-
-### Tokens Table
-
-| Column Name | Data Type   | Constraints                |
-|-------------|-------------|----------------------------|
-| Id          | uuid        | Primary Key                |
-| UserId      | uuid        | Foreign Key (User)         |
-| Token       | varchar(255)| Not Null, Unique           |
-| ExpiresAt   | timestamp   | Not Null                   |
-| IsRevoked   | bool        | Default: false             |
-
-### Description of Columns
 
 #### Tokens Table
 
