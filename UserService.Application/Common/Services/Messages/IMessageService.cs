@@ -10,4 +10,5 @@ public interface IMessageService
     Message CreateNotFoundMessage(string message);
     Message CreateSuccessMessage(string message);
     Message CreateInternalErrorMessage(string message);
+    Message CreateLoginMessage(string message, string token, string refreshToken);
 }

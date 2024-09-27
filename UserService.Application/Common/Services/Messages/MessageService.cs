@@ -84,4 +84,16 @@ public class MessageService : IMessageService
             StatusCodes.Status201Created.ToString()
         );
     }
+
+    public Message CreateLoginMessage(string message, string accessToken, string refreshToken)
+    {
+        return Message.LogedIn(
+            "Success",
+            message,
+            "https://tools.ietf.org/html/rfc7231#section-6.3.1",
+            StatusCodes.Status200OK.ToString(),
+            accessToken,
+            refreshToken
+        );
+    }
 }
