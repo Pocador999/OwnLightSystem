@@ -19,14 +19,9 @@ public class RefreshTokenRepository(DataContext context) : IRefreshTokenReposito
     public async Task<RefreshToken?> GetByTokenAsync(string refreshToken) =>
         await _dbSet.FirstOrDefaultAsync(rt => rt.Token == refreshToken && !rt.IsRevoked);
 
-    public async Task RevokeTokenAsync(string token)
+    public async Task RevokeTokenAsync(RefreshToken refreshToken)
     {
-        var refreshToken = await GetByTokenAsync(token);
-        if (refreshToken != null)
-        {
-            refreshToken.IsRevoked = true;
-            refreshToken.RevokedAt = DateTime.UtcNow;
-            await context.SaveChangesAsync();
-        }
+        refreshToken.IsRevoked = true;
+        await context.SaveChangesAsync();
     }
 }

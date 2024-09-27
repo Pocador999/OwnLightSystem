@@ -1,4 +1,5 @@
 using MediatR;
+using Microsoft.AspNetCore.Http;
 using UserService.Application.Common.Services.Messages;
 using UserService.Application.Common.Services.Token;
 using UserService.Application.Features.Authentication.Command;
@@ -10,42 +11,42 @@ public class RefreshTokenCommandHandler(
     IRefreshTokenRepository refreshTokenRepository,
     IUserRepository userRepository,
     ITokenService tokenService,
-    IMessageService messageService
+    IMessageService messageService,
+    IHttpContextAccessor httpContextAccessor
 ) : IRequestHandler<RefreshTokenCommand, Message>
 {
     private readonly IRefreshTokenRepository _refreshTokenRepository = refreshTokenRepository;
     private readonly IUserRepository _userRepository = userRepository;
     private readonly ITokenService _tokenService = tokenService;
     private readonly IMessageService _messageService = messageService;
+    private readonly IHttpContextAccessor _httpContextAccessor = httpContextAccessor;
 
     public async Task<Message> Handle(
         RefreshTokenCommand request,
         CancellationToken cancellationToken
     )
     {
-        var refreshToken = await _refreshTokenRepository.GetByTokenAsync(request.RefreshToken);
+        var refreshToken = _httpContextAccessor.HttpContext.Request.Cookies["RefreshToken"];
 
-        if (
-            refreshToken == null
-            || refreshToken.IsRevoked
-            || refreshToken.ExpiresAt <= DateTime.UtcNow
-        )
-        {
+        if (string.IsNullOrEmpty(refreshToken))
+            return _messageService.CreateNotAuthorizedMessage("Refresh token não encontrado.");
+
+        var tokenInDb = await _refreshTokenRepository.GetByTokenAsync(refreshToken);
+
+        if (tokenInDb == null || tokenInDb.IsExpired() || tokenInDb.IsRevoked == true)
             return _messageService.CreateNotAuthorizedMessage(
-                "Refresh token inválido ou expirado."
+                "Token inválido, expirado ou revogado."
             );
-        }
 
-        // Busca o usuário associado ao Refresh Token pelo UserId
-        var user =
-            await _userRepository.FindByIdAsync(refreshToken.UserId)
-            ?? throw new Exception("Usuário não encontrado.");
+        var user = await _userRepository.FindByIdAsync(tokenInDb.UserId);
+        if (user == null)
+            return _messageService.CreateNotFoundMessage("Usuário não encontrado.");
 
-        // Gera um novo Access Token para o usuário
         var newAccessToken = _tokenService.GenerateToken(user);
 
-        return _messageService.CreateSuccessMessage(
-            $"Token atualizado com sucesso. Token: {newAccessToken}"
+        return _messageService.CreateLoginMessage(
+            "Access token atualizado com sucesso.",
+            newAccessToken
         );
     }
 }

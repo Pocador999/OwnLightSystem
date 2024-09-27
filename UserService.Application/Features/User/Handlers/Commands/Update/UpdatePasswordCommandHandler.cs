@@ -61,6 +61,7 @@ public class UpdatePasswordCommandHandler(
         request.NewPassword = passwordHasher.HashPassword(user, request.NewPassword);
         await _userRepository.UpdatePasswordAsync(user.Id, request.NewPassword);
         await _authRepository.LogoutAsync(user.Id);
+        await _authServices.LogoutUserAsync(user.Id);
 
         return _messageService.CreateSuccessMessage("Senha atualizada com sucesso");
     }

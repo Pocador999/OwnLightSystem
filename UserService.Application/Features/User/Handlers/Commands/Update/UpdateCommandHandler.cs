@@ -50,6 +50,7 @@ public class UpdateCommandHandler(
 
         await _userRepository.UpdateAsync(user);
         await _authRepository.LogoutAsync(user.Id);
+        await _authServices.LogoutUserAsync(user.Id);
 
         return _messageService.CreateSuccessMessage("Usuário atualizado com sucesso");
     }

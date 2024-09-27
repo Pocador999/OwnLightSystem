@@ -2,6 +2,7 @@ using AutoMapper;
 using FluentValidation;
 using MediatR;
 using Microsoft.AspNetCore.Http;
+using UserService.Application.Common.Services.Auth;
 using UserService.Application.Common.Services.Messages;
 using UserService.Application.Features.User.Commands.Update;
 using UserService.Domain.Interfaces;
@@ -13,6 +14,7 @@ public class UpdateUsernameCommandHandler(
     IAuthRepository authRepository,
     IMessageService messageService,
     IValidator<UpdateUsernameCommand> validator,
+    AuthServices authServices,
     IMapper mapper
 ) : IRequestHandler<UpdateUsernameCommand, Message>
 {
@@ -20,6 +22,7 @@ public class UpdateUsernameCommandHandler(
     private readonly IAuthRepository _authRepository = authRepository;
     private readonly IMessageService _messageService = messageService;
     private readonly IValidator<UpdateUsernameCommand> _validator = validator;
+    private readonly AuthServices _authServices = authServices;
     private readonly IMapper _mapper = mapper;
 
     public async Task<Message> Handle(
@@ -47,6 +50,7 @@ public class UpdateUsernameCommandHandler(
 
         await _userRepository.UpdateAsync(user);
         await _authRepository.LogoutAsync(user.Id);
+        await _authServices.LogoutUserAsync(user.Id);
 
         return _messageService.CreateSuccessMessage("Nome de usuário atualizado com sucesso");
     }

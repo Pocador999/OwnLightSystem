@@ -1,4 +1,5 @@
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using UserService.Application.DTOs;
 using UserService.Application.Features.User.Commands;
@@ -13,6 +14,7 @@ public class UserController(IMediator mediator) : ControllerBase
 {
     private readonly IMediator _mediator = mediator;
 
+    [Authorize]
     [HttpGet("id")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
@@ -24,6 +26,7 @@ public class UserController(IMediator mediator) : ControllerBase
         return Ok(result);
     }
 
+    [Authorize]
     [HttpGet("{username}")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
@@ -35,6 +38,7 @@ public class UserController(IMediator mediator) : ControllerBase
         return Ok(result);
     }
 
+    [Authorize]
     [HttpGet("all")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
@@ -48,6 +52,7 @@ public class UserController(IMediator mediator) : ControllerBase
         return Ok(result);
     }
 
+    [AllowAnonymous]
     [HttpPost]
     [Route("create")]
     [ProducesResponseType(StatusCodes.Status201Created)]
@@ -68,6 +73,7 @@ public class UserController(IMediator mediator) : ControllerBase
         return BadRequest(result);
     }
 
+    [Authorize]
     [HttpPut("{id}")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
@@ -88,6 +94,7 @@ public class UserController(IMediator mediator) : ControllerBase
         return BadRequest(result);
     }
 
+    [Authorize]
     [HttpPut("password/{id}")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
@@ -111,6 +118,7 @@ public class UserController(IMediator mediator) : ControllerBase
         return BadRequest(result);
     }
 
+    [Authorize]
     [HttpDelete("{id}")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
@@ -127,6 +135,7 @@ public class UserController(IMediator mediator) : ControllerBase
         return NotFound(result);
     }
 
+    [Authorize]
     [HttpPut("email/{id}")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
@@ -149,6 +158,7 @@ public class UserController(IMediator mediator) : ControllerBase
         return BadRequest(result);
     }
 
+    [Authorize]
     [HttpPut("username/{id}")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]

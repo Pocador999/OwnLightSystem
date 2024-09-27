@@ -24,6 +24,7 @@ public static class APIServiceRegistration
         services.AddControllers();
         services.AddEndpointsApiExplorer();
         services.AddSwaggerGen(c =>
+        {
             c.SwaggerDoc(
                 "v1",
                 new OpenApiInfo
@@ -32,8 +33,45 @@ public static class APIServiceRegistration
                     Version = "v1",
                     Description = "API para gerenciamento de usuários no User Service",
                 }
-            )
-        );
+            );
+
+            // Configuração do JWT no Swagger
+            c.AddSecurityDefinition(
+                "Bearer",
+                new OpenApiSecurityScheme
+                {
+                    Description =
+                        @"JWT Authorization header usando o esquema Bearer. \r\n\r\n 
+          Insira 'Bearer' [espaço] e o seu token no campo abaixo.
+          \r\n\r\nExemplo: 'Bearer 12345abcdef'",
+                    Name = "Authorization",
+                    In = ParameterLocation.Header,
+                    Type = SecuritySchemeType.ApiKey,
+                    Scheme = "Bearer",
+                }
+            );
+
+            c.AddSecurityRequirement(
+                new OpenApiSecurityRequirement()
+                {
+                    {
+                        new OpenApiSecurityScheme
+                        {
+                            Reference = new OpenApiReference
+                            {
+                                Type = ReferenceType.SecurityScheme,
+                                Id = "Bearer",
+                            },
+                            Scheme = "oauth2",
+                            Name = "Bearer",
+                            In = ParameterLocation.Header,
+                        },
+                        new List<string>()
+                    },
+                }
+            );
+        });
+
         services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
         services.AddApplicationServices(configuration);
         services.AddInfrastructure(configuration);

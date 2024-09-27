@@ -2,6 +2,7 @@ using AutoMapper;
 using FluentValidation;
 using MediatR;
 using Microsoft.AspNetCore.Http;
+using UserService.Application.Common.Services.Auth;
 using UserService.Application.Common.Services.Messages;
 using UserService.Application.Features.User.Commands.Update;
 using UserService.Domain.Interfaces;
@@ -13,6 +14,7 @@ public class UpdateEmailCommandHandler(
     IAuthRepository authRepository,
     IValidator<UpdateEmailCommand> validator,
     IMessageService messageService,
+    AuthServices authServices,
     IMapper mapper
 ) : IRequestHandler<UpdateEmailCommand, Message>
 {
@@ -20,6 +22,7 @@ public class UpdateEmailCommandHandler(
     private readonly IAuthRepository _authRepository = authRepository;
     private readonly IValidator<UpdateEmailCommand> _validator = validator;
     private readonly IMessageService _messageService = messageService;
+    private readonly AuthServices _authServices = authServices;
     private readonly IMapper _mapper = mapper;
 
     public async Task<Message> Handle(
@@ -47,6 +50,7 @@ public class UpdateEmailCommandHandler(
 
         await _userRepository.UpdateAsync(user);
         await _authRepository.LogoutAsync(user.Id);
+        await _authServices.LogoutUserAsync(user.Id);
 
         return _messageService.CreateSuccessMessage("Email atualizado com sucesso");
     }
