@@ -20,6 +20,8 @@ public class User : Entity
     public bool IsLogedIn { get; protected set; } = false;
     public DateTime LastLoginAt { get; protected set; }
 
+    public ICollection<RefreshToken> Tokens { get; set; } = new List<RefreshToken>();
+
     public void UpdatePassword(string password)
     {
         Password = password;
