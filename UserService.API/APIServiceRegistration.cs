@@ -1,3 +1,6 @@
+using System.Text;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using UserService.Application;
 using UserService.Infrastructure;
@@ -6,7 +9,10 @@ namespace UserService.API;
 
 public static class APIServiceRegistration
 {
-    public static IServiceCollection AddAPIServices(this IServiceCollection services)
+    public static IServiceCollection AddAPIServices(
+        this IServiceCollection services,
+        IConfiguration configuration
+    )
     {
         services.AddDistributedMemoryCache();
         services.AddHttpContextAccessor();
@@ -39,13 +45,38 @@ public static class APIServiceRegistration
             )
         );
         services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
-        services.AddApplicationServices();
-        var serviceProvider = services.BuildServiceProvider();
-        var configuration = serviceProvider.GetService<IConfiguration>();
-        if (configuration != null)
-            services.AddInfrastructure(configuration);
-        else
-            throw new InvalidOperationException("Configuration service is not available.");
+        services.AddApplicationServices(configuration);
+        services.AddInfrastructure(configuration);
+
+        return services;
+    }
+
+    public static IServiceCollection AddJwtAuthentication(
+        this IServiceCollection services,
+        IConfiguration configuration
+    )
+    {
+        services
+            .AddAuthentication(options =>
+            {
+                options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+                options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+            })
+            .AddJwtBearer(options =>
+            {
+                options.TokenValidationParameters = new TokenValidationParameters
+                {
+                    ValidateIssuer = true,
+                    ValidateAudience = true,
+                    ValidateLifetime = true,
+                    ValidateIssuerSigningKey = true,
+                    ValidIssuer = configuration["Jwt:Issuer"],
+                    ValidAudience = configuration["Jwt:Audience"],
+                    IssuerSigningKey = new SymmetricSecurityKey(
+                        Encoding.UTF8.GetBytes(configuration["Jwt:Key"]!)
+                    ),
+                };
+            });
 
         return services;
     }
