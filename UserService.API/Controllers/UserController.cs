@@ -60,7 +60,7 @@ public class UserController(IMediator mediator) : ControllerBase
         if (int.TryParse(result.StatusCode, out var statusCode))
         {
             if (statusCode == StatusCodes.Status201Created)
-                return CreatedAtAction(nameof(GetById), new { id = result.Id }, result);
+                return CreatedAtAction(nameof(GetById), result);
             if (statusCode == StatusCodes.Status409Conflict)
                 return Conflict(result);
         }

@@ -1,8 +1,6 @@
 using MediatR;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using UserService.Application.Features.Admin.Commands;
-using UserService.Domain.Entities;
 
 namespace UserService.API.Controllers;
 
