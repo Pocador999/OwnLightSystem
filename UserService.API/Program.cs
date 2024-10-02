@@ -1,4 +1,5 @@
 using UserService.API;
+using UserService.API.Middlewares;
 
 var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddAPIServices(builder.Configuration);
@@ -19,6 +20,7 @@ app.UseHttpsRedirection();
 
 app.UseAuthentication();
 app.UseAuthorization();
+app.UseMiddleware<RefreshTokenExpirationCheckMiddleware>();
 
 app.MapControllers();
 
