@@ -13,14 +13,12 @@ namespace UserService.Application.Features.Authentication.Handlers;
 
 public class LoginCommandHandler(
     IUserRepository userRepository,
-    IAuthRepository authRepository,
     IMessageService messageService,
     IPasswordHasher<Entity.User> passwordHasher,
     AuthServices authService
 ) : IRequestHandler<LoginCommand, Message>
 {
     private readonly IUserRepository _userRepository = userRepository;
-    private readonly IAuthRepository _authRepository = authRepository;
     private readonly IPasswordHasher<Entity.User> _passwordHasher = passwordHasher;
     private readonly IMessageService _messageService = messageService;
     private readonly AuthServices _authService = authService;
@@ -40,8 +38,6 @@ public class LoginCommandHandler(
             return _messageService.CreateNotAuthorizedMessage("Senha incorreta.");
 
         var accessToken = await _authService.LoginUserAsync(user);
-
-        await _authRepository.LoginAsync(request.Username, request.Password);
 
         return _messageService.CreateLoginMessage("Login efetuado com sucesso.", accessToken);
     }

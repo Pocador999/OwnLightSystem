@@ -11,7 +11,7 @@ namespace UserService.Application.Features.User.Handlers.Commands.Update;
 
 public class UpdateEmailCommandHandler(
     IUserRepository userRepository,
-    IAuthRepository authRepository,
+    IRefreshTokenRepository refreshTokenRepository,
     IValidator<UpdateEmailCommand> validator,
     IMessageService messageService,
     AuthServices authServices,
@@ -19,7 +19,7 @@ public class UpdateEmailCommandHandler(
 ) : IRequestHandler<UpdateEmailCommand, Message>
 {
     private readonly IUserRepository _userRepository = userRepository;
-    private readonly IAuthRepository _authRepository = authRepository;
+    private readonly IRefreshTokenRepository _refreshTokenRepository = refreshTokenRepository;
     private readonly IValidator<UpdateEmailCommand> _validator = validator;
     private readonly IMessageService _messageService = messageService;
     private readonly AuthServices _authServices = authServices;
@@ -35,6 +35,10 @@ public class UpdateEmailCommandHandler(
         if (user == null)
             return _messageService.CreateNotFoundMessage("Usuário não encontrado");
 
+        var userToken = await _refreshTokenRepository.GetUserTokenAsync(user.Id);
+        if (userToken == null || userToken.IsRevoked == true)
+            return _messageService.CreateNotAuthorizedMessage("Usuário não está logado");
+
         var validationResult = await _validator.ValidateAsync(request, cancellationToken);
         if (!validationResult.IsValid)
             return _messageService.CreateValidationMessage(
@@ -49,7 +53,7 @@ public class UpdateEmailCommandHandler(
         _mapper.Map(request, user);
 
         await _userRepository.UpdateAsync(user);
-        await _authRepository.LogoutAsync(user.Id);
+        // Logout user after updating user information (bussiness rule)
         await _authServices.LogoutUserAsync(user.Id);
 
         return _messageService.CreateSuccessMessage("Email atualizado com sucesso");

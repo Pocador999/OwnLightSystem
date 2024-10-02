@@ -41,9 +41,9 @@ public static class APIServiceRegistration
                 new OpenApiSecurityScheme
                 {
                     Description =
-                        @"JWT Authorization header usando o esquema Bearer. \r\n\r\n 
-          Insira 'Bearer' [espaço] e o seu token no campo abaixo.
-          \r\n\r\nExemplo: 'Bearer 12345abcdef'",
+                        "JWT Authorization header usando o esquema Bearer. \r\n\r\n"
+                        + "Insira 'Bearer' [espaço] e o seu token no campo abaixo.\r\n\r\n"
+                        + "Exemplo: 'Bearer 12345abcdef'",
                     Name = "Authorization",
                     In = ParameterLocation.Header,
                     Type = SecuritySchemeType.ApiKey,
@@ -94,6 +94,7 @@ public static class APIServiceRegistration
             {
                 options.TokenValidationParameters = new TokenValidationParameters
                 {
+                    ClockSkew = TimeSpan.Zero,
                     ValidateIssuer = true,
                     ValidateAudience = true,
                     ValidateLifetime = true,

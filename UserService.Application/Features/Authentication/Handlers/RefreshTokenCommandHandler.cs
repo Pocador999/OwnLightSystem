@@ -31,7 +31,7 @@ public class RefreshTokenCommandHandler(
         if (string.IsNullOrEmpty(refreshToken))
             return _messageService.CreateNotAuthorizedMessage("Refresh token não encontrado.");
 
-        var tokenInDb = await _refreshTokenRepository.GetByTokenAsync(refreshToken);
+        var tokenInDb = await _refreshTokenRepository.GetTokenAsync(refreshToken);
 
         if (tokenInDb == null || tokenInDb.IsExpired() || tokenInDb.IsRevoked == true)
             return _messageService.CreateNotAuthorizedMessage(

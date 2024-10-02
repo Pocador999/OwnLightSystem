@@ -8,14 +8,14 @@ using UserService.Domain.Interfaces;
 namespace UserService.Application.Features.Authentication.Handlers;
 
 public class LogoutCommandHandler(
-    IAuthRepository authRepository,
     IUserRepository userRepository,
+    IRefreshTokenRepository refreshTokenRepository,
     AuthServices authService,
     IMessageService messageService
 ) : IRequestHandler<LogoutCommand, Message>
 {
-    private readonly IAuthRepository _authRepository = authRepository;
     private readonly IUserRepository _userRepository = userRepository;
+    private readonly IRefreshTokenRepository _refreshTokenRepository = refreshTokenRepository;
     private readonly AuthServices _authServices = authService;
     private readonly IMessageService _messageService = messageService;
 
@@ -27,13 +27,13 @@ public class LogoutCommandHandler(
                 $"Usuário com id {request.Id} não encontrado"
             );
 
-        if (!user.IsLogedIn)
+        var userToken = await _refreshTokenRepository.GetUserTokenAsync(user.Id);
+        if (userToken == null || userToken.IsRevoked == true)
             return _messageService.CreateNotAuthorizedMessage(
                 $"Usuário {user.Username} não está logado"
             );
 
         await _authServices.LogoutUserAsync(user.Id);
-        await _authRepository.LogoutAsync(user.Id);
 
         return _messageService.CreateSuccessMessage(
             $"Usuário {user.Username} deslogado com sucesso"

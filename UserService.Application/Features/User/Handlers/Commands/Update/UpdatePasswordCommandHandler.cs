@@ -12,14 +12,14 @@ namespace UserService.Application.Features.User.Handlers.Commands.Update;
 
 public class UpdatePasswordCommandHandler(
     IUserRepository userRepository,
-    IAuthRepository authRepository,
+    IRefreshTokenRepository refreshTokenRepository,
     IValidator<UpdatePasswordCommand> validator,
     IMessageService messageService,
     AuthServices authServices
 ) : IRequestHandler<UpdatePasswordCommand, Message>
 {
     private readonly IUserRepository _userRepository = userRepository;
-    private readonly IAuthRepository _authRepository = authRepository;
+    private readonly IRefreshTokenRepository _refreshTokenRepository = refreshTokenRepository;
     private readonly IValidator<UpdatePasswordCommand> validator = validator;
     private readonly IMessageService _messageService = messageService;
     private readonly AuthServices _authServices = authServices;
@@ -34,9 +34,9 @@ public class UpdatePasswordCommandHandler(
         if (user == null)
             return _messageService.CreateNotFoundMessage("Usuário não encontrado");
 
-        var authResult = _authServices.Authenticate(user);
-        if (authResult.StatusCode != StatusCodes.Status200OK.ToString())
-            return authResult;
+        var userToken = await _refreshTokenRepository.GetUserTokenAsync(user.Id);
+        if (userToken == null || userToken.IsRevoked == true)
+            return _messageService.CreateNotAuthorizedMessage("Usuário não está logado");
 
         var validationResult = await validator.ValidateAsync(request, cancellationToken);
         if (!validationResult.IsValid)
@@ -60,7 +60,7 @@ public class UpdatePasswordCommandHandler(
 
         request.NewPassword = passwordHasher.HashPassword(user, request.NewPassword);
         await _userRepository.UpdatePasswordAsync(user.Id, request.NewPassword);
-        await _authRepository.LogoutAsync(user.Id);
+        // Logout user after updating user information (bussiness rule)
         await _authServices.LogoutUserAsync(user.Id);
 
         return _messageService.CreateSuccessMessage("Senha atualizada com sucesso");
