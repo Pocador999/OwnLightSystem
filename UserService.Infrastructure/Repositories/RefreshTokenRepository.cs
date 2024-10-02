@@ -12,15 +12,24 @@ public class RefreshTokenRepository(DataContext context) : IRefreshTokenReposito
     public async Task<RefreshToken> CreateAsync(RefreshToken refreshToken)
     {
         var createdToken = await _dbSet.AddAsync(refreshToken);
+        createdToken.Entity.IsRevoked = false;
         await context.SaveChangesAsync();
         return createdToken.Entity;
     }
 
-    public async Task<RefreshToken?> GetByTokenAsync(string refreshToken) =>
+    public async Task<RefreshToken?> GetTokenAsync(string refreshToken) =>
         await _dbSet.FirstOrDefaultAsync(rt => rt.Token == refreshToken && !rt.IsRevoked);
+
+    public async Task<RefreshToken?> GetUserTokenAsync(Guid userId) =>
+        await _dbSet
+            .Where(rt => rt.UserId == userId)
+            .OrderByDescending(rt => rt.CreatedAt)
+            .FirstOrDefaultAsync();
 
     public async Task RevokeTokenAsync(RefreshToken refreshToken)
     {
+        refreshToken.ExpiresAt = DateTime.UtcNow;
+        refreshToken.RevokedAt = DateTime.UtcNow;
         refreshToken.IsRevoked = true;
         await context.SaveChangesAsync();
     }
