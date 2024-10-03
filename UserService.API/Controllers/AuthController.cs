@@ -54,8 +54,12 @@ public class AuthController(IMediator mediator) : ControllerBase
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
-    public async Task<ActionResult> RefreshToken([FromBody] RefreshTokenCommand command)
+    public async Task<ActionResult> RefreshToken()
     {
+        var command = new RefreshTokenCommand
+        {
+            RefreshToken = Request.Headers.Authorization.ToString().Split(" ")[1],
+        };
         var result = await _mediator.Send(command);
 
         if (result.StatusCode == StatusCodes.Status200OK.ToString())
