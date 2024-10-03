@@ -33,12 +33,20 @@ public class RefreshTokenExpirationCheckMiddleware(
                     tokenInDb.UserId
                 );
 
-                if (!tokenInDb.IsRevoked)
+                if (tokenInDb.IsRevoked)
+                {
+                    _logger.LogWarning(
+                        "O token já foi revogado para o usuário {UserId}. Deletando cookie.",
+                        tokenInDb.UserId
+                    );
+                    context.Response.Cookies.Delete("RefreshToken");
+                }
+                else
                 {
                     if (tokenInDb.ExpiresAt <= DateTime.UtcNow)
                     {
                         _logger.LogWarning(
-                            "O token expirou para o usuário {UserId}, revogando token.",
+                            "O token expirou para o usuário {UserId}, revogando token e deletando cookie.",
                             tokenInDb.UserId
                         );
                         await refreshTokenRepository.RevokeTokenAsync(tokenInDb);
@@ -48,17 +56,15 @@ public class RefreshTokenExpirationCheckMiddleware(
                     else
                         _logger.LogInformation("O token ainda é válido.");
                 }
-                else
-                    _logger.LogWarning(
-                        "O token já foi revogado para o usuário {UserId}.",
-                        tokenInDb.UserId
-                    );
             }
             else
+            {
                 _logger.LogWarning(
-                    "Nenhum token encontrado no banco de dados para o refresh token: {RefreshToken}",
+                    "Nenhum token encontrado no banco de dados para o refresh token: {RefreshToken}. Deletando cookie.",
                     refreshToken
                 );
+                context.Response.Cookies.Delete("RefreshToken");
+            }
         }
         else
             _logger.LogInformation("Nenhum refresh token encontrado no cookie.");
