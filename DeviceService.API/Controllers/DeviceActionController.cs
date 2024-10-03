@@ -1,6 +1,5 @@
 using DeviceService.Application.Features.DeviceAction.Commands;
 using MediatR;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace DeviceService.API.Controllers;

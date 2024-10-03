@@ -11,15 +11,21 @@ public class MapperProfile : Profile
     public MapperProfile()
     {
         // Mapping for Device Entity
-        CreateMap<Device, DeviceResponseDTO>().ReverseMap();
+        CreateMap<Device, DeviceResponseDTO>()
+            .ReverseMap();
         CreateMap<Device, CreateDeviceCommand>();
         CreateMap<CreateDeviceCommand, Device>()
             .ForMember(dest => dest.DeviceType, opt => opt.Ignore())
-            .ForMember(dest => dest.DeviceActions, opt => opt.Ignore());
+            .ForMember(dest => dest.DeviceActions, opt => opt.Ignore())
+            .ForMember(
+                dest => dest.Brightness,
+                opt => opt.MapFrom(src => (bool)src.IsDimmable ? src.Brightness : null)
+            );
         CreateMap<UpdateDeviceCommand, Device>();
 
         // Mapping for DeviceType Entity
-        CreateMap<DeviceType, DeviceTypeResponseDTO>().ReverseMap();
+        CreateMap<DeviceType, DeviceTypeResponseDTO>()
+            .ReverseMap();
         CreateMap<DeviceType, CreateDeviceTypeCommand>();
         CreateMap<CreateDeviceTypeCommand, DeviceType>()
             .ForMember(dest => dest.Devices, opt => opt.Ignore());

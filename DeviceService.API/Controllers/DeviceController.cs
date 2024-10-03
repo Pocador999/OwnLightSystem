@@ -2,6 +2,7 @@ using DeviceService.Application.DTOs;
 using DeviceService.Application.Features.Device.Commands;
 using DeviceService.Application.Features.Device.Queries;
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace DeviceService.API.Controllers;
@@ -63,17 +64,22 @@ public class DeviceController(IMediator mediator) : ControllerBase
         return Ok(devices);
     }
 
-    [HttpPost]
-    [Route("create")]
+    [Authorize]
+    [HttpPost("create")]
     [ProducesResponseType(StatusCodes.Status201Created)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-    public async Task<ActionResult> Create([FromBody] CreateDeviceCommand command)
+    public async Task<ActionResult> CreateDevice([FromBody] CreateDeviceCommand command)
     {
         try
         {
             var deviceId = await _mediator.Send(command);
             return CreatedAtAction(nameof(GetById), new { id = deviceId }, deviceId);
+        }
+        catch (UnauthorizedAccessException ex)
+        {
+            return Unauthorized(ex.Message);
         }
         catch (ArgumentException ex)
         {
