@@ -2,6 +2,7 @@ using AutoMapper;
 using FluentValidation;
 using MediatR;
 using Microsoft.AspNetCore.Http;
+using UserService.Application.Common.Services.Auth;
 using UserService.Application.Common.Services.Messages;
 using UserService.Application.Features.User.Commands.Update;
 using UserService.Domain.Interfaces;
@@ -10,18 +11,18 @@ namespace UserService.Application.Features.User.Handlers.Commands.Update;
 
 public class UpdateUsernameCommandHandler(
     IUserRepository userRepository,
-    IAuthRepository authRepository,
+    IRefreshTokenRepository refreshTokenRepository,
     IMessageService messageService,
     IValidator<UpdateUsernameCommand> validator,
-    IHttpContextAccessor httpContextAccessor,
+    IAuthService authService,
     IMapper mapper
 ) : IRequestHandler<UpdateUsernameCommand, Message>
 {
     private readonly IUserRepository _userRepository = userRepository;
-    private readonly IAuthRepository _authRepository = authRepository;
+    private readonly IRefreshTokenRepository _refreshTokenRepository = refreshTokenRepository;
     private readonly IMessageService _messageService = messageService;
     private readonly IValidator<UpdateUsernameCommand> _validator = validator;
-    private readonly IHttpContextAccessor _httpContextAccessor = httpContextAccessor;
+    private readonly IAuthService _authService = authService;
     private readonly IMapper _mapper = mapper;
 
     public async Task<Message> Handle(
@@ -33,6 +34,10 @@ public class UpdateUsernameCommandHandler(
 
         if (user == null)
             return _messageService.CreateNotFoundMessage("Usuário não encontrado");
+
+        var userToken = await _refreshTokenRepository.GetUserTokenAsync(user.Id);
+        if (userToken == null || userToken.IsRevoked == true)
+            return _messageService.CreateNotAuthorizedMessage("Usuário não está logado");
 
         var validationResult = await _validator.ValidateAsync(request, cancellationToken);
         if (!validationResult.IsValid)
@@ -48,8 +53,8 @@ public class UpdateUsernameCommandHandler(
         _mapper.Map(request, user);
 
         await _userRepository.UpdateAsync(user);
-        await _authRepository.LogoutAsync(user.Id);
-        _httpContextAccessor.HttpContext.Session.Clear();
+        // Logout user after updating user information (bussiness rule)
+        await _authService.LogoutUserAsync(user.Id);
 
         return _messageService.CreateSuccessMessage("Nome de usuário atualizado com sucesso");
     }

@@ -2,8 +2,8 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using UserService.Domain.Interfaces;
-using UserService.Infrastructure.Background;
 using UserService.Infrastructure.Data;
+using UserService.Infrastructure.HostedServices;
 using UserService.Infrastructure.Repositories;
 
 namespace UserService.Infrastructure;
@@ -15,10 +15,12 @@ public static class InfrastructureServiceRegistration
         IConfiguration configuration
     )
     {
-        services.AddHostedService<SessionTimeoutBackgroundService>();
+        services.AddHostedService<TokenCleanupService>();
+        services.AddSingleton<TokenCleanupStateService>();
+
         services.AddScoped<IUserRepository, UserRepository>();
-        services.AddScoped<IAuthRepository, AuthRepository>();
         services.AddScoped<IAdminRepository, AdminRepository>();
+        services.AddScoped<IRefreshTokenRepository, RefreshTokenRepository>();
         services.AddDbContext<DataContext>(options =>
             options.UseNpgsql(configuration.GetConnectionString("DefaultConnection"))
         );

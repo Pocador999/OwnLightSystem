@@ -11,21 +11,19 @@ namespace UserService.Application.Features.User.Handlers.Commands.Update;
 
 public class UpdateCommandHandler(
     IUserRepository userRepository,
-    IAuthRepository authRepository,
+    IRefreshTokenRepository refreshTokenRepository,
     IValidator<UpdateCommand> validator,
     IMessageService messageService,
-    AuthServices authServices,
-    IMapper mapper,
-    IHttpContextAccessor httpContextAccessor
+    IAuthService authService,
+    IMapper mapper
 ) : IRequestHandler<UpdateCommand, Message>
 {
     private readonly IUserRepository _userRepository = userRepository;
-    private readonly IAuthRepository _authRepository = authRepository;
+    private readonly IRefreshTokenRepository _refreshTokenRepository = refreshTokenRepository;
     private readonly IValidator<UpdateCommand> _validator = validator;
     private readonly IMapper _mapper = mapper;
     private readonly IMessageService _messageService = messageService;
-    private readonly AuthServices _authServices = authServices;
-    private readonly IHttpContextAccessor _httpContextAccessor = httpContextAccessor;
+    private readonly IAuthService _authService = authService;
 
     public async Task<Message> Handle(UpdateCommand request, CancellationToken cancellationToken)
     {
@@ -34,10 +32,10 @@ public class UpdateCommandHandler(
         if (user == null)
             return _messageService.CreateNotFoundMessage("Usuário não encontrado");
 
-        var authResult = _authServices.Authenticate(user);
-        if (authResult.StatusCode != StatusCodes.Status200OK.ToString())
-            return authResult;
-            
+        var userToken = await _refreshTokenRepository.GetUserTokenAsync(user.Id);
+        if (userToken == null || userToken.IsRevoked == true)
+            return _messageService.CreateNotAuthorizedMessage("Usuário não está logado");
+
         var validationResult = await _validator.ValidateAsync(request, cancellationToken);
         if (!validationResult.IsValid)
             return _messageService.CreateValidationMessage(
@@ -51,8 +49,8 @@ public class UpdateCommandHandler(
         _mapper.Map(request, user);
 
         await _userRepository.UpdateAsync(user);
-        await _authRepository.LogoutAsync(user.Id);
-        _httpContextAccessor.HttpContext.Session.Clear();
+        // Logout user after updating user information (bussiness rule)
+        await _authService.LogoutUserAsync(user.Id);
 
         return _messageService.CreateSuccessMessage("Usuário atualizado com sucesso");
     }

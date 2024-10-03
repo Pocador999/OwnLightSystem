@@ -20,6 +20,7 @@ The OwnLight.UserService is designed with a focus on scalability, maintainabilit
 - **Background Services**: Execute long-running tasks or scheduled operations in the background, ensuring the main application remains responsive.
 - **Validation**: Implement validation logic to ensure data integrity and enforce business rules before processing requests.
 - **DTOs**: Define Data Transfer Objects for API responses and requests, ensuring a clear contract between the API and its consumers.
+- **Token Managment**: JWT-based Access Token and Refresh Token services to ensure secure and scalable authentication.
 
 ## Project Structure
 
@@ -29,7 +30,7 @@ The project is organized into multiple layers based on the responsibilities, ens
 OwnLight.UserService/
 ├── UserService.API/
 │   ├── Controllers/               # Handles HTTP requests (Auth/Admin/User controllers)
-│   ├── Middlewares/               # Configuration of the middlewares for the API
+│   ├── Middlewares/               # Middleware configurations, including JWT validation
 │   ├── Program.cs                 # Application startup configuration
 │   ├── APIServiceRegistration.cs  # Registers services and dependencies
 │   └── Properties/
@@ -38,24 +39,24 @@ OwnLight.UserService/
 ├── UserService.Application/
 │   ├── Common/
 │   │   ├── Mappings/              # AutoMapper profiles for entity to DTO mappings
-│   │   ├── Services/              # Business logic (Auth, Email, Message services)
+│   │   ├── Services/              # Business logic (Auth, Token, Email, Message services)
 │   │   └── Validation/            # Validation logic for various operations
 │   ├── DTO's/                     # Data Transfer Objects for API responses and requests
 │   ├── Features/
 │   │   ├── User/                  # Handlers, Commands, Queries related to User
 │   │   ├── Admin/                 # Handlers, Commands related to Admin operations
-│   │   └── Auth/                  # Handlers, Commands related to Authentication
+│   │   └── Auth/                  # Handlers, Commands related to Authentication and Tokens
 │   └── ApplicationServiceRegistration.cs  # Registers application services
 │
 ├── UserService.Domain/
-│   ├── Entities/                  # Domain entities (User, etc.)
-│   ├── Interfaces/                # Domain interfaces (IUserRepository, IAuthRepository)
+│   ├── Entities/                  # Domain entities (User, RefreshToken, etc.)
+│   ├── Interfaces/                # Domain interfaces (IUserRepository, IAuthRepository, ITokenService)
 │   └── Primitives/                # Basic domain concepts and value objects
 │
 ├── UserService.Infrastructure/
-│   ├── Data/
-│   ├── Background/                # Configuration of the background services
+│   ├── Data/                      # Database context and configurations
 │   ├── Repositories/              # Concrete implementations of the domain repositories
+│   ├── HostedServices/            # Responsible for implementing the hosted services of the API
 │   └── InfrastructureServiceRegistration.cs  # Registers infrastructure services
 │
 └── Migrations/                    # Database migrations for setting up and updating the schema
@@ -63,9 +64,9 @@ OwnLight.UserService/
 
 ## Database Schema
 
-The OwnLight.UserService uses a PostgreSQL database to manage user-related data. Below is the schema for the User table:
+The OwnLight.UserService uses a PostgreSQL database to manage user-related data. Below is the User Service API tables schema:
 
-### User Table
+### Users Table
 
 | Column Name | Data Type | Constraints          |
 |-------------|-----------|----------------------|
@@ -76,10 +77,21 @@ The OwnLight.UserService uses a PostgreSQL database to manage user-related data.
 | Password    | varchar(255) | Not Null          |
 | CreatedAt   | timestamp | Default: Utc.Now     |
 | UpdatedAt   | timestamp |                      |
-| IsLoggedIn  | bool      | Default: false       |
-| LastLoginAt | timestamp |                      |
+
+### Tokens Table
+
+| Column Name | Data Type   | Constraints                |
+|-------------|-------------|----------------------------|
+| Id          | uuid        | Primary Key                |
+| UserId      | uuid        | Foreign Key (User)         |
+| Token       | varchar(255)| Not Null, Unique           |
+| ExpiresAt   | timestamp   | Not Null                   |
+| IsRevoked   | bool        | Default: false             |
+| ExpiresAt   | timestamp   | Not Null                   |
 
 ### Description of Columns
+
+#### Users Table
 
 - **Id**: A unique identifier for each user.
 - **Name**: The full name of the user.
@@ -88,8 +100,15 @@ The OwnLight.UserService uses a PostgreSQL database to manage user-related data.
 - **Password**: A hashed password for secure authentication.
 - **CreatedAt**: Timestamp of when the user was created.
 - **UpdatedAt**: Timestamp of the last update to the user's information.
-- **IsLoggedIn**: A boolean value indicating whether the user is currently logged in.
-- **LastLoginAt**: The timestamp of the user's last login.
+
+#### Tokens Table
+
+- **Id**: A unique identifier for each refresh token.
+- **UserId**: The unique identifier for the user associated with the refresh token.
+- **Token**: A secure random string used to regenerate access tokens.
+- **ExpiresAt**: The timestamp at which the refresh token expires.
+- **IsRevoked**: Indicates whether the refresh token has been revoked.
+- **RevokedAt**: The timestamp at which the refresh token was revoked.
 
 ## Getting Started
 
@@ -216,8 +235,13 @@ dotnet run .\UserService.API\
 
 The OwnLight.UserService is configured using the `appsettings.json` file. Below are some of the key settings:
 
+## Configuration
+
+The OwnLight.UserService is configured using the `appsettings.json` file. Below are some of the key settings:
+
 - **ConnectionStrings**: Defines the connection to the PostgreSQL database.
-- **Authentication**: Contains settings related to user login and session management. (still under development)
+- **JWT Settings**: Contains the configuration for JWT token generation, including the secret key, issuer, audience, and expiration times.
+- **Authentication**: Settings related to user login, token management, and session handling.
 
 ## API Endpoints
 
@@ -231,11 +255,12 @@ The OwnLight.UserService exposes several endpoints to handle user and admin func
 - `PUT /api/users/{id}`: Update a user by ID.
 - `DELETE /api/users/{id}`: Delete a user by ID.
 
-### Authentication Endpoints:
+### Authentication and Token Endpoints:
 
 - `POST /api/auth/login`: Log a user into the system.
 - `POST /api/auth/logout`: Log out a user.
 - `GET /api/auth/getCurrentUser`: Retrieve the currently logged-in user's id.
+- `POST /api/auth/refresh_token` : Use the Refresh Token (sent automatically via secure cookie) to generate a new Access Token.
 
 ### Admin Endpoints:
 

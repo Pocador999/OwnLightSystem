@@ -17,20 +17,12 @@ public class User : Entity
     [Required]
     public string? Password { get; protected set; }
 
-    public bool IsLogedIn { get; protected set; } = false;
-    public DateTime LastLoginAt { get; protected set; }
+
+    public ICollection<RefreshToken> Tokens { get; set; } = [];
 
     public void UpdatePassword(string password)
     {
         Password = password;
         UpdatedAt = DateTime.UtcNow;
     }
-
-    public void Login()
-    {
-        IsLogedIn = true;
-        LastLoginAt = DateTime.UtcNow;
-    }
-
-    public void Logout() => IsLogedIn = false;
 }

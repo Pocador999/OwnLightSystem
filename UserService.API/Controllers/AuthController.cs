@@ -1,8 +1,8 @@
 using System.Security.Claims;
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using UserService.Application.Features.Authentication.Command;
-using UserService.Domain.Entities;
 
 namespace UserService.API.Controllers;
 
@@ -12,6 +12,7 @@ public class AuthController(IMediator mediator) : ControllerBase
 {
     private readonly IMediator _mediator = mediator;
 
+    [AllowAnonymous]
     [HttpPost]
     [Route("login")]
     [ProducesResponseType(StatusCodes.Status200OK)]
@@ -20,10 +21,6 @@ public class AuthController(IMediator mediator) : ControllerBase
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<ActionResult> Login([FromBody] LoginCommand command)
     {
-        var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-        if (userId != null)
-            HttpContext.Session.SetString("UserId", userId);
-
         var result = await _mediator.Send(command);
 
         if (result.StatusCode == StatusCodes.Status200OK.ToString())
@@ -36,6 +33,7 @@ public class AuthController(IMediator mediator) : ControllerBase
             return BadRequest(result);
     }
 
+    [Authorize]
     [HttpPost]
     [Route("logout/{id:guid}")]
     [ProducesResponseType(StatusCodes.Status200OK)]
@@ -50,17 +48,25 @@ public class AuthController(IMediator mediator) : ControllerBase
             return BadRequest(result);
     }
 
-    [HttpGet]
-    [Route("current_user")]
+    [AllowAnonymous]
+    [HttpPost]
+    [Route("refresh_token")]
     [ProducesResponseType(StatusCodes.Status200OK)]
-    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
-    public ActionResult<Guid> GetCurrentUserId()
+    public async Task<ActionResult> RefreshToken()
     {
-        var userId = HttpContext.Session.GetString("UserId");
-        if (string.IsNullOrEmpty(userId))
-            return NotFound();
+        var command = new RefreshTokenCommand
+        {
+            RefreshToken = Request.Headers.Authorization.ToString().Split(" ")[1],
+        };
+        var result = await _mediator.Send(command);
 
-        return Ok(Guid.Parse(userId));
+        if (result.StatusCode == StatusCodes.Status200OK.ToString())
+            return Ok(result);
+        else if (result.StatusCode == StatusCodes.Status401Unauthorized.ToString())
+            return Unauthorized(result);
+        else
+            return NotFound(result);
     }
 }

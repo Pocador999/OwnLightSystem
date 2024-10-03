@@ -1,5 +1,6 @@
 using MediatR;
 using Microsoft.AspNetCore.Http;
+using UserService.Application.Common.Services.Auth;
 using UserService.Application.Common.Services.Messages;
 using UserService.Application.Features.Authentication.Command;
 using UserService.Domain.Interfaces;
@@ -7,16 +8,16 @@ using UserService.Domain.Interfaces;
 namespace UserService.Application.Features.Authentication.Handlers;
 
 public class LogoutCommandHandler(
-    IAuthRepository authRepository,
     IUserRepository userRepository,
-    IMessageService messageService,
-    IHttpContextAccessor httpContextAccessor
+    IRefreshTokenRepository refreshTokenRepository,
+    IAuthService authService,
+    IMessageService messageService
 ) : IRequestHandler<LogoutCommand, Message>
 {
-    private readonly IAuthRepository _authRepository = authRepository;
     private readonly IUserRepository _userRepository = userRepository;
+    private readonly IRefreshTokenRepository _refreshTokenRepository = refreshTokenRepository;
+    private readonly IAuthService _authServices = authService;
     private readonly IMessageService _messageService = messageService;
-    private readonly IHttpContextAccessor _httpContextAccessor = httpContextAccessor;
 
     public async Task<Message> Handle(LogoutCommand request, CancellationToken cancellationToken)
     {
@@ -26,13 +27,13 @@ public class LogoutCommandHandler(
                 $"Usuário com id {request.Id} não encontrado"
             );
 
-        if (user.IsLogedIn == false)
+        var userToken = await _refreshTokenRepository.GetUserTokenAsync(user.Id);
+        if (userToken == null || userToken.IsRevoked == true)
             return _messageService.CreateNotAuthorizedMessage(
                 $"Usuário {user.Username} não está logado"
             );
 
-        await _authRepository.LogoutAsync(user.Id);
-        _httpContextAccessor.HttpContext.Session.Clear();
+        await _authServices.LogoutUserAsync(user.Id);
 
         return _messageService.CreateSuccessMessage(
             $"Usuário {user.Username} deslogado com sucesso"
