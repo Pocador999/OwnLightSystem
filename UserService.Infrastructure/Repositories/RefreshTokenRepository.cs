@@ -33,4 +33,11 @@ public class RefreshTokenRepository(DataContext context) : IRefreshTokenReposito
         refreshToken.IsRevoked = true;
         await context.SaveChangesAsync();
     }
+
+    public async Task DeleteAllTokens()
+    {
+        var allTokens = await _dbSet.ToListAsync();
+        _dbSet.RemoveRange(allTokens);
+        await context.SaveChangesAsync();
+    }
 }
