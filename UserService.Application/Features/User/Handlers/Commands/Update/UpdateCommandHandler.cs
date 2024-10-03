@@ -14,7 +14,7 @@ public class UpdateCommandHandler(
     IRefreshTokenRepository refreshTokenRepository,
     IValidator<UpdateCommand> validator,
     IMessageService messageService,
-    AuthServices authServices,
+    IAuthService authService,
     IMapper mapper
 ) : IRequestHandler<UpdateCommand, Message>
 {
@@ -23,7 +23,7 @@ public class UpdateCommandHandler(
     private readonly IValidator<UpdateCommand> _validator = validator;
     private readonly IMapper _mapper = mapper;
     private readonly IMessageService _messageService = messageService;
-    private readonly AuthServices _authServices = authServices;
+    private readonly IAuthService _authService = authService;
 
     public async Task<Message> Handle(UpdateCommand request, CancellationToken cancellationToken)
     {
@@ -50,7 +50,7 @@ public class UpdateCommandHandler(
 
         await _userRepository.UpdateAsync(user);
         // Logout user after updating user information (bussiness rule)
-        await _authServices.LogoutUserAsync(user.Id);
+        await _authService.LogoutUserAsync(user.Id);
 
         return _messageService.CreateSuccessMessage("Usuário atualizado com sucesso");
     }

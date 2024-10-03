@@ -14,7 +14,7 @@ public class UpdateEmailCommandHandler(
     IRefreshTokenRepository refreshTokenRepository,
     IValidator<UpdateEmailCommand> validator,
     IMessageService messageService,
-    AuthServices authServices,
+    IAuthService authService,
     IMapper mapper
 ) : IRequestHandler<UpdateEmailCommand, Message>
 {
@@ -22,7 +22,7 @@ public class UpdateEmailCommandHandler(
     private readonly IRefreshTokenRepository _refreshTokenRepository = refreshTokenRepository;
     private readonly IValidator<UpdateEmailCommand> _validator = validator;
     private readonly IMessageService _messageService = messageService;
-    private readonly AuthServices _authServices = authServices;
+    private readonly IAuthService _authService = authService;
     private readonly IMapper _mapper = mapper;
 
     public async Task<Message> Handle(
@@ -54,7 +54,7 @@ public class UpdateEmailCommandHandler(
 
         await _userRepository.UpdateAsync(user);
         // Logout user after updating user information (bussiness rule)
-        await _authServices.LogoutUserAsync(user.Id);
+        await _authService.LogoutUserAsync(user.Id);
 
         return _messageService.CreateSuccessMessage("Email atualizado com sucesso");
     }

@@ -5,11 +5,11 @@ using UserService.Domain.Interfaces;
 
 namespace UserService.Application.Common.Services.Auth;
 
-public class AuthServices(
+public class AuthService(
     ITokenService tokenService,
     IHttpContextAccessor httpContextAccessor,
     IRefreshTokenRepository refreshTokenRepository
-)
+) : IAuthService
 {
     private readonly ITokenService _tokenService = tokenService;
     private readonly IHttpContextAccessor _httpContextAccessor = httpContextAccessor;

@@ -10,13 +10,13 @@ namespace UserService.Application.Features.Authentication.Handlers;
 public class LogoutCommandHandler(
     IUserRepository userRepository,
     IRefreshTokenRepository refreshTokenRepository,
-    AuthServices authService,
+    IAuthService authService,
     IMessageService messageService
 ) : IRequestHandler<LogoutCommand, Message>
 {
     private readonly IUserRepository _userRepository = userRepository;
     private readonly IRefreshTokenRepository _refreshTokenRepository = refreshTokenRepository;
-    private readonly AuthServices _authServices = authService;
+    private readonly IAuthService _authServices = authService;
     private readonly IMessageService _messageService = messageService;
 
     public async Task<Message> Handle(LogoutCommand request, CancellationToken cancellationToken)

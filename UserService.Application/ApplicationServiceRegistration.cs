@@ -37,7 +37,7 @@ public static class ApplicationServiceRegistration
         services.AddScoped<ITokenService, TokenService>();
         services.AddScoped<IMessageService, MessageService>();
         services.AddScoped<IPasswordHasher<User>, PasswordHasher<User>>();
-        services.AddScoped<AuthServices>();
+        services.AddScoped<IAuthService, AuthService>();
 
         return services;
     }

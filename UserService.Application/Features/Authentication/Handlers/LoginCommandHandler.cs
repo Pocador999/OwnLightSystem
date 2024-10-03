@@ -1,10 +1,7 @@
-using System.Text.Json;
 using MediatR;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using UserService.Application.Common.Services.Auth;
 using UserService.Application.Common.Services.Messages;
-using UserService.Application.Common.Services.Token;
 using UserService.Application.Features.Authentication.Command;
 using UserService.Domain.Interfaces;
 using Entity = UserService.Domain.Entities;
@@ -15,13 +12,13 @@ public class LoginCommandHandler(
     IUserRepository userRepository,
     IMessageService messageService,
     IPasswordHasher<Entity.User> passwordHasher,
-    AuthServices authService
+    IAuthService authService
 ) : IRequestHandler<LoginCommand, Message>
 {
     private readonly IUserRepository _userRepository = userRepository;
     private readonly IPasswordHasher<Entity.User> _passwordHasher = passwordHasher;
     private readonly IMessageService _messageService = messageService;
-    private readonly AuthServices _authService = authService;
+    private readonly IAuthService _authService = authService;
 
     public async Task<Message> Handle(LoginCommand request, CancellationToken cancellationToken)
     {
