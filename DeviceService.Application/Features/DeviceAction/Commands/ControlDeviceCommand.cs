@@ -8,5 +8,8 @@ public class ControlDeviceCommand(Guid deviceId, DeviceStatus status) : IRequest
 {
     [JsonIgnore]
     public Guid DeviceId { get; set; } = deviceId;
+
+    [JsonIgnore]
+    public Guid UserId { get; set; }
     public DeviceStatus Status { get; set; } = status;
 }

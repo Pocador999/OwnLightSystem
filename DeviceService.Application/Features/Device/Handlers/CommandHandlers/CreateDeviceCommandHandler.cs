@@ -26,9 +26,7 @@ public class CreateDeviceCommandHandler(
         var userId = _httpContextAccessor.HttpContext?.Items["UserId"]?.ToString();
 
         if (string.IsNullOrEmpty(userId))
-        {
             throw new UnauthorizedAccessException("Usuário não autenticado.");
-        }
 
         // Verifica se o tipo de dispositivo existe
         var deviceType =

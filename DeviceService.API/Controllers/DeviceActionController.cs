@@ -1,5 +1,6 @@
 using DeviceService.Application.Features.DeviceAction.Commands;
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace DeviceService.API.Controllers;
@@ -10,7 +11,8 @@ public class DeviceActionController(IMediator mediator) : ControllerBase
 {
     private readonly IMediator _mediator = mediator;
 
-    [HttpPost("control/{deviceId}")]
+    [Authorize]
+    [HttpPost("control/{deviceId}/status")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
@@ -24,8 +26,7 @@ public class DeviceActionController(IMediator mediator) : ControllerBase
         {
             command.DeviceId = deviceId;
             var result = await _mediator.Send(command);
-            string message = "Device controlled successfully.";
-            return Ok(message);
+            return Ok("Dispositivo controlado com sucesso.");
         }
         catch (KeyNotFoundException ex)
         {
@@ -41,30 +42,62 @@ public class DeviceActionController(IMediator mediator) : ControllerBase
         }
     }
 
-    // [HttpPost("switch/{deviceId}")]
-    // [ProducesResponseType(StatusCodes.Status200OK)]
-    // [ProducesResponseType(StatusCodes.Status400BadRequest)]
-    // [ProducesResponseType(StatusCodes.Status404NotFound)]
-    // [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-    // public async Task<ActionResult> SwitchAsync(Guid deviceId, [FromBody] SwitchCommand command)
-    // {
-    //     command.DeviceId = deviceId;
-    //     var result = await _mediator.Send(command);
-    //     return Ok(result);
-    // }
+    [Authorize]
+    [HttpPost("control/{deviceId}/switch")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+    public async Task<ActionResult> SwitchDeviceAsync(Guid deviceId)
+    {
+        try
+        {
+            var command = new SwitchDeviceCommand { DeviceId = deviceId };
+            var result = await _mediator.Send(command);
+            return Ok("Dispositivo controlado com sucesso.");
+        }
+        catch (KeyNotFoundException ex)
+        {
+            return NotFound(ex.Message);
+        }
+        catch (UnauthorizedAccessException ex)
+        {
+            return Unauthorized(ex.Message);
+        }
+        catch (Exception ex)
+        {
+            return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
+        }
+    }
 
-    // [HttpPost("brightness/{deviceId}")]
-    // [ProducesResponseType(StatusCodes.Status200OK)]
-    // [ProducesResponseType(StatusCodes.Status400BadRequest)]
-    // [ProducesResponseType(StatusCodes.Status404NotFound)]
-    // [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-    // public async Task<ActionResult> ControlBrightnessAsync(
-    //     Guid deviceId,
-    //     [FromBody] ControlBrightnessCommand command
-    // )
-    // {
-    //     command.DeviceId = deviceId;
-    //     var result = await _mediator.Send(command);
-    //     return Ok(result);
-    // }
+    [Authorize]
+    [HttpPost("control/{deviceId}/dim")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+    public async Task<ActionResult> DimmerizeDeviceAsync(
+        Guid deviceId,
+        [FromBody] DimmerizeDeviceCommand command
+    )
+    {
+        try
+        {
+            command.DeviceId = deviceId;
+            var result = await _mediator.Send(command);
+            return Ok("Dispositivo controlado com sucesso.");
+        }
+        catch (KeyNotFoundException ex)
+        {
+            return NotFound(ex.Message);
+        }
+        catch (UnauthorizedAccessException ex)
+        {
+            return Unauthorized(ex.Message);
+        }
+        catch (Exception ex)
+        {
+            return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
+        }
+    }
 }

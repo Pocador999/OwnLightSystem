@@ -19,7 +19,7 @@ public class MapperProfile : Profile
             .ForMember(dest => dest.DeviceActions, opt => opt.Ignore())
             .ForMember(
                 dest => dest.Brightness,
-                opt => opt.MapFrom(src => (bool)src.IsDimmable ? src.Brightness : null)
+                opt => opt.MapFrom(src => src.IsDimmable ? src.Brightness : null)
             );
         CreateMap<UpdateDeviceCommand, Device>();
 
