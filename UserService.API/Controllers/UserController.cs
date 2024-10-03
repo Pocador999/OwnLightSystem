@@ -87,9 +87,12 @@ public class UserController(IMediator mediator) : ControllerBase
 
         if (result.StatusCode == StatusCodes.Status200OK.ToString())
             return Ok(result);
-
+        if (result.StatusCode == StatusCodes.Status401Unauthorized.ToString())
+            return Unauthorized(result);
         if (result.StatusCode == StatusCodes.Status404NotFound.ToString())
             return NotFound(result);
+        if (result.StatusCode == StatusCodes.Status409Conflict.ToString())
+            return Conflict(result);
 
         return BadRequest(result);
     }
@@ -98,8 +101,8 @@ public class UserController(IMediator mediator) : ControllerBase
     [HttpPut("password/{id}")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
-    [ProducesResponseType(StatusCodes.Status404NotFound)]
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
     [ProducesResponseType(StatusCodes.Status409Conflict)]
     public async Task<ActionResult> ChangePassword(
         [FromRoute] Guid id,
@@ -111,9 +114,12 @@ public class UserController(IMediator mediator) : ControllerBase
 
         if (result.StatusCode == StatusCodes.Status200OK.ToString())
             return Ok(result);
-
+        if (result.StatusCode == StatusCodes.Status401Unauthorized.ToString())
+            return Unauthorized(result);
         if (result.StatusCode == StatusCodes.Status404NotFound.ToString())
             return NotFound(result);
+        if (result.StatusCode == StatusCodes.Status409Conflict.ToString())
+            return Conflict(result);
 
         return BadRequest(result);
     }
@@ -123,7 +129,6 @@ public class UserController(IMediator mediator) : ControllerBase
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
-    [ProducesResponseType(StatusCodes.Status409Conflict)]
     public async Task<ActionResult> Delete(Guid id)
     {
         var command = new DeleteCommand(id);
@@ -131,6 +136,8 @@ public class UserController(IMediator mediator) : ControllerBase
 
         if (result.StatusCode == StatusCodes.Status200OK.ToString())
             return Ok(result);
+        if (result.StatusCode == StatusCodes.Status401Unauthorized.ToString())
+            return Unauthorized(result);
 
         return NotFound(result);
     }
@@ -139,9 +146,9 @@ public class UserController(IMediator mediator) : ControllerBase
     [HttpPut("email/{id}")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     [ProducesResponseType(StatusCodes.Status409Conflict)]
-    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
     public async Task<ActionResult> UpdateEmail(
         [FromRoute] Guid id,
         [FromBody] UpdateEmailCommand command
@@ -152,8 +159,12 @@ public class UserController(IMediator mediator) : ControllerBase
 
         if (result.StatusCode == StatusCodes.Status200OK.ToString())
             return Ok(result);
+        if (result.StatusCode == StatusCodes.Status401Unauthorized.ToString())
+            return Unauthorized(result);
         if (result.StatusCode == StatusCodes.Status404NotFound.ToString())
             return NotFound(result);
+        if (result.StatusCode == StatusCodes.Status409Conflict.ToString())
+            return Conflict(result);
 
         return BadRequest(result);
     }
@@ -162,9 +173,9 @@ public class UserController(IMediator mediator) : ControllerBase
     [HttpPut("username/{id}")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     [ProducesResponseType(StatusCodes.Status409Conflict)]
-    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
     public async Task<ActionResult> UpdateUsername(
         [FromRoute] Guid id,
         [FromBody] UpdateUsernameCommand command
@@ -175,8 +186,12 @@ public class UserController(IMediator mediator) : ControllerBase
 
         if (result.StatusCode == StatusCodes.Status200OK.ToString())
             return Ok(result);
+        if (result.StatusCode == StatusCodes.Status401Unauthorized.ToString())
+            return Unauthorized(result);
         if (result.StatusCode == StatusCodes.Status404NotFound.ToString())
             return NotFound(result);
+        if (result.StatusCode == StatusCodes.Status409Conflict.ToString())
+            return Conflict(result);
 
         return BadRequest(result);
     }
