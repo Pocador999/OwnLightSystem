@@ -56,6 +56,7 @@ OwnLight.UserService/
 ├── UserService.Infrastructure/
 │   ├── Data/                      # Database context and configurations
 │   ├── Repositories/              # Concrete implementations of the domain repositories
+│   ├── HostedServices/            # Responsible for implementing the hosted services of the API
 │   └── InfrastructureServiceRegistration.cs  # Registers infrastructure services
 │
 └── Migrations/                    # Database migrations for setting up and updating the schema
@@ -76,8 +77,6 @@ The OwnLight.UserService uses a PostgreSQL database to manage user-related data.
 | Password    | varchar(255) | Not Null          |
 | CreatedAt   | timestamp | Default: Utc.Now     |
 | UpdatedAt   | timestamp |                      |
-| IsLoggedIn  | bool      | Default: false       |
-| LastLoginAt | timestamp |                      |
 
 ### Tokens Table
 
@@ -88,6 +87,7 @@ The OwnLight.UserService uses a PostgreSQL database to manage user-related data.
 | Token       | varchar(255)| Not Null, Unique           |
 | ExpiresAt   | timestamp   | Not Null                   |
 | IsRevoked   | bool        | Default: false             |
+| ExpiresAt   | timestamp   | Not Null                   |
 
 ### Description of Columns
 
@@ -100,8 +100,6 @@ The OwnLight.UserService uses a PostgreSQL database to manage user-related data.
 - **Password**: A hashed password for secure authentication.
 - **CreatedAt**: Timestamp of when the user was created.
 - **UpdatedAt**: Timestamp of the last update to the user's information.
-- **IsLoggedIn**: A boolean value indicating whether the user is currently logged in.
-- **LastLoginAt**: The timestamp of the user's last login.
 
 #### Tokens Table
 
@@ -110,6 +108,7 @@ The OwnLight.UserService uses a PostgreSQL database to manage user-related data.
 - **Token**: A secure random string used to regenerate access tokens.
 - **ExpiresAt**: The timestamp at which the refresh token expires.
 - **IsRevoked**: Indicates whether the refresh token has been revoked.
+- **RevokedAt**: The timestamp at which the refresh token was revoked.
 
 ## Getting Started
 
