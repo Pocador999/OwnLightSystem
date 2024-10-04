@@ -11,9 +11,14 @@ public class MapperProfile : Profile
     public MapperProfile()
     {
         // Mapping for Device Entity
-        CreateMap<Device, DeviceResponseDTO>()
+        CreateMap<Device, UserResponseDTO>()
             .ForMember(dest => dest.Status, opt => opt.MapFrom(src => src.Status.ToString()))
-            .ForMember(dest => dest.Brightness, opt => opt.MapFrom(src => src.Brightness));
+            .ForMember(dest => dest.Brightness, opt => opt.MapFrom(src => src.Brightness))
+            .ForMember(dest => dest.DeviceType, opt => opt.MapFrom(src => src.DeviceType.TypeName));
+
+        CreateMap<Device, DeviceResponseDTO>()
+            .ForMember(dest => dest.Status, opt => opt.MapFrom(src => src.Status.ToString()));
+
         CreateMap<Device, HardwareResponseDTO>()
             .ForMember(dest => dest.Status, opt => opt.MapFrom(src => src.Status.ToString()))
             .ForMember(dest => dest.Brightness, opt => opt.MapFrom(src => src.Brightness));
