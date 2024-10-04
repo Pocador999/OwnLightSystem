@@ -12,7 +12,12 @@ public class MapperProfile : Profile
     {
         // Mapping for Device Entity
         CreateMap<Device, DeviceResponseDTO>()
-            .ReverseMap();
+            .ForMember(dest => dest.Status, opt => opt.MapFrom(src => src.Status.ToString()))
+            .ForMember(dest => dest.Brightness, opt => opt.MapFrom(src => src.Brightness));
+        CreateMap<Device, HardwareResponseDTO>()
+            .ForMember(dest => dest.Status, opt => opt.MapFrom(src => src.Status.ToString()))
+            .ForMember(dest => dest.Brightness, opt => opt.MapFrom(src => src.Brightness));
+
         CreateMap<Device, CreateDeviceCommand>();
         CreateMap<CreateDeviceCommand, Device>()
             .ForMember(dest => dest.DeviceType, opt => opt.Ignore())
@@ -21,6 +26,7 @@ public class MapperProfile : Profile
                 dest => dest.Brightness,
                 opt => opt.MapFrom(src => src.IsDimmable ? src.Brightness : null)
             );
+
         CreateMap<UpdateDeviceCommand, Device>();
 
         // Mapping for DeviceType Entity
