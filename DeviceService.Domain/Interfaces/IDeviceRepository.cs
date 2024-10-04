@@ -14,4 +14,5 @@ public interface IDeviceRepository : IRepository<Device>
     Task<Device> ControlDeviceAsync(Guid deviceId, DeviceStatus status);
     Task<Device> SwitchAsync(Guid deviceId, DeviceStatus status);
     Task<Device> ControlBrightnessAsync(Guid deviceId, int brightness);
+    Task<IEnumerable<Device>> GetDevicesByIdsAsync(Guid[] deviceIds, int pageNumber, int pageSize);
 }

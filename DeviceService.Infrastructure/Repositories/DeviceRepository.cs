@@ -36,9 +36,22 @@ public class DeviceRepository(DataContext dataContext)
     {
         var device =
             await _dbSet.FindAsync(deviceId) ?? throw new KeyNotFoundException("Device not found");
-
         device.Brightness = brightness;
         await SaveChangesAsync();
         return device;
+    }
+
+    public async Task<IEnumerable<Device>> GetDevicesByIdsAsync(
+        Guid[] deviceIds,
+        int pageNumber,
+        int pageSize
+    )
+    {
+        var skipAmount = (pageNumber - 1) * pageSize;
+        return await _dbSet
+            .Where(d => deviceIds.Contains(d.Id))
+            .Skip(skipAmount)
+            .Take(pageSize)
+            .ToListAsync();
     }
 }
