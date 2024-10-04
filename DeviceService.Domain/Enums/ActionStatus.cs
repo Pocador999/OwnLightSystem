@@ -2,6 +2,6 @@ namespace DeviceService.Domain.Enums;
 
 public enum ActionStatus
 {
-    Success,
-    Failed,
+    Success = 0,
+    Failed = 1,
 }

@@ -3,11 +3,11 @@ namespace DeviceService.Domain.Enums;
 public enum DeviceActions
 {
     // Common actions
-    TurnOn,
-    TurnOff,
+    TurnOn = 0,
+    TurnOff = 1,
 
     // Light actions
-    Dim,
+    Dim = 2,
 
     // Other devices actions SetTemperature, SetFanSpeed, etc.
 }
