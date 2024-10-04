@@ -34,6 +34,6 @@ public class AdminController(IMediator mediator, TokenCleanupStateService tokenC
             return Ok(formattedLastRun);
         }
 
-        return Ok("No cleanup has been run yet.");
+        return Ok("Nenhuma limpaza de token foi realizada ainda");
     }
 }
