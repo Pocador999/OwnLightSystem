@@ -1,0 +1,80 @@
+# Build results
+bin/
+obj/
+
+# User-specific files
+*.rsuser
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
+
+# Auto-generated files
+*.log
+*.tlog
+*.vspscc
+*.vssscc
+.vscode/
+.vs/
+
+# Roslyn/Code Analysis
+*.ruleset
+*.editorconfig
+.idea/
+
+# Tooling
+*.ncrunch*
+*.dotCover
+*.nunit.*
+*.ReSharper
+*.sln.iml
+
+# Tests and test results
+TestResults/
+.trx
+.coverage
+*.coveragexml
+*.cobertura.xml
+*.nunit.xml
+*.TestResult.xml
+
+# Xamarin/Mobile Specific
+*.apk
+*.ap_
+*.dex
+*.gradle
+*.jar
+*.apk
+*.aab
+*.app
+*.xcworkspace
+*.xcuserdata
+*.lock
+*.pdb
+*.mp4
+*.temp
+*.swp
+*.sln
+*.suo
+*.dbmdl
+*.dbproj
+*.jfm
+
+# Azure Pipelines
+.azdo-pipelines
+
+# Rider
+.idea/
+*.sln.iml
+
+# .NET specific
+project.lock.json
+project.fragment.lock.json
+artifacts/
+project.json.lock
+
+# VS Code Extensions
+.config/
+
+Migrations/
+*.db*
