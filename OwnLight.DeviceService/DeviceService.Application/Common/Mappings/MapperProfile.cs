@@ -41,5 +41,11 @@ public class MapperProfile : Profile
         CreateMap<CreateDeviceTypeCommand, DeviceType>()
             .ForMember(dest => dest.Devices, opt => opt.Ignore());
         CreateMap<UpdateDeviceTypeCommand, DeviceType>();
+
+        // Mapping for DeviceAction Entity
+        CreateMap<DeviceAction, ActionResponseDTO>()
+            .ForMember(dest => dest.Action, opt => opt.MapFrom(src => src.Action.ToString()))
+            .ForMember(dest => dest.Status, opt => opt.MapFrom(src => src.Status.ToString()))
+            .ForMember(dest => dest.PerformedAt, opt => opt.MapFrom(src => src.CreatedAt));
     }
 }
