@@ -1,5 +1,6 @@
 using DeviceService.Application.Features.DeviceAction.Commands;
 using DeviceService.Application.Features.DeviceAction.Queries;
+using DeviceService.Domain.Enums;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -149,6 +150,43 @@ public class DeviceActionController(IMediator mediator) : ControllerBase
             var query = new GetActionsByDeviceIdQuery
             {
                 DeviceId = deviceId,
+                PageNumber = pageNumber,
+                PageSize = pageSize,
+            };
+            var result = await _mediator.Send(query);
+            return Ok(result);
+        }
+        catch (KeyNotFoundException ex)
+        {
+            return NotFound(ex.Message);
+        }
+        catch (UnauthorizedAccessException ex)
+        {
+            return Unauthorized(ex.Message);
+        }
+        catch (Exception ex)
+        {
+            return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
+        }
+    }
+
+    [Authorize]
+    [HttpGet("user_actions/status/{status}")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+    public async Task<ActionResult> GetUserActionsByStatusAsync(
+        ActionStatus status,
+        [FromQuery] int pageNumber = 1,
+        [FromQuery] int pageSize = 10
+    )
+    {
+        try
+        {
+            var query = new GetUserActionsByStatusQuery
+            {
+                Status = status.ToString(),
                 PageNumber = pageNumber,
                 PageSize = pageSize,
             };

@@ -7,22 +7,15 @@ using Entity = DeviceService.Domain.Entities;
 
 namespace DeviceService.Application.Features.DeviceAction.Handlers;
 
-public class DimmerizeDeviceCommandHandler : IRequestHandler<DimmerizeDeviceCommand>
+public class DimmerizeDeviceCommandHandler(
+    IDeviceRepository deviceRepository,
+    IDeviceActionRepository deviceActionRepository,
+    IHttpContextAccessor httpContextAccessor
+) : IRequestHandler<DimmerizeDeviceCommand>
 {
-    private readonly IDeviceRepository _deviceRepository;
-    private readonly IDeviceActionRepository _deviceActionRepository;
-    private readonly IHttpContextAccessor _httpContextAccessor;
-
-    public DimmerizeDeviceCommandHandler(
-        IDeviceRepository deviceRepository,
-        IDeviceActionRepository deviceActionRepository,
-        IHttpContextAccessor httpContextAccessor
-    )
-    {
-        _deviceRepository = deviceRepository;
-        _deviceActionRepository = deviceActionRepository;
-        _httpContextAccessor = httpContextAccessor;
-    }
+    private readonly IDeviceRepository _deviceRepository = deviceRepository;
+    private readonly IDeviceActionRepository _deviceActionRepository = deviceActionRepository;
+    private readonly IHttpContextAccessor _httpContextAccessor = httpContextAccessor;
 
     public async Task<Unit> Handle(
         DimmerizeDeviceCommand request,

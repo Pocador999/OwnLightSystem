@@ -1,4 +1,5 @@
 using DeviceService.Domain.Entities;
+using DeviceService.Domain.Enums;
 using DeviceService.Domain.Interfaces;
 using DeviceService.Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
@@ -41,6 +42,21 @@ public class DeviceActionRepository(DataContext dataContext)
         var skipAmount = (pageNumber - 1) * pageSize;
         return await _dbSet
             .Where(da => da.DeviceId == deviceId)
+            .Skip(skipAmount)
+            .Take(pageSize)
+            .ToListAsync();
+    }
+
+    public async Task<IEnumerable<DeviceAction>> GetUserActionsByStatusAsync(
+        Guid userId,
+        ActionStatus actionStatus,
+        int pageNumber,
+        int pageSize
+    )
+    {
+        var skipAmount = (pageNumber - 1) * pageSize;
+        return await _dbSet
+            .Where(da => da.UserId == userId && da.Status == actionStatus)
             .Skip(skipAmount)
             .Take(pageSize)
             .ToListAsync();

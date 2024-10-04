@@ -7,26 +7,17 @@ using Microsoft.AspNetCore.Http;
 
 namespace DeviceService.Application.Features.DeviceAction.Handlers;
 
-public class GetActionsByDeviceIdQueryHandler
-    : IRequestHandler<GetActionsByDeviceIdQuery, PaginatedResultDTO<ActionResponseDTO>>
+public class GetActionsByDeviceIdQueryHandler(
+    IDeviceActionRepository deviceActionRepository,
+    IDeviceRepository deviceRepository,
+    IMapper mapper,
+    IHttpContextAccessor httpContextAccessor
+) : IRequestHandler<GetActionsByDeviceIdQuery, PaginatedResultDTO<ActionResponseDTO>>
 {
-    private readonly IDeviceActionRepository _deviceActionRepository;
-    private readonly IDeviceRepository _deviceRepository;
-    private readonly IMapper _mapper;
-    private readonly IHttpContextAccessor _httpContextAccessor;
-
-    public GetActionsByDeviceIdQueryHandler(
-        IDeviceActionRepository deviceActionRepository,
-        IDeviceRepository deviceRepository,
-        IMapper mapper,
-        IHttpContextAccessor httpContextAccessor
-    )
-    {
-        _deviceActionRepository = deviceActionRepository;
-        _deviceRepository = deviceRepository;
-        _mapper = mapper;
-        _httpContextAccessor = httpContextAccessor;
-    }
+    private readonly IDeviceActionRepository _deviceActionRepository = deviceActionRepository;
+    private readonly IDeviceRepository _deviceRepository = deviceRepository;
+    private readonly IMapper _mapper = mapper;
+    private readonly IHttpContextAccessor _httpContextAccessor = httpContextAccessor;
 
     public async Task<PaginatedResultDTO<ActionResponseDTO>> Handle(
         GetActionsByDeviceIdQuery request,
