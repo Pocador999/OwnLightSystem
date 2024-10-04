@@ -12,7 +12,7 @@ public class DeviceActionController(IMediator mediator) : ControllerBase
     private readonly IMediator _mediator = mediator;
 
     [Authorize]
-    [HttpPost("control/{deviceId}/status")]
+    [HttpPost("control/status/{deviceId}")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
@@ -43,7 +43,7 @@ public class DeviceActionController(IMediator mediator) : ControllerBase
     }
 
     [Authorize]
-    [HttpPost("control/{deviceId}/switch")]
+    [HttpPost("control/switch/{deviceId}")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
@@ -71,7 +71,7 @@ public class DeviceActionController(IMediator mediator) : ControllerBase
     }
 
     [Authorize]
-    [HttpPost("control/{deviceId}/dim")]
+    [HttpPost("control/dim/{deviceId}")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
