@@ -148,7 +148,7 @@ public class DeviceController(IMediator mediator) : ControllerBase
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-    public async Task<ActionResult<IEnumerable<HardwareResponseDTO>>> GetDevicesStatus(
+    public async Task<ActionResult<PaginatedResultDTO<HardwareResponseDTO>>> GetHardwareStatus(
         [FromQuery] Guid[] deviceIds,
         [FromQuery] int page = 1,
         [FromQuery] int pageSize = 10
@@ -179,7 +179,7 @@ public class DeviceController(IMediator mediator) : ControllerBase
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-    public async Task<ActionResult<IEnumerable<DeviceResponseDTO>>> GetUserDevices(
+    public async Task<ActionResult<PaginatedResultDTO<DeviceResponseDTO>>> GetUserDevices(
         [FromQuery] int page = 1,
         [FromQuery] int pageSize = 10
     )
@@ -187,6 +187,33 @@ public class DeviceController(IMediator mediator) : ControllerBase
         try
         {
             var query = new GetUserDevicesQuery(page, pageSize);
+            var result = await _mediator.Send(query);
+            return Ok(result);
+        }
+        catch (KeyNotFoundException ex)
+        {
+            return NotFound(ex.Message);
+        }
+        catch (Exception ex)
+        {
+            return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
+        }
+    }
+
+    [Authorize]
+    [HttpGet("user_devices_by_room")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+    public async Task<ActionResult<PaginatedResultDTO<DeviceResponseDTO>>> GetUserDevicesByRoom(
+        [FromQuery] Guid roomId,
+        [FromQuery] int page = 1,
+        [FromQuery] int pageSize = 10
+    )
+    {
+        try
+        {
+            var query = new GetUserDevicesByRoomIdQuery(roomId, page, pageSize);
             var result = await _mediator.Send(query);
             return Ok(result);
         }
