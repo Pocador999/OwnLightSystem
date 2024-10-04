@@ -5,8 +5,6 @@ namespace DeviceService.Application.Features.Device.Commands;
 
 public class CreateDeviceCommand(string deviceType, string name) : IRequest<Guid>
 {
-    public required string DeviceType { get; set; } = deviceType;
-
     [JsonIgnore]
     public Guid UserId { get; set; } = Guid.NewGuid();
 
@@ -15,7 +13,11 @@ public class CreateDeviceCommand(string deviceType, string name) : IRequest<Guid
 
     [JsonIgnore]
     public Guid? GroupId { get; set; } = Guid.Empty;
+
+    [JsonIgnore]
+    public int? Brightness { get; set; }
+    
     public required string Name { get; set; } = name;
     public bool IsDimmable { get; set; }
-    public int? Brightness { get; set; }
+    public required string DeviceType { get; set; } = deviceType;
 }

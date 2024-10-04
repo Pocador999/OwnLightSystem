@@ -12,5 +12,5 @@ public class DeviceResponseDTO
     public required string Name { get; set; }
     public bool? IsDimmable { get; set; }
     public int? Brightness { get; set; }
-    public DeviceStatus Status { get; set; }
+    public string Status { get; set; } = null!;
 }
