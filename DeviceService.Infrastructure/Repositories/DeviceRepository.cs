@@ -69,4 +69,20 @@ public class DeviceRepository(DataContext dataContext)
             .Take(pageSize)
             .ToListAsync();
     }
+
+    public async Task<IEnumerable<Device>> GetUserDevicesByRoomIdAsync(
+        Guid userId,
+        Guid roomId,
+        int pageNumber,
+        int pageSize
+    )
+    {
+        var skipAmount = (pageNumber - 1) * pageSize;
+        return await _dbSet
+            .Include(d => d.DeviceType)
+            .Where(d => d.UserId == userId && d.RoomId == roomId)
+            .Skip(skipAmount)
+            .Take(pageSize)
+            .ToListAsync();
+    }
 }

@@ -10,4 +10,10 @@ public interface IDeviceRepository : IRepository<Device>
     Task<Device> ControlBrightnessAsync(Guid deviceId, int brightness);
     Task<IEnumerable<Device>> GetDevicesByIdsAsync(Guid[] deviceIds, int pageNumber, int pageSize);
     Task<IEnumerable<Device>> GetDevicesByUserIdAsync(Guid userId, int pageNumber, int pageSize);
+    Task<IEnumerable<Device>> GetUserDevicesByRoomIdAsync(
+        Guid userId,
+        Guid roomId,
+        int pageNumber,
+        int pageSize
+    );
 }
