@@ -85,4 +85,20 @@ public class DeviceRepository(DataContext dataContext)
             .Take(pageSize)
             .ToListAsync();
     }
+
+    public async Task<IEnumerable<Device>> GetUserDevicesByGroupIdAsync(
+        Guid userId,
+        Guid groupId,
+        int pageNumber,
+        int pageSize
+    )
+    {
+        var skipAmount = (pageNumber - 1) * pageSize;
+        return await _dbSet
+            .Include(d => d.DeviceType)
+            .Where(d => d.UserId == userId && d.GroupId == groupId)
+            .Skip(skipAmount)
+            .Take(pageSize)
+            .ToListAsync();
+    }
 }

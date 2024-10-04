@@ -226,4 +226,31 @@ public class DeviceController(IMediator mediator) : ControllerBase
             return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
         }
     }
+
+    [Authorize]
+    [HttpGet("user_devices_by_group")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+    public async Task<ActionResult<PaginatedResultDTO<DeviceResponseDTO>>> GetUserDevicesByGroup(
+        [FromQuery] Guid groupId,
+        [FromQuery] int page = 1,
+        [FromQuery] int pageSize = 10
+    )
+    {
+        try
+        {
+            var query = new GetUserDevicesByGroupIdQuery(groupId, page, pageSize);
+            var result = await _mediator.Send(query);
+            return Ok(result);
+        }
+        catch (KeyNotFoundException ex)
+        {
+            return NotFound(ex.Message);
+        }
+        catch (Exception ex)
+        {
+            return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
+        }
+    }
 }
