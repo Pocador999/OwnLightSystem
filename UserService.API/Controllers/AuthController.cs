@@ -48,28 +48,6 @@ public class AuthController(IMediator mediator) : ControllerBase
             return BadRequest(result);
     }
 
-    [AllowAnonymous]
-    [HttpPost]
-    [Route("refresh_token")]
-    [ProducesResponseType(StatusCodes.Status200OK)]
-    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
-    [ProducesResponseType(StatusCodes.Status404NotFound)]
-    public async Task<ActionResult> RefreshToken()
-    {
-        var command = new RefreshTokenCommand
-        {
-            RefreshToken = Request.Headers.Authorization.ToString().Split(" ")[1],
-        };
-        var result = await _mediator.Send(command);
-
-        if (result.StatusCode == StatusCodes.Status200OK.ToString())
-            return Ok(result);
-        else if (result.StatusCode == StatusCodes.Status401Unauthorized.ToString())
-            return Unauthorized(result);
-        else
-            return NotFound(result);
-    }
-
     [Authorize]
     [HttpGet]
     [Route("current_user")]
@@ -89,5 +67,33 @@ public class AuthController(IMediator mediator) : ControllerBase
             );
         var userId = Guid.Parse(userIdClaim.Value);
         return Ok(new { Id = userId });
+    }
+
+    [AllowAnonymous]
+    [HttpPost]
+    [Route("refresh_token")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    public async Task<ActionResult> RefreshToken()
+    {
+        // Verifica se o header Authorization existe e tem pelo menos duas partes
+        var authorizationHeader = Request.Headers.Authorization.ToString();
+        if (string.IsNullOrEmpty(authorizationHeader) || !authorizationHeader.StartsWith("Bearer "))
+            return Unauthorized(new { message = "Authorization header is missing or invalid" });
+
+        var tokenParts = authorizationHeader.Split(" ");
+        if (tokenParts.Length < 2)
+            return Unauthorized(new { message = "Invalid authorization format" });
+
+        var command = new RefreshTokenCommand { RefreshToken = tokenParts[1] };
+        var result = await _mediator.Send(command);
+
+        if (result.StatusCode == StatusCodes.Status200OK.ToString())
+            return Ok(result);
+        else if (result.StatusCode == StatusCodes.Status401Unauthorized.ToString())
+            return Unauthorized(result);
+        else
+            return NotFound(result);
     }
 }
