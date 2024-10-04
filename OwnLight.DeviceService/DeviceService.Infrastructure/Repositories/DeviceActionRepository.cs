@@ -17,4 +17,18 @@ public class DeviceActionRepository(DataContext dataContext)
         await SaveChangesAsync();
         return deviceAction;
     }
+
+    public async Task<IEnumerable<DeviceAction>> GetUserActionsAsync(
+        Guid userId,
+        int pageNumber,
+        int pageSize
+    )
+    {
+        var skipAmount = (pageNumber - 1) * pageSize;
+        return await _dbSet
+            .Where(da => da.UserId == userId)
+            .Skip(skipAmount)
+            .Take(pageSize)
+            .ToListAsync();
+    }
 }
