@@ -13,6 +13,7 @@ public class DeviceController(IMediator mediator) : ControllerBase
 {
     private readonly IMediator _mediator = mediator;
 
+    [Authorize]
     [HttpGet("{id:guid}")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
@@ -34,6 +35,7 @@ public class DeviceController(IMediator mediator) : ControllerBase
         }
     }
 
+    [Authorize]
     [HttpGet("all")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
@@ -91,6 +93,7 @@ public class DeviceController(IMediator mediator) : ControllerBase
         }
     }
 
+    [Authorize]
     [HttpPut("{id:guid}")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
@@ -118,6 +121,7 @@ public class DeviceController(IMediator mediator) : ControllerBase
         }
     }
 
+    [Authorize]
     [HttpDelete("{id:guid}")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
@@ -159,6 +163,32 @@ public class DeviceController(IMediator mediator) : ControllerBase
         catch (ArgumentException ex)
         {
             return BadRequest(ex.Message);
+        }
+        catch (KeyNotFoundException ex)
+        {
+            return NotFound(ex.Message);
+        }
+        catch (Exception ex)
+        {
+            return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
+        }
+    }
+
+    [Authorize]
+    [HttpGet("user_devices")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+    public async Task<ActionResult<IEnumerable<DeviceResponseDTO>>> GetUserDevices(
+        [FromQuery] int page = 1,
+        [FromQuery] int pageSize = 10
+    )
+    {
+        try
+        {
+            var query = new GetUserDevicesQuery(page, pageSize);
+            var result = await _mediator.Send(query);
+            return Ok(result);
         }
         catch (KeyNotFoundException ex)
         {
