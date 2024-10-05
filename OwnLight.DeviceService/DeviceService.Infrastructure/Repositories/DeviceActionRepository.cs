@@ -90,4 +90,18 @@ public class DeviceActionRepository(DataContext dataContext)
             .Take(pageSize)
             .ToListAsync();
     }
+
+    public async Task<IEnumerable<DeviceAction>> GetActionsByStatusAsync(
+        ActionStatus actionStatus,
+        int pageNumber,
+        int pageSize
+    )
+    {
+        var skipAmount = (pageNumber - 1) * pageSize;
+        return await _dbSet
+            .Where(da => da.Status == actionStatus)
+            .Skip(skipAmount)
+            .Take(pageSize)
+            .ToListAsync();
+    }
 }

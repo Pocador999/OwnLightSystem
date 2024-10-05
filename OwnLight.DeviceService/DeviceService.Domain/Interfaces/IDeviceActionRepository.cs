@@ -29,4 +29,9 @@ public interface IDeviceActionRepository : IRepository<DeviceAction>
         int pageNumber,
         int pageSize
     );
+    Task<IEnumerable<DeviceAction>> GetActionsByStatusAsync(
+        ActionStatus actionStatus,
+        int pageNumber,
+        int pageSize
+    );
 }
