@@ -76,4 +76,18 @@ public class DeviceActionRepository(DataContext dataContext)
             .Take(pageSize)
             .ToListAsync();
     }
+
+    public async Task<IEnumerable<DeviceAction>> GetActionsByTypeAsync(
+        DeviceActions actionType,
+        int pageNumber,
+        int pageSize
+    )
+    {
+        var skipAmount = (pageNumber - 1) * pageSize;
+        return await _dbSet
+            .Where(da => da.Action == actionType)
+            .Skip(skipAmount)
+            .Take(pageSize)
+            .ToListAsync();
+    }
 }
