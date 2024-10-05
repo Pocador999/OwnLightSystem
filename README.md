@@ -477,7 +477,7 @@ All notable changes to this project will be documented in our [CHANGELOG.md](CHA
 
 ## FAQ
 
-For answers to frequently asked questions, please see our [FAQ](faq.md).
+For answers to frequently asked questions, please see our [FAQ](FAQ.md).
 
 ## License
 
@@ -496,7 +496,7 @@ If you discover any security vulnerabilities, please report them via email. We w
 
 ## Code of Conduct
 
-Please read our [Code of Conduct](./code_of_conduct.md) to understand the standards we expect from contributors.
+Please read our [Code of Conduct](./CODE_OF_CONDUCT.md) to understand the standards we expect from contributors.
 
 ## References
 
