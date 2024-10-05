@@ -18,4 +18,10 @@ public interface IDeviceActionRepository : IRepository<DeviceAction>
         int pageNumber,
         int pageSize
     );
+    Task<IEnumerable<DeviceAction>> GetUserActionsByTypeAsync(
+        Guid userId,
+        DeviceActions actionType,
+        int pageNumber,
+        int pageSize
+    );
 }
