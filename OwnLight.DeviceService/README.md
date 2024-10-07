@@ -20,11 +20,11 @@ The OwnLight.DeviceService is designed with a focus on scalability, maintainabil
 ## Project Structure
 
 The project is organized into multiple layers based on the responsibilities, ensuring a clean separation of concerns:
-
 ```
 OwnLight.DeviceService/
 ├── DeviceService.API/
 │   ├── Controllers/               # Handles HTTP requests (Device controllers)
+│   ├── Middlewares/               # Custom middleware components
 │   ├── Program.cs                 # Application startup configuration
 │   ├── APIServiceRegistration.cs  # Registers services and dependencies
 │   └── Properties/
@@ -281,11 +281,15 @@ The OwnLight.DeviceService exposes several endpoints to handle device functional
 
 ### Device Endpoints:
 
-- `GET /api/devices`: Retrieve a list of devices.
-- `POST /api/devices`: Create a new device.
-- `GET /api/devices/{id}`: Retrieve a device by ID.
-- `PUT /api/devices/{id}`: Update a device by ID.
-- `DELETE /api/devices/{id}`: Delete a device by ID.
+- `GET /api/devices/user_devices_by_group`: Retrieve a list of user devices grouped by group.
+- `GET /api/devices/user_devices_by_room`: Retrieve a list of user devices grouped by room.
+- `GET /api/devices/user_devices`: Retrieve a list of user devices.
+- `GET /api/devices/devices_status`: Retrieve the status of all devices.
+- `DELETE /api/devices/{id:guid}`: Delete a device by ID.
+- `PUT /api/devices/{id:guid}`: Update a device by ID.
+- `POST /api/devices/create`: Create a new device.
+- `GET /api/devices/all`: Retrieve a list of all devices.
+- `GET /api/devices/{id:guid}`: Retrieve a device by ID.
 
 ### DeviceType Endpoints:
 
@@ -297,13 +301,13 @@ The OwnLight.DeviceService exposes several endpoints to handle device functional
 
 ### DeviceAction Endpoints:
 
-- `GET /api/deviceactions`: Retrieve a list of device actions.
-- `POST /api/deviceactions`: Create a new device action.
-- `GET /api/deviceactions/{id}`: Retrieve a device action by ID.
-- `PUT /api/deviceactions/{id}`: Update a device action by ID.
-- `DELETE /api/deviceactions/{id}`: Delete a device action by ID.
-- `POST /api/devices/{id}/control`: Control a device (e.g., turn on/off).
-- `GET /api/devices/{id}/status`: Retrieve the status of a device.
+- `POST /api/devices/control/status/{deviceId}`: Control the status of a device.
+- `POST /api/devices/control/switch/{deviceId}`: Switch a device on or off.
+- `POST /api/devices/control/dim/{deviceId}`: Dim a device.
+- `GET /api/deviceactions/user_actions`: Retrieve a list of user actions.
+- `GET /api/deviceactions/device_actions/{deviceId}`: Retrieve actions for a specific device.
+- `GET /api/deviceactions/user_actions/status/{status}`: Retrieve user actions by status.
+- `GET /api/deviceactions/user_actions/type/{actionType}`: Retrieve user actions by action type.
 
 All responses follow standard REST patterns, returning appropriate HTTP status codes (200, 400, 404, etc.) and messages.
 

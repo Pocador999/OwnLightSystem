@@ -95,7 +95,7 @@ namespace DeviceService.API.Controllers
             }
         }
 
-        [HttpDelete("delete/{id}: guid")]
+        [HttpDelete("delete/{id:guid}")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]

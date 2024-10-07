@@ -1,12 +1,37 @@
 using DeviceService.Domain.Entities;
+using DeviceService.Domain.Enums;
 
 namespace DeviceService.Domain.Interfaces;
 
 public interface IDeviceActionRepository : IRepository<DeviceAction>
 {
-    // Task<IEnumerable<DeviceAction>> GetUserDeviceActionsByDeviceAsync(Guid userId, Guid deviceId);
-    // Task<IEnumerable<DeviceAction>> GetUserDeviceActionsByRoomAsync(Guid userId, Guid roomId);
-    // Task<IEnumerable<DeviceAction>> GetUserDeviceActionsByGroupAsync(Guid userId, Guid groupId);
-    // Task<IEnumerable<DeviceAction>> GetUserDeviceActionsByTypeAsync(Guid userId, Guid deviceType);
     Task<DeviceAction> AddDeviceActionAsync(DeviceAction deviceAction);
+    Task<IEnumerable<DeviceAction>> GetUserActionsAsync(Guid userId, int pageNumber, int pageSize);
+    Task<IEnumerable<DeviceAction>> GetActionsByDeviceIdAsync(
+        Guid deviceId,
+        int pageNumber,
+        int pageSize
+    );
+    Task<IEnumerable<DeviceAction>> GetUserActionsByStatusAsync(
+        Guid userId,
+        ActionStatus actionStatus,
+        int pageNumber,
+        int pageSize
+    );
+    Task<IEnumerable<DeviceAction>> GetUserActionsByTypeAsync(
+        Guid userId,
+        DeviceActions actionType,
+        int pageNumber,
+        int pageSize
+    );
+    Task<IEnumerable<DeviceAction>> GetActionsByTypeAsync(
+        DeviceActions actionType,
+        int pageNumber,
+        int pageSize
+    );
+    Task<IEnumerable<DeviceAction>> GetActionsByStatusAsync(
+        ActionStatus actionStatus,
+        int pageNumber,
+        int pageSize
+    );
 }
