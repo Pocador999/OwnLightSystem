@@ -12,9 +12,10 @@ public class Routine
     public RoutineActionType ActionType { get; set; }
 
     // Parâmetros para setar a ação
-    public Guid DeviceId { get; set; }
-    public DeviceStatus? Status { get; set; }
+    public Guid? DeviceId { get; set; }
+    public DeviceStatus? DeviceStatus { get; set; }
     public int? Brightness { get; set; }
+    public ActionTarget ActionTarget { get; set; }
 
     public ICollection<RoutineExecutionLog> ExecutionLogs { get; set; } = [];
 }

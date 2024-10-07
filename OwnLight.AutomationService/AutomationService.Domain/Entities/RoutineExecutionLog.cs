@@ -6,11 +6,15 @@ public class RoutineExecutionLog
 {
     public Guid Id { get; set; }
     public Guid UserId { get; set; }
+    public Guid DeviceId { get; set; }
 
     public Guid RoutineId { get; set; }
     public Routine Routine { get; set; } = null!;
 
-    public DateTime ExecutedAt { get; set; } = DateTime.UtcNow;
-    public ActionStatus Status { get; set; }
+    public ActionTarget ActionTarget { get; set; }
+    public ActionStatus ActionStatus { get; set; }
+    public RoutineActionType ActionType { get; set; }
+    
     public string ErrorMessage { get; set; } = string.Empty;
+    public DateTime ExecutedAt { get; set; } = DateTime.UtcNow;
 }
