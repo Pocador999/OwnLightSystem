@@ -7,6 +7,8 @@ public class DataContext(DbContextOptions<DataContext> options) : DbContext(opti
 {
     public DbSet<Routine> Routines { get; set; }
     public DbSet<RoutineExecutionLog> RoutineExecutionLogs { get; set; }
+    public DbSet<Group> Groups { get; set; }
+    public DbSet<Room> Rooms { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -18,6 +20,8 @@ public class DataContext(DbContextOptions<DataContext> options) : DbContext(opti
             .HasForeignKey(log => log.RoutineId);
 
         modelBuilder.Entity<RoutineExecutionLog>().HasKey(log => log.Id);
+        modelBuilder.Entity<Group>().HasKey(g => g.Id);
+        modelBuilder.Entity<Room>().HasKey(r => r.Id);
 
         base.OnModelCreating(modelBuilder);
     }
