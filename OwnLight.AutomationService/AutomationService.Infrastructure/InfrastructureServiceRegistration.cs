@@ -1,4 +1,6 @@
+using AutomationService.Domain.Interfaces;
 using AutomationService.Infrastructure.Data;
+using AutomationService.Infrastructure.Repositories;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -14,6 +16,7 @@ public static class InfrastructureServiceRegistration
     {
         services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
         services.AddScoped<IRoomRepository, RoomRepository>();
+        services.AddScoped<IGroupRepository, GroupRepository>();
         services.AddDbContext<DataContext>(options =>
             options.UseNpgsql(configuration.GetConnectionString("DefaultConnection"))
         );
