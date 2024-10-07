@@ -10,6 +10,9 @@ public interface IDeviceRepository : IRepository<Device>
     Task<Device> ControlBrightnessAsync(Guid deviceId, int brightness);
     Task<int> ControlUserDevicesByRoomIdAsync(Guid userId, Guid roomId, DeviceStatus status);
     Task<int> ControlUserDevicesByGroupIdAsync(Guid userId, Guid groupId, DeviceStatus status);
+    Task<int> ControlBrightnessByUserRoomAsync(Guid userId, Guid roomId, int brightness);
+    Task<int> ControlBrightnessByUserGroupAsync(Guid userId, Guid groupId, int brightness);
+    Task<int> ControlAllUserDevicesAsync(Guid userId, DeviceStatus status);
 
     Task<IEnumerable<Device>> GetDevicesByIdsAsync(Guid[] deviceIds, int pageNumber, int pageSize);
     Task<IEnumerable<Device>> GetDevicesByUserIdAsync(Guid userId, int pageNumber, int pageSize);

@@ -5,7 +5,7 @@ using DeviceService.Domain.Enums;
 using DeviceService.Domain.Interfaces;
 using MediatR;
 
-namespace DeviceService.Application.Features.DeviceAction.Handlers;
+namespace DeviceService.Application.Features.DeviceAction.Handlers.QueryHandlers;
 
 public class GetActionsByStatusQueryHandler(
     IDeviceActionRepository deviceActionRepository,

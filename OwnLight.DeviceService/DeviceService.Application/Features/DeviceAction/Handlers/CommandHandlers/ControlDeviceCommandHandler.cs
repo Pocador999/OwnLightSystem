@@ -5,7 +5,7 @@ using MediatR;
 using Microsoft.AspNetCore.Http;
 using Entity = DeviceService.Domain.Entities;
 
-namespace DeviceService.Application.Features.DeviceAction.Handlers;
+namespace DeviceService.Application.Features.DeviceAction.Handlers.CommandHandlers;
 
 public class ControlDeviceCommandHandler(
     IDeviceRepository deviceRepository,
@@ -33,7 +33,6 @@ public class ControlDeviceCommandHandler(
                 $"Dispositivo de id {request.DeviceId} não encontrado."
             );
 
-        // Verifica se o dispositivo pertence ao usuário
         if (device.UserId.ToString() != userId)
             throw new UnauthorizedAccessException(
                 $"O dispositivo de id {request.DeviceId} não pertence ao usuário."
@@ -41,7 +40,6 @@ public class ControlDeviceCommandHandler(
 
         try
         {
-            // Ajusta o brilho de acordo com o estado
             if (request.Status == DeviceStatus.On)
             {
                 device = await _deviceRepository.ControlDeviceAsync(
@@ -63,7 +61,6 @@ public class ControlDeviceCommandHandler(
 
             await _deviceRepository.UpdateAsync(device);
 
-            // Cria um registro de ação no banco de dados
             var deviceAction = new Entity.DeviceAction
             {
                 DeviceId = device.Id,
@@ -79,7 +76,6 @@ public class ControlDeviceCommandHandler(
         }
         catch (Exception)
         {
-            // Caso ocorra algum erro, cria um registro com status "Failed"
             var deviceAction = new Entity.DeviceAction
             {
                 DeviceId = device.Id,

@@ -6,20 +6,20 @@ using DeviceService.Domain.Interfaces;
 using MediatR;
 using Microsoft.AspNetCore.Http;
 
-namespace DeviceService.Application.Features.DeviceAction.Handlers;
+namespace DeviceService.Application.Features.DeviceAction.Handlers.QueryHandlers;
 
-public class GetUserActionsByTypeQueryHandler(
+public class GetUserActionsByStatusQueryHandler(
     IDeviceActionRepository deviceActionRepository,
     IMapper mapper,
     IHttpContextAccessor httpContextAccessor
-) : IRequestHandler<GetUserActionsByTypeQuery, PaginatedResultDTO<ActionResponseDTO>>
+) : IRequestHandler<GetUserActionsByStatusQuery, PaginatedResultDTO<ActionResponseDTO>>
 {
     private readonly IDeviceActionRepository _deviceActionRepository = deviceActionRepository;
     private readonly IMapper _mapper = mapper;
     private readonly IHttpContextAccessor _httpContextAccessor = httpContextAccessor;
 
     public async Task<PaginatedResultDTO<ActionResponseDTO>> Handle(
-        GetUserActionsByTypeQuery request,
+        GetUserActionsByStatusQuery request,
         CancellationToken cancellationToken
     )
     {
@@ -27,9 +27,16 @@ public class GetUserActionsByTypeQueryHandler(
         if (string.IsNullOrEmpty(userId))
             throw new UnauthorizedAccessException("Usuário não autenticado.");
 
-        var actions = await _deviceActionRepository.GetUserActionsByTypeAsync(
+        var status = Enum.Parse<ActionStatus>(request.Status);
+        if (!Enum.IsDefined(typeof(ActionStatus), status))
+        {
+            var message = $"Status {request.Status} não é válido.";
+            throw new KeyNotFoundException(message);
+        }
+
+        var actions = await _deviceActionRepository.GetUserActionsByStatusAsync(
             Guid.Parse(userId),
-            Enum.Parse<DeviceActions>(request.Action),
+            status,
             request.PageNumber,
             request.PageSize
         );

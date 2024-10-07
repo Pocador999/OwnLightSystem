@@ -75,6 +75,52 @@ public class DeviceRepository(DataContext dataContext)
         return rowsAffected;
     }
 
+    public async Task<int> ControlBrightnessByUserRoomAsync(
+        Guid userId,
+        Guid roomId,
+        int brightness
+    )
+    {
+        var rowsAffected = await _dbSet
+            .Where(d => d.UserId == userId && d.RoomId == roomId)
+            .ExecuteUpdateAsync(d => d.SetProperty(p => p.Brightness, brightness));
+
+        if (rowsAffected == 0)
+            throw new KeyNotFoundException($"No devices found for user {userId} in room {roomId}");
+
+        return rowsAffected;
+    }
+
+    public async Task<int> ControlBrightnessByUserGroupAsync(
+        Guid userId,
+        Guid groupId,
+        int brightness
+    )
+    {
+        var rowsAffected = await _dbSet
+            .Where(d => d.UserId == userId && d.GroupId == groupId)
+            .ExecuteUpdateAsync(d => d.SetProperty(p => p.Brightness, brightness));
+
+        if (rowsAffected == 0)
+            throw new KeyNotFoundException(
+                $"No devices found for user {userId} in group {groupId}"
+            );
+
+        return rowsAffected;
+    }
+
+    public async Task<int> ControlAllUserDevicesAsync(Guid userId, DeviceStatus status)
+    {
+        var rowsAffected = await _dbSet
+            .Where(d => d.UserId == userId)
+            .ExecuteUpdateAsync(d => d.SetProperty(p => p.Status, status));
+
+        if (rowsAffected == 0)
+            throw new KeyNotFoundException($"No devices found for user {userId}");
+
+        return rowsAffected;
+    }
+
     public async Task<IEnumerable<Device>> GetDevicesByIdsAsync(
         Guid[] deviceIds,
         int pageNumber,

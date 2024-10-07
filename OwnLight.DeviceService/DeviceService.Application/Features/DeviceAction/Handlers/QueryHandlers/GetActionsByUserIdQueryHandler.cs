@@ -5,7 +5,7 @@ using DeviceService.Domain.Interfaces;
 using MediatR;
 using Microsoft.AspNetCore.Http;
 
-namespace DeviceService.Application.Features.DeviceAction.Handlers;
+namespace DeviceService.Application.Features.DeviceAction.Handlers.QueryHandlers;
 
 public class GetActionsByUserIdQueryHandler(
     IDeviceActionRepository deviceActionRepository,

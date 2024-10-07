@@ -5,28 +5,35 @@ using MediatR;
 using Microsoft.AspNetCore.Http;
 using Entity = DeviceService.Domain.Entities;
 
-namespace DeviceService.Application.Features.DeviceAction.Handlers;
+namespace DeviceService.Application.Features.DeviceAction.Handlers.CommandHandlers;
 
-public class ControlRoomCommandHandler(
-    IDeviceRepository deviceRepository,
-    IDeviceActionRepository deviceActionRepository,
-    IHttpContextAccessor httpContextAccessor
-) : IRequestHandler<ControlRoomCommand>
+public class ControlGroupCommandHandler : IRequestHandler<ControlGroupCommand>
 {
-    private readonly IDeviceRepository _deviceRepository = deviceRepository;
-    private readonly IDeviceActionRepository _deviceActionRepository = deviceActionRepository;
-    private readonly IHttpContextAccessor _httpContextAccessor = httpContextAccessor;
+    private readonly IDeviceRepository _deviceRepository;
+    private readonly IDeviceActionRepository _deviceActionRepository;
+    private readonly IHttpContextAccessor _httpContextAccessor;
 
-    public async Task<Unit> Handle(ControlRoomCommand request, CancellationToken cancellationToken)
+    public ControlGroupCommandHandler(
+        IDeviceRepository deviceRepository,
+        IDeviceActionRepository deviceActionRepository,
+        IHttpContextAccessor httpContextAccessor
+    )
+    {
+        _deviceRepository = deviceRepository;
+        _deviceActionRepository = deviceActionRepository;
+        _httpContextAccessor = httpContextAccessor;
+    }
+
+    public async Task<Unit> Handle(ControlGroupCommand request, CancellationToken cancellationToken)
     {
         var userId = _httpContextAccessor.HttpContext?.Items["UserId"]?.ToString();
 
         if (string.IsNullOrEmpty(userId))
             throw new UnauthorizedAccessException("Usuário não autenticado.");
 
-        var devices = await _deviceRepository.GetUserDevicesByRoomIdAsync(
+        var devices = await _deviceRepository.GetUserDevicesByGroupIdAsync(
             Guid.Parse(userId),
-            request.RoomId,
+            request.GroupId,
             pageNumber: 1,
             pageSize: 30
         );
@@ -64,9 +71,9 @@ public class ControlRoomCommandHandler(
                 actionsToLog.Add(deviceAction);
             }
 
-            await _deviceRepository.ControlUserDevicesByRoomIdAsync(
+            await _deviceRepository.ControlUserDevicesByGroupIdAsync(
                 Guid.Parse(userId),
-                request.RoomId,
+                request.GroupId,
                 request.Status
             );
 
