@@ -4,6 +4,6 @@ namespace AutomationService.Domain.Interfaces;
 
 public interface IRoomRepository : IRepository<Room>
 {
-    public Task<IEnumerable<Room>> GetUserRoomsAsync(Guid userId);
+    public Task<IEnumerable<Room>> GetUserRoomsAsync(Guid userId, int page, int pageSize);
     public Task<Room?> GetRoomByNameAsync(string name);
 }
