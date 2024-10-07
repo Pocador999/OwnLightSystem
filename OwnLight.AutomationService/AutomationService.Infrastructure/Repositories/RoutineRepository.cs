@@ -11,8 +11,19 @@ public class RoutineRepository(DataContext dataContext)
 {
     private readonly DbSet<Routine> _dbSet = dataContext.Set<Routine>();
 
-    public async Task<IEnumerable<Routine>> GetUserRoutinesAsync(Guid userId) =>
-        await _dbSet.Where(r => r.UserId == userId).ToListAsync();
+    public async Task<IEnumerable<Routine>> GetUserRoutinesAsync(
+        Guid userId,
+        int page,
+        int pageSize
+    )
+    {
+        var skipAmount = (page - 1) * pageSize;
+        return await _dbSet
+            .Where(r => r.UserId == userId)
+            .Skip(skipAmount)
+            .Take(pageSize)
+            .ToListAsync();
+    }
 
     public async Task<Routine?> GetRoutineByNameAsync(string name) =>
         await _dbSet.FirstOrDefaultAsync(r => r.Name == name);

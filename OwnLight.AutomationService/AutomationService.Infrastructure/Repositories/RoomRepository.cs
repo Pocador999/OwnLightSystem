@@ -11,8 +11,15 @@ public class RoomRepository(DataContext dataContext)
 {
     private readonly DbSet<Room> _dbSet = dataContext.Set<Room>();
 
-    public async Task<IEnumerable<Room>> GetUserRoomsAsync(Guid userId) =>
-        await _dbSet.Where(r => r.UserId == userId).ToListAsync();
+    public async Task<IEnumerable<Room>> GetUserRoomsAsync(Guid userId, int page, int pageSize)
+    {
+        var skipAmount = (page - 1) * pageSize;
+        return await _dbSet
+            .Where(r => r.UserId == userId)
+            .Skip(skipAmount)
+            .Take(pageSize)
+            .ToListAsync();
+    }
 
     public async Task<Room?> GetRoomByNameAsync(string name) =>
         await _dbSet.FirstOrDefaultAsync(r => r.Name == name);

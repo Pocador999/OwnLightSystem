@@ -11,8 +11,15 @@ public class GroupRepository(DataContext dataContext)
 {
     private readonly DbSet<Group> _dbSet = dataContext.Set<Group>();
 
-    public async Task<IEnumerable<Group>> GetUserGroupsAsync(Guid userId) =>
-        await _dbSet.Where(g => g.UserId == userId).ToListAsync();
+    public async Task<IEnumerable<Group>> GetUserGroupsAsync(Guid userId, int page, int pageSize)
+    {
+        var skipAmount = (page - 1) * pageSize;
+        return await _dbSet
+            .Where(g => g.UserId == userId)
+            .Skip(skipAmount)
+            .Take(pageSize)
+            .ToListAsync();
+    }
 
     public async Task<Group?> GetGroupByNameAsync(string name) =>
         await _dbSet.FirstOrDefaultAsync(g => g.Name == name);
