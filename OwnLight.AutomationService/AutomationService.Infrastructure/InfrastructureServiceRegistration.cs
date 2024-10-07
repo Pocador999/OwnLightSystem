@@ -17,6 +17,7 @@ public static class InfrastructureServiceRegistration
         services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
         services.AddScoped<IRoomRepository, RoomRepository>();
         services.AddScoped<IGroupRepository, GroupRepository>();
+        services.AddScoped<IRoutineRepository, RoutineRepository>();
         services.AddDbContext<DataContext>(options =>
             options.UseNpgsql(configuration.GetConnectionString("DefaultConnection"))
         );
