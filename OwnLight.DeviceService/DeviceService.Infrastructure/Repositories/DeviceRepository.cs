@@ -41,6 +41,40 @@ public class DeviceRepository(DataContext dataContext)
         return device;
     }
 
+    public async Task<int> ControlUserDevicesByRoomIdAsync(
+        Guid userId,
+        Guid roomId,
+        DeviceStatus status
+    )
+    {
+        var rowsAffected = await _dbSet
+            .Where(d => d.UserId == userId && d.RoomId == roomId)
+            .ExecuteUpdateAsync(d => d.SetProperty(p => p.Status, status));
+
+        if (rowsAffected == 0)
+            throw new KeyNotFoundException($"No devices found for user {userId} in room {roomId}");
+
+        return rowsAffected;
+    }
+
+    public async Task<int> ControlUserDevicesByGroupIdAsync(
+        Guid userId,
+        Guid groupId,
+        DeviceStatus status
+    )
+    {
+        var rowsAffected = await _dbSet
+            .Where(d => d.UserId == userId && d.GroupId == groupId)
+            .ExecuteUpdateAsync(d => d.SetProperty(p => p.Status, status));
+
+        if (rowsAffected == 0)
+            throw new KeyNotFoundException(
+                $"No devices found for user {userId} in group {groupId}"
+            );
+
+        return rowsAffected;
+    }
+
     public async Task<IEnumerable<Device>> GetDevicesByIdsAsync(
         Guid[] deviceIds,
         int pageNumber,

@@ -5,7 +5,7 @@ namespace DeviceService.Domain.Interfaces;
 
 public interface IDeviceActionRepository : IRepository<DeviceAction>
 {
-    Task<DeviceAction> AddDeviceActionAsync(DeviceAction deviceAction);
+    Task AddDeviceActionsAsync(IEnumerable<DeviceAction> deviceActions);
     Task<IEnumerable<DeviceAction>> GetUserActionsAsync(Guid userId, int pageNumber, int pageSize);
     Task<IEnumerable<DeviceAction>> GetActionsByDeviceIdAsync(
         Guid deviceId,

@@ -75,7 +75,7 @@ public class ControlDeviceCommandHandler(
                 Status = ActionStatus.Success,
             };
 
-            await _deviceActionRepository.AddDeviceActionAsync(deviceAction);
+            await _deviceActionRepository.CreateAsync(deviceAction);
         }
         catch (Exception)
         {
@@ -91,7 +91,7 @@ public class ControlDeviceCommandHandler(
                 Status = ActionStatus.Failed,
             };
 
-            await _deviceActionRepository.AddDeviceActionAsync(deviceAction);
+            await _deviceActionRepository.CreateAsync(deviceAction);
             throw;
         }
 

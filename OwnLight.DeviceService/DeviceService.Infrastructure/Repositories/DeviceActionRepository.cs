@@ -12,11 +12,10 @@ public class DeviceActionRepository(DataContext dataContext)
 {
     private readonly DbSet<DeviceAction> _dbSet = dataContext.Set<DeviceAction>();
 
-    public async Task<DeviceAction> AddDeviceActionAsync(DeviceAction deviceAction)
+    public async Task AddDeviceActionsAsync(IEnumerable<DeviceAction> deviceActions)
     {
-        await _dbSet.AddAsync(deviceAction);
+        await _dbSet.AddRangeAsync(deviceActions);
         await SaveChangesAsync();
-        return deviceAction;
     }
 
     public async Task<IEnumerable<DeviceAction>> GetUserActionsAsync(
