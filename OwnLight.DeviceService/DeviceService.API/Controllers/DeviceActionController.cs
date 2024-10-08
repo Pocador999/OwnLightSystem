@@ -228,6 +228,37 @@ public class DeviceActionController(IMediator mediator) : ControllerBase
     }
 
     [Authorize]
+    [HttpPost("control/all/user_devices/{userId}")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+    public async Task<ActionResult> ControlAllUserDevicesAsync(
+        Guid userId,
+        [FromBody] ControlAllUserDevicesCommand command
+    )
+    {
+        try
+        {
+            command.UserId = userId;
+            var result = await _mediator.Send(command);
+            return Ok("Dispositivos controlados com sucesso.");
+        }
+        catch (KeyNotFoundException ex)
+        {
+            return NotFound(ex.Message);
+        }
+        catch (UnauthorizedAccessException ex)
+        {
+            return Unauthorized(ex.Message);
+        }
+        catch (Exception ex)
+        {
+            return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
+        }
+    }
+
+    [Authorize]
     [HttpGet("user_actions")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]

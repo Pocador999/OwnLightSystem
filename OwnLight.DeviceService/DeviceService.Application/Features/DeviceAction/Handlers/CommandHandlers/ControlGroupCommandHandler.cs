@@ -7,22 +7,15 @@ using Entity = DeviceService.Domain.Entities;
 
 namespace DeviceService.Application.Features.DeviceAction.Handlers.CommandHandlers;
 
-public class ControlGroupCommandHandler : IRequestHandler<ControlGroupCommand>
+public class ControlGroupCommandHandler(
+    IDeviceRepository deviceRepository,
+    IDeviceActionRepository deviceActionRepository,
+    IHttpContextAccessor httpContextAccessor
+) : IRequestHandler<ControlGroupCommand>
 {
-    private readonly IDeviceRepository _deviceRepository;
-    private readonly IDeviceActionRepository _deviceActionRepository;
-    private readonly IHttpContextAccessor _httpContextAccessor;
-
-    public ControlGroupCommandHandler(
-        IDeviceRepository deviceRepository,
-        IDeviceActionRepository deviceActionRepository,
-        IHttpContextAccessor httpContextAccessor
-    )
-    {
-        _deviceRepository = deviceRepository;
-        _deviceActionRepository = deviceActionRepository;
-        _httpContextAccessor = httpContextAccessor;
-    }
+    private readonly IDeviceRepository _deviceRepository = deviceRepository;
+    private readonly IDeviceActionRepository _deviceActionRepository = deviceActionRepository;
+    private readonly IHttpContextAccessor _httpContextAccessor = httpContextAccessor;
 
     public async Task<Unit> Handle(ControlGroupCommand request, CancellationToken cancellationToken)
     {
