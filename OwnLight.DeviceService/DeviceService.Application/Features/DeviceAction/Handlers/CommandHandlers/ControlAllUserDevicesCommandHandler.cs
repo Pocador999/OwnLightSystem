@@ -1,6 +1,7 @@
 using DeviceService.Application.Features.DeviceAction.Commands;
 using DeviceService.Domain.Enums;
 using DeviceService.Domain.Interfaces;
+using FluentValidation;
 using MediatR;
 using Microsoft.AspNetCore.Http;
 using Entity = DeviceService.Domain.Entities;
@@ -10,18 +11,22 @@ namespace DeviceService.Application.Features.DeviceAction.Handlers.CommandHandle
 public class ControlAllUserDevicesCommandHandler(
     IDeviceRepository deviceRepository,
     IDeviceActionRepository deviceActionRepository,
-    IHttpContextAccessor httpContextAccessor
+    IHttpContextAccessor httpContextAccessor,
+    IValidator<ControlAllUserDevicesCommand> validator
 ) : IRequestHandler<ControlAllUserDevicesCommand>
 {
     private readonly IDeviceRepository _deviceRepository = deviceRepository;
     private readonly IDeviceActionRepository _deviceActionRepository = deviceActionRepository;
     private readonly IHttpContextAccessor _httpContextAccessor = httpContextAccessor;
+    private readonly IValidator<ControlAllUserDevicesCommand> _validator = validator;
 
     public async Task<Unit> Handle(
         ControlAllUserDevicesCommand request,
         CancellationToken cancellationToken
     )
     {
+        await _validator.ValidateAndThrowAsync(request, cancellationToken: cancellationToken);
+
         var userId = _httpContextAccessor.HttpContext?.Items["UserId"]?.ToString();
 
         if (string.IsNullOrEmpty(userId))

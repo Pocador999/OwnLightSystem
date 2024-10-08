@@ -1,6 +1,8 @@
 using System.Reflection;
 using DeviceService.Application.Common.Validations.Device;
+using DeviceService.Application.Common.Validations.DeviceAction;
 using DeviceService.Application.Features.Device.Commands;
+using DeviceService.Application.Features.DeviceAction.Commands;
 using FluentValidation;
 using MediatR;
 using Microsoft.Extensions.DependencyInjection;
@@ -18,6 +20,14 @@ public static class ApplicationServiceRegistration
         services.AddTransient<IValidator<UpdateDeviceCommand>, UpdateDeviceValidator>();
         services.AddTransient<IValidator<UpdateDeviceRoomCommand>, UpdateDeviceRoomValidator>();
         services.AddTransient<IValidator<UpdateDeviceGroupCommand>, UpdateDeviceGroupValidator>();
+
+        services.AddTransient<IValidator<ControlAllUserDevicesCommand>, ControlAllUserDevicesValidator>();
+        services.AddTransient<IValidator<ControlDeviceCommand>, ControlDeviceValidator>();
+        services.AddTransient<IValidator<ControlGroupCommand>, ControlGroupValidator>();
+        services.AddTransient<IValidator<ControlRoomCommand>, ControlRoomValidator>();
+        services.AddTransient<IValidator<DimmerizeDeviceCommand>, DimmerizeDeviceValidator>();
+        services.AddTransient<IValidator<DimmerizeGroupCommand>, DimmerizeGroupValidator>();
+        services.AddTransient<IValidator<DimmerizeRoomCommand>, DimmerizeRoomValidator>();
 
         return services;
     }

@@ -1,6 +1,7 @@
 using DeviceService.Application.Features.DeviceAction.Commands;
 using DeviceService.Domain.Enums;
 using DeviceService.Domain.Interfaces;
+using FluentValidation;
 using MediatR;
 using Microsoft.AspNetCore.Http;
 using Entity = DeviceService.Domain.Entities;
@@ -10,18 +11,22 @@ namespace DeviceService.Application.Features.DeviceAction.Handlers.CommandHandle
 public class DimmerizeRoomCommandHandler(
     IDeviceRepository deviceRepository,
     IDeviceActionRepository deviceActionRepository,
-    IHttpContextAccessor httpContextAccessor
+    IHttpContextAccessor httpContextAccessor,
+    IValidator<DimmerizeRoomCommand> validator
 ) : IRequestHandler<DimmerizeRoomCommand>
 {
     private readonly IDeviceRepository _deviceRepository = deviceRepository;
     private readonly IDeviceActionRepository _deviceActionRepository = deviceActionRepository;
     private readonly IHttpContextAccessor _httpContextAccessor = httpContextAccessor;
+    private readonly IValidator<DimmerizeRoomCommand> _validator = validator;
 
     public async Task<Unit> Handle(
         DimmerizeRoomCommand request,
         CancellationToken cancellationToken
     )
     {
+        await _validator.ValidateAndThrowAsync(request, cancellationToken: cancellationToken);
+
         var userId = _httpContextAccessor.HttpContext?.Items["UserId"]?.ToString();
 
         if (string.IsNullOrEmpty(userId))
