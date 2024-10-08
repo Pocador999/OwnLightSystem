@@ -14,9 +14,11 @@ public class CreateDeviceCommand(string name) : IRequest<Guid>
     public Guid? GroupId { get; set; } = Guid.Empty;
 
     [JsonIgnore]
-    public int? Brightness { get; set; }
+    public int? Brightness { get; set; } = 0;
 
     public required string Name { get; set; } = name;
     public bool IsDimmable { get; set; }
+
+    [JsonIgnore]
     public required string DeviceType { get; set; } = "Light";
 }

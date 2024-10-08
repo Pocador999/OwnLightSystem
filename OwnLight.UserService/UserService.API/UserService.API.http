@@ -1,6 +1,0 @@
-@UserService.API_HostAddress = http://localhost:5008
-
-GET http://localhost:5008/api/UserService
-Accept: application/json
-
-###

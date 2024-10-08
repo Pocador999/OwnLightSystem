@@ -1,4 +1,7 @@
 using System.Reflection;
+using DeviceService.Application.Common.Validations.Device;
+using DeviceService.Application.Features.Device.Commands;
+using FluentValidation;
 using MediatR;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -10,6 +13,9 @@ public static class ApplicationServiceRegistration
     {
         services.AddAutoMapper(Assembly.GetExecutingAssembly());
         services.AddMediatR(Assembly.GetExecutingAssembly());
+
+        services.AddTransient<IValidator<CreateDeviceCommand>, CreateDeviceValidator>();
+
         return services;
     }
 }
