@@ -26,13 +26,14 @@ public class GetActionsByTypeQueryHandler(
                 request.PageNumber,
                 request.PageSize
             ) ?? throw new KeyNotFoundException("Nenhuma ação encontrada.");
-
+            
+        var totalCount = await _deviceActionRepository.CountAsync();
         var mappedActions = _mapper.Map<IEnumerable<ActionResponseDTO>>(actions);
 
         return new PaginatedResultDTO<ActionResponseDTO>(
+            totalCount,
             request.PageNumber,
             request.PageSize,
-            actions.Count(),
             mappedActions
         );
     }

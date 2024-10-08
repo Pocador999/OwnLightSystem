@@ -7,23 +7,15 @@ using Microsoft.AspNetCore.Http;
 
 namespace DeviceService.Application.Features.Device.Handlers.QueryHandlers;
 
-public class GetUserDevicesByGroupIdQueryHandler
-    : IRequestHandler<GetUserDevicesByGroupIdQuery, PaginatedResultDTO<UserResponseDTO>>
+public class GetUserDevicesByGroupIdQueryHandler(
+    IDeviceRepository deviceRepository,
+    IMapper mapper,
+    IHttpContextAccessor httpContextAccessor
+) : IRequestHandler<GetUserDevicesByGroupIdQuery, PaginatedResultDTO<UserResponseDTO>>
 {
-    private readonly IDeviceRepository _deviceRepository;
-    private readonly IMapper _mapper;
-    private readonly IHttpContextAccessor _httpContextAccessor;
-
-    public GetUserDevicesByGroupIdQueryHandler(
-        IDeviceRepository deviceRepository,
-        IMapper mapper,
-        IHttpContextAccessor httpContextAccessor
-    )
-    {
-        _deviceRepository = deviceRepository;
-        _mapper = mapper;
-        _httpContextAccessor = httpContextAccessor;
-    }
+    private readonly IDeviceRepository _deviceRepository = deviceRepository;
+    private readonly IMapper _mapper = mapper;
+    private readonly IHttpContextAccessor _httpContextAccessor = httpContextAccessor;
 
     public async Task<PaginatedResultDTO<UserResponseDTO>> Handle(
         GetUserDevicesByGroupIdQuery request,
@@ -43,10 +35,11 @@ public class GetUserDevicesByGroupIdQueryHandler
             request.PageNumber,
             request.PageSize
         );
+        var totalCount = await _deviceRepository.CountAsync();
         var devicesDTO = _mapper.Map<IEnumerable<UserResponseDTO>>(devices);
 
         return new PaginatedResultDTO<UserResponseDTO>(
-            devicesDTO.Count(),
+            totalCount,
             request.PageNumber,
             request.PageSize,
             devicesDTO

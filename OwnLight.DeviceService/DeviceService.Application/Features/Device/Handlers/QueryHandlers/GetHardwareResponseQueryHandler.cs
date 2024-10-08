@@ -17,13 +17,9 @@ public class GetHardwareResponseQueryHandler(IMapper mapper, IDeviceRepository d
         CancellationToken cancellationToken
     )
     {
-        // Validação se os IDs estão presentes
         if (request.DeviceIds == null || request.DeviceIds.Length == 0)
-        {
             throw new ArgumentException("É necessário informar ao menos um id de dispositivo.");
-        }
 
-        // Busca os dispositivos por IDs
         var devices = await _deviceRepository.GetDevicesByIdsAsync(
             request.DeviceIds,
             request.PageNumber,
@@ -31,14 +27,13 @@ public class GetHardwareResponseQueryHandler(IMapper mapper, IDeviceRepository d
         );
 
         if (!devices.Any())
-        {
             throw new KeyNotFoundException("Nenhum dispositivo encontrado para os IDs fornecidos.");
-        }
 
+        var totalCount = await _deviceRepository.CountAsync();
         var devicesDTO = _mapper.Map<IEnumerable<HardwareResponseDTO>>(devices);
 
         return new PaginatedResultDTO<HardwareResponseDTO>(
-            devicesDTO.Count(),
+            totalCount,
             request.PageNumber,
             request.PageSize,
             devicesDTO

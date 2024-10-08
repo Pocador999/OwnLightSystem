@@ -39,10 +39,11 @@ public class GetUserDevicesQueryHandler
             request.PageNumber,
             request.PageSize
         );
+        var totalCount = await _deviceRepository.CountAsync();
         var devicesDTO = _mapper.Map<IEnumerable<UserResponseDTO>>(devices);
 
         return new PaginatedResultDTO<UserResponseDTO>(
-            devicesDTO.Count(),
+            totalCount,
             request.PageNumber,
             request.PageSize,
             devicesDTO

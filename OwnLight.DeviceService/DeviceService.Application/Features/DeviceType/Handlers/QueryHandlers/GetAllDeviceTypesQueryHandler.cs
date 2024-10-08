@@ -21,9 +21,11 @@ public class GetAllDeviceTypesQueryHandler(
     )
     {
         var deviceTypes = await _deviceTypeRepository.GetAllAsync(request.Page, request.PageSize);
+        var totalCount = await _deviceTypeRepository.CountAsync();
         var response = _mapper.Map<IEnumerable<DeviceTypeResponseDTO>>(deviceTypes);
+
         return new PaginatedResultDTO<DeviceTypeResponseDTO>(
-            deviceTypes.Count(),
+            totalCount,
             request.Page,
             request.PageSize,
             response

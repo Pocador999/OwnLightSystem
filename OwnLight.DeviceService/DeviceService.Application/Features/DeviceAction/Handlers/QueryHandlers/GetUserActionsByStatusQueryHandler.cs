@@ -40,10 +40,12 @@ public class GetUserActionsByStatusQueryHandler(
             request.PageNumber,
             request.PageSize
         );
+
+        var totalCount = await _deviceActionRepository.CountAsync();
         var actionsDTO = _mapper.Map<IEnumerable<ActionResponseDTO>>(actions);
 
         return new PaginatedResultDTO<ActionResponseDTO>(
-            actionsDTO.Count(),
+            totalCount,
             request.PageNumber,
             request.PageSize,
             actionsDTO
