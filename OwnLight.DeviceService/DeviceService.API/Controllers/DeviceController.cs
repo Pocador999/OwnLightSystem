@@ -211,14 +211,12 @@ public class DeviceController(IMediator mediator) : ControllerBase
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
     public async Task<ActionResult<PaginatedResultDTO<HardwareResponseDTO>>> GetHardwareStatus(
-        [FromQuery] Guid[] deviceIds,
-        [FromQuery] int page = 1,
-        [FromQuery] int pageSize = 10
+        [FromQuery] Guid[] deviceIds
     )
     {
         try
         {
-            var query = new GetHardwareResponseQuery(deviceIds, page, pageSize);
+            var query = new GetHardwareResponseQuery(deviceIds);
             var result = await _mediator.Send(query);
             return Ok(result);
         }

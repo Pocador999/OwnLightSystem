@@ -127,17 +127,11 @@ public class DeviceRepository(DataContext dataContext)
         return rowsAffected;
     }
 
-    public async Task<IEnumerable<Device>> GetDevicesByIdsAsync(
-        Guid[] deviceIds,
-        int pageNumber,
-        int pageSize
-    )
+    public async Task<IEnumerable<Device>> GetDevicesByIdsAsync(Guid[] deviceIds)
     {
-        var skipAmount = (pageNumber - 1) * pageSize;
         return await _dbSet
+            .Include(d => d.DeviceType)
             .Where(d => deviceIds.Contains(d.Id))
-            .Skip(skipAmount)
-            .Take(pageSize)
             .ToListAsync();
     }
 
