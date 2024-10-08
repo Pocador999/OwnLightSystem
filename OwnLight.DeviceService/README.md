@@ -281,15 +281,15 @@ The OwnLight.DeviceService exposes several endpoints to handle device functional
 
 ### Device Endpoints:
 
-- `GET /api/devices/user_devices_by_group`: Retrieve a list of user devices grouped by group.
-- `GET /api/devices/user_devices_by_room`: Retrieve a list of user devices grouped by room.
-- `GET /api/devices/user_devices`: Retrieve a list of user devices.
-- `GET /api/devices/devices_status`: Retrieve the status of all devices.
-- `DELETE /api/devices/{id:guid}`: Delete a device by ID.
-- `PUT /api/devices/{id:guid}`: Update a device by ID.
-- `POST /api/devices/create`: Create a new device.
-- `GET /api/devices/all`: Retrieve a list of all devices.
 - `GET /api/devices/{id:guid}`: Retrieve a device by ID.
+- `GET /api/devices/all`: Retrieve a list of all devices.
+- `POST /api/devices/create`: Create a new device.
+- `PUT /api/devices/{id:guid}`: Update a device by ID.
+- `DELETE /api/devices/{id:guid}`: Delete a device by ID.
+- `GET /api/devices/devices_status`: Retrieve the status of all devices.
+- `GET /api/devices/user_devices`: Retrieve a list of user devices.
+- `GET /api/devices/user_devices_by_room`: Retrieve a list of user devices grouped by room.
+- `GET /api/devices/user_devices_by_group`: Retrieve a list of user devices grouped by group.
 
 ### DeviceType Endpoints:
 
@@ -304,10 +304,17 @@ The OwnLight.DeviceService exposes several endpoints to handle device functional
 - `POST /api/devices/control/status/{deviceId}`: Control the status of a device.
 - `POST /api/devices/control/switch/{deviceId}`: Switch a device on or off.
 - `POST /api/devices/control/dim/{deviceId}`: Dim a device.
+- `POST /api/devices/control/room/{roomId}`: Control devices in a room.
+- `POST /api/devices/dim/room/{roomId}`: Dim devices in a room.
+- `POST /api/devices/control/group/{groupId}`: Control devices in a group.
+- `POST /api/devices/dim/group/{groupId}`: Dim devices in a group.
+- `POST /api/devices/control/all/user_devices/{userId}`: Control all user devices.
 - `GET /api/deviceactions/user_actions`: Retrieve a list of user actions.
 - `GET /api/deviceactions/device_actions/{deviceId}`: Retrieve actions for a specific device.
 - `GET /api/deviceactions/user_actions/status/{status}`: Retrieve user actions by status.
 - `GET /api/deviceactions/user_actions/type/{actionType}`: Retrieve user actions by action type.
+- `GET /api/deviceactions/all/actions/type/{actionType}`: Retrieve all actions by action type.
+- `GET /api/deviceactions/all/actions/status/{status}`: Retrieve all actions by status.
 
 All responses follow standard REST patterns, returning appropriate HTTP status codes (200, 400, 404, etc.) and messages.
 
