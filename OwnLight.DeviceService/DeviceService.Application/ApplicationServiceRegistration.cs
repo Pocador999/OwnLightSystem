@@ -15,6 +15,9 @@ public static class ApplicationServiceRegistration
         services.AddMediatR(Assembly.GetExecutingAssembly());
 
         services.AddTransient<IValidator<CreateDeviceCommand>, CreateDeviceValidator>();
+        services.AddTransient<IValidator<UpdateDeviceCommand>, UpdateDeviceValidator>();
+        services.AddTransient<IValidator<UpdateDeviceRoomCommand>, UpdateDeviceRoomValidator>();
+        services.AddTransient<IValidator<UpdateDeviceGroupCommand>, UpdateDeviceGroupValidator>();
 
         return services;
     }

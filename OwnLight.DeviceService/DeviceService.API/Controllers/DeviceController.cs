@@ -210,7 +210,7 @@ public class DeviceController(IMediator mediator) : ControllerBase
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-    public async Task<ActionResult<PaginatedResultDTO<HardwareResponseDTO>>> GetHardwareStatus(
+    public async Task<ActionResult<IEnumerable<HardwareResponseDTO>>> GetHardwareStatus(
         [FromQuery] Guid[] deviceIds
     )
     {

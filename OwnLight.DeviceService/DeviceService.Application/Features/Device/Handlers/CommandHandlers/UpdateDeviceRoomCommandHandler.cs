@@ -1,15 +1,20 @@
 using AutoMapper;
 using DeviceService.Application.Features.Device.Commands;
 using DeviceService.Domain.Interfaces;
+using FluentValidation;
 using MediatR;
 
 namespace DeviceService.Application.Features.Device.Handlers.CommandHandlers;
 
-public class UpdateDeviceRoomCommandHandler(IDeviceRepository deviceRepository, IMapper mapper)
-    : IRequestHandler<UpdateDeviceRoomCommand>
+public class UpdateDeviceRoomCommandHandler(
+    IDeviceRepository deviceRepository,
+    IMapper mapper,
+    IValidator<UpdateDeviceRoomCommand> validator
+) : IRequestHandler<UpdateDeviceRoomCommand>
 {
     private readonly IDeviceRepository _deviceRepository = deviceRepository;
     private readonly IMapper _mapper = mapper;
+    private readonly IValidator<UpdateDeviceRoomCommand> _validator = validator;
 
     public async Task<Unit> Handle(
         UpdateDeviceRoomCommand request,
