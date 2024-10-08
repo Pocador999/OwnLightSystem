@@ -135,6 +135,37 @@ public class DeviceActionController(IMediator mediator) : ControllerBase
     }
 
     [Authorize]
+    [HttpPost("dim/room/{roomId}")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+    public async Task<ActionResult> DimmerizeUserDevicesByRoomIdAsync(
+        Guid roomId,
+        [FromBody] DimmerizeRoomCommand command
+    )
+    {
+        try
+        {
+            command.RoomId = roomId;
+            var result = await _mediator.Send(command);
+            return Ok("Dispositivos controlados com sucesso.");
+        }
+        catch (KeyNotFoundException ex)
+        {
+            return NotFound(ex.Message);
+        }
+        catch (UnauthorizedAccessException ex)
+        {
+            return Unauthorized(ex.Message);
+        }
+        catch (Exception ex)
+        {
+            return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
+        }
+    }
+
+    [Authorize]
     [HttpPost("control/group/{groupId}")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]

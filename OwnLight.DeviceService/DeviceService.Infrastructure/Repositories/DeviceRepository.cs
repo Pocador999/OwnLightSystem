@@ -78,12 +78,15 @@ public class DeviceRepository(DataContext dataContext)
     public async Task<int> ControlBrightnessByUserRoomAsync(
         Guid userId,
         Guid roomId,
-        int brightness
+        int brightness,
+        DeviceStatus status
     )
     {
         var rowsAffected = await _dbSet
             .Where(d => d.UserId == userId && d.RoomId == roomId)
-            .ExecuteUpdateAsync(d => d.SetProperty(p => p.Brightness, brightness));
+            .ExecuteUpdateAsync(d =>
+                d.SetProperty(p => p.Brightness, brightness).SetProperty(p => p.Status, status)
+            );
 
         if (rowsAffected == 0)
             throw new KeyNotFoundException($"No devices found for user {userId} in room {roomId}");
@@ -94,12 +97,15 @@ public class DeviceRepository(DataContext dataContext)
     public async Task<int> ControlBrightnessByUserGroupAsync(
         Guid userId,
         Guid groupId,
-        int brightness
+        int brightness,
+        DeviceStatus status
     )
     {
         var rowsAffected = await _dbSet
             .Where(d => d.UserId == userId && d.GroupId == groupId)
-            .ExecuteUpdateAsync(d => d.SetProperty(p => p.Brightness, brightness));
+            .ExecuteUpdateAsync(d =>
+                d.SetProperty(p => p.Brightness, brightness).SetProperty(p => p.Status, status)
+            );
 
         if (rowsAffected == 0)
             throw new KeyNotFoundException(
