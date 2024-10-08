@@ -31,8 +31,8 @@ public class MapperProfile : Profile
                 dest => dest.Brightness,
                 opt => opt.MapFrom(src => src.IsDimmable ? src.Brightness : null)
             );
-
         CreateMap<UpdateDeviceCommand, Device>();
+        CreateMap<UpdateDeviceRoomCommand, Device>();
 
         // Mapping for DeviceType Entity
         CreateMap<DeviceType, DeviceTypeResponseDTO>()
