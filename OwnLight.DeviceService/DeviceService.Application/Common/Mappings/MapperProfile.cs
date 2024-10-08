@@ -33,6 +33,7 @@ public class MapperProfile : Profile
             );
         CreateMap<UpdateDeviceCommand, Device>();
         CreateMap<UpdateDeviceRoomCommand, Device>();
+        CreateMap<UpdateDeviceGroupCommand, Device>();
 
         // Mapping for DeviceType Entity
         CreateMap<DeviceType, DeviceTypeResponseDTO>()
