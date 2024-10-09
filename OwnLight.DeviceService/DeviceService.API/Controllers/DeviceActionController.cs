@@ -14,7 +14,7 @@ public class DeviceActionController(IMediator mediator) : ControllerBase
     private readonly IMediator _mediator = mediator;
 
     [Authorize]
-    [HttpPost("control/status/{deviceId}")]
+    [HttpPost("control/{deviceId}")]
     public async Task<ActionResult> ControlDeviceAsync(
         Guid deviceId,
         [FromBody] ControlDeviceCommand command
@@ -26,7 +26,7 @@ public class DeviceActionController(IMediator mediator) : ControllerBase
     }
 
     [Authorize]
-    [HttpPost("control/switch/{deviceId}")]
+    [HttpPost("switch/{deviceId}")]
     public async Task<ActionResult> SwitchDeviceAsync(Guid deviceId)
     {
         var command = new SwitchDeviceCommand { DeviceId = deviceId };
@@ -35,7 +35,7 @@ public class DeviceActionController(IMediator mediator) : ControllerBase
     }
 
     [Authorize]
-    [HttpPost("control/dim/{deviceId}")]
+    [HttpPost("dim/{deviceId}")]
     public async Task<ActionResult> DimmerizeDeviceAsync(
         Guid deviceId,
         [FromBody] DimmerizeDeviceCommand command
