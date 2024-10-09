@@ -15,7 +15,8 @@ public class RoutineExecutionLogRepository(DataContext dataContext)
     public async Task<IEnumerable<RoutineExecutionLog>> GetByActionStatus(
         ActionStatus actionStatus,
         int page,
-        int pageSize
+        int pageSize,
+        CancellationToken cancellationToken = default
     )
     {
         var skipAmount = (page - 1) * pageSize;
@@ -23,13 +24,14 @@ public class RoutineExecutionLogRepository(DataContext dataContext)
             .Where(r => r.ActionStatus == actionStatus)
             .Skip(skipAmount)
             .Take(pageSize)
-            .ToListAsync();
+            .ToListAsync(cancellationToken);
     }
 
     public async Task<IEnumerable<RoutineExecutionLog>> GetByActionTarget(
         ActionTarget actionTarget,
         int page,
-        int pageSize
+        int pageSize,
+        CancellationToken cancellationToken = default
     )
     {
         var skipAmount = (page - 1) * pageSize;
@@ -37,13 +39,14 @@ public class RoutineExecutionLogRepository(DataContext dataContext)
             .Where(r => r.ActionTarget == actionTarget)
             .Skip(skipAmount)
             .Take(pageSize)
-            .ToListAsync();
+            .ToListAsync(cancellationToken);
     }
 
     public async Task<IEnumerable<RoutineExecutionLog>> GetByRoutineActionType(
         RoutineActionType actionType,
         int page,
-        int pageSize
+        int pageSize,
+        CancellationToken cancellationToken = default
     )
     {
         var skipAmount = (page - 1) * pageSize;
@@ -51,13 +54,14 @@ public class RoutineExecutionLogRepository(DataContext dataContext)
             .Where(r => r.ActionType == actionType)
             .Skip(skipAmount)
             .Take(pageSize)
-            .ToListAsync();
+            .ToListAsync(cancellationToken);
     }
 
     public async Task<IEnumerable<RoutineExecutionLog>> GetByDeviceId(
         Guid deviceId,
         int page,
-        int pageSize
+        int pageSize,
+        CancellationToken cancellationToken = default
     )
     {
         var skipAmount = (page - 1) * pageSize;
@@ -65,13 +69,14 @@ public class RoutineExecutionLogRepository(DataContext dataContext)
             .Where(r => r.DeviceId == deviceId)
             .Skip(skipAmount)
             .Take(pageSize)
-            .ToListAsync();
+            .ToListAsync(cancellationToken);
     }
 
     public async Task<IEnumerable<RoutineExecutionLog>> GetByUserId(
         Guid userId,
         int page,
-        int pageSize
+        int pageSize,
+        CancellationToken cancellationToken = default
     )
     {
         var skipAmount = (page - 1) * pageSize;
@@ -79,13 +84,14 @@ public class RoutineExecutionLogRepository(DataContext dataContext)
             .Where(r => r.UserId == userId)
             .Skip(skipAmount)
             .Take(pageSize)
-            .ToListAsync();
+            .ToListAsync(cancellationToken);
     }
 
     public async Task<IEnumerable<RoutineExecutionLog>> GetByRoutineId(
         Guid routineId,
         int page,
-        int pageSize
+        int pageSize,
+        CancellationToken cancellationToken = default
     )
     {
         var skipAmount = (page - 1) * pageSize;
@@ -93,6 +99,6 @@ public class RoutineExecutionLogRepository(DataContext dataContext)
             .Where(r => r.RoutineId == routineId)
             .Skip(skipAmount)
             .Take(pageSize)
-            .ToListAsync();
+            .ToListAsync(cancellationToken);
     }
 }

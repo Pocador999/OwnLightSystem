@@ -14,7 +14,8 @@ public class RoutineRepository(DataContext dataContext)
     public async Task<IEnumerable<Routine>> GetUserRoutinesAsync(
         Guid userId,
         int page,
-        int pageSize
+        int pageSize,
+        CancellationToken cancellationToken = default
     )
     {
         var skipAmount = (page - 1) * pageSize;
@@ -22,9 +23,11 @@ public class RoutineRepository(DataContext dataContext)
             .Where(r => r.UserId == userId)
             .Skip(skipAmount)
             .Take(pageSize)
-            .ToListAsync();
+            .ToListAsync(cancellationToken);
     }
 
-    public async Task<Routine?> GetRoutineByNameAsync(string name) =>
-        await _dbSet.FirstOrDefaultAsync(r => r.Name == name);
+    public async Task<Routine?> GetRoutineByNameAsync(
+        string name,
+        CancellationToken cancellationToken = default
+    ) => await _dbSet.FirstOrDefaultAsync(r => r.Name == name, cancellationToken);
 }
