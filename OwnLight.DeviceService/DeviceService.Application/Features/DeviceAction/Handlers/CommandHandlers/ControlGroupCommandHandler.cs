@@ -1,3 +1,4 @@
+using DeviceService.Application.Common.Services.Interfaces;
 using DeviceService.Application.Features.DeviceAction.Commands;
 using DeviceService.Domain.Enums;
 using DeviceService.Domain.Interfaces;
@@ -9,94 +10,68 @@ using Entity = DeviceService.Domain.Entities;
 namespace DeviceService.Application.Features.DeviceAction.Handlers.CommandHandlers;
 
 public class ControlGroupCommandHandler(
-    IDeviceRepository deviceRepository,
-    IDeviceActionRepository deviceActionRepository,
+    IDeviceService deviceService,
+    IDeviceActionService deviceActionService,
     IHttpContextAccessor httpContextAccessor,
     IValidator<ControlGroupCommand> validator
 ) : IRequestHandler<ControlGroupCommand>
 {
-    private readonly IDeviceRepository _deviceRepository = deviceRepository;
-    private readonly IDeviceActionRepository _deviceActionRepository = deviceActionRepository;
+    private readonly IDeviceService _deviceService = deviceService;
+    private readonly IDeviceActionService _deviceActionService = deviceActionService;
     private readonly IHttpContextAccessor _httpContextAccessor = httpContextAccessor;
     private readonly IValidator<ControlGroupCommand> _validator = validator;
 
     public async Task<Unit> Handle(ControlGroupCommand request, CancellationToken cancellationToken)
     {
-        await _validator.ValidateAndThrowAsync(request, cancellationToken: cancellationToken);
+        await _validator.ValidateAndThrowAsync(request, cancellationToken);
 
-        var userId = _httpContextAccessor.HttpContext?.Items["UserId"]?.ToString();
+        var userId =
+            _httpContextAccessor.HttpContext?.Items["UserId"]?.ToString()
+            ?? throw new UnauthorizedAccessException("Usuário não autenticado.");
 
-        if (string.IsNullOrEmpty(userId))
-            throw new UnauthorizedAccessException("Usuário não autenticado.");
-
-        var devices = await _deviceRepository.GetUserDevicesByGroupIdAsync(
+        var devices = await _deviceService.GetUserDevicesByGroupIdAsync(
             Guid.Parse(userId),
             request.GroupId,
             pageNumber: 1,
-            pageSize: 30
+            pageSize: 30,
+            cancellationToken
         );
-
         var actionsToLog = new List<Entity.DeviceAction>();
 
-        try
+        foreach (var device in devices)
         {
-            foreach (var device in devices)
+            if (device.UserId != Guid.Parse(userId))
+                throw new UnauthorizedAccessException(
+                    $"O dispositivo de id {device.Id} não pertence ao usuário."
+                );
+
+            if (device.IsDimmable == false)
+                device.Brightness = null;
+            else
+                device.Brightness = request.Status == DeviceStatus.On ? 100 : 0;
+
+            var deviceAction = new Entity.DeviceAction
             {
-                if (device.UserId.ToString() != userId)
-                {
-                    throw new UnauthorizedAccessException(
-                        $"O dispositivo de id {device.Id} não pertence ao usuário."
-                    );
-                }
-                device.Status = request.Status;
+                DeviceId = device.Id,
+                UserId = Guid.Parse(userId),
+                Action =
+                    request.Status == DeviceStatus.On
+                        ? DeviceActions.TurnOn
+                        : DeviceActions.TurnOff,
+                Status = ActionStatus.Success,
+            };
 
-                if (device.IsDimmable == true)
-                    device.Brightness = request.Status == DeviceStatus.On ? 100 : 0;
-                else
-                    device.Brightness = null;
-
-                var deviceAction = new Entity.DeviceAction
-                {
-                    DeviceId = device.Id,
-                    UserId = Guid.Parse(userId),
-                    Action =
-                        request.Status == DeviceStatus.On
-                            ? DeviceActions.TurnOn
-                            : DeviceActions.TurnOff,
-                    Status = ActionStatus.Success,
-                };
-
-                actionsToLog.Add(deviceAction);
-            }
-
-            await _deviceRepository.ControlUserDevicesByGroupIdAsync(
-                Guid.Parse(userId),
-                request.GroupId,
-                request.Status
-            );
-
-            await _deviceActionRepository.AddDeviceActionsAsync(actionsToLog);
+            actionsToLog.Add(deviceAction);
         }
-        catch (Exception)
-        {
-            foreach (var device in devices)
-            {
-                var deviceActionFailed = new Entity.DeviceAction
-                {
-                    DeviceId = device.Id,
-                    UserId = Guid.Parse(userId),
-                    Action =
-                        request.Status == DeviceStatus.On
-                            ? DeviceActions.TurnOn
-                            : DeviceActions.TurnOff,
-                    Status = ActionStatus.Failed,
-                };
 
-                await _deviceActionRepository.CreateAsync(deviceActionFailed);
-            }
+        await _deviceService.ControlUserDevicesByGroupIdAsync(
+            Guid.Parse(userId),
+            request.GroupId,
+            request.Status,
+            cancellationToken
+        );
 
-            throw;
-        }
+        await _deviceActionService.LogDeviceActionsAsync(actionsToLog, cancellationToken);
 
         return Unit.Value;
     }

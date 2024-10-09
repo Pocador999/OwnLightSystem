@@ -1,6 +1,6 @@
+using DeviceService.Application.Common.Services.Interfaces;
 using DeviceService.Application.Features.DeviceAction.Commands;
 using DeviceService.Domain.Enums;
-using DeviceService.Domain.Interfaces;
 using FluentValidation;
 using MediatR;
 using Microsoft.AspNetCore.Http;
@@ -9,14 +9,14 @@ using Entity = DeviceService.Domain.Entities;
 namespace DeviceService.Application.Features.DeviceAction.Handlers.CommandHandlers;
 
 public class DimmerizeDeviceCommandHandler(
-    IDeviceRepository deviceRepository,
-    IDeviceActionRepository deviceActionRepository,
+    IDeviceService deviceService,
+    IDeviceActionService deviceActionService,
     IHttpContextAccessor httpContextAccessor,
     IValidator<DimmerizeDeviceCommand> validator
 ) : IRequestHandler<DimmerizeDeviceCommand>
 {
-    private readonly IDeviceRepository _deviceRepository = deviceRepository;
-    private readonly IDeviceActionRepository _deviceActionRepository = deviceActionRepository;
+    private readonly IDeviceService _deviceService = deviceService;
+    private readonly IDeviceActionService _deviceActionService = deviceActionService;
     private readonly IHttpContextAccessor _httpContextAccessor = httpContextAccessor;
     private readonly IValidator<DimmerizeDeviceCommand> _validator = validator;
 
@@ -27,16 +27,11 @@ public class DimmerizeDeviceCommandHandler(
     {
         await _validator.ValidateAndThrowAsync(request, cancellationToken: cancellationToken);
 
-        var userId = _httpContextAccessor.HttpContext?.Items["UserId"]?.ToString();
+        var userId =
+            _httpContextAccessor.HttpContext?.Items["UserId"]?.ToString()
+            ?? throw new UnauthorizedAccessException("Usuário não autenticado.");
 
-        if (string.IsNullOrEmpty(userId))
-            throw new UnauthorizedAccessException("Usuário não autenticado.");
-
-        var device =
-            await _deviceRepository.GetByIdAsync(request.DeviceId)
-            ?? throw new KeyNotFoundException(
-                $"Dispositivo de id {request.DeviceId} não encontrado."
-            );
+        var device = await _deviceService.GetDeviceByIdAsync(request.DeviceId, cancellationToken);
 
         if (device.UserId.ToString() != userId)
             throw new UnauthorizedAccessException(
@@ -44,54 +39,24 @@ public class DimmerizeDeviceCommandHandler(
             );
 
         if (device.IsDimmable == false)
-            throw new InvalidOperationException("Este dispositivo não suporta ajuste de brilho.");
+            throw new InvalidOperationException("O dispositivo não é dimmable.");
 
-        if (request.Brightness < 0 || request.Brightness > 100)
-            throw new ArgumentOutOfRangeException("Brightness deve estar entre 0 e 100.");
-
-        try
+        var deviceAction = new Entity.DeviceAction
         {
-            if (request.Brightness > 0 && device.Status == DeviceStatus.Off)
-            {
-                device = await _deviceRepository.ControlDeviceAsync(
-                    request.DeviceId,
-                    DeviceStatus.On
-                );
-            }
-            else if (request.Brightness == 0 && device.Status == DeviceStatus.On)
-            {
-                device = await _deviceRepository.ControlDeviceAsync(
-                    request.DeviceId,
-                    DeviceStatus.Off
-                );
-            }
+            DeviceId = device.Id,
+            UserId = Guid.Parse(userId),
+            Action = request.Brightness == 0 ? DeviceActions.TurnOff : DeviceActions.Dim,
+            Status = ActionStatus.Success,
+        };
 
-            device.Brightness = request.Brightness;
-            await _deviceRepository.UpdateAsync(device);
+        await _deviceService.ControlDeviceBrightnessAsync(
+            device.Id,
+            request.Brightness,
+            request.Brightness == 0 ? DeviceStatus.Off : DeviceStatus.On,
+            cancellationToken
+        );
 
-            var deviceAction = new Entity.DeviceAction
-            {
-                DeviceId = device.Id,
-                UserId = Guid.Parse(userId),
-                Action = DeviceActions.Dim,
-                Status = ActionStatus.Success,
-            };
-
-            await _deviceActionRepository.CreateAsync(deviceAction);
-        }
-        catch (Exception)
-        {
-            var deviceAction = new Entity.DeviceAction
-            {
-                DeviceId = device.Id,
-                UserId = Guid.Parse(userId),
-                Action = DeviceActions.Dim,
-                Status = ActionStatus.Failed,
-            };
-
-            await _deviceActionRepository.CreateAsync(deviceAction);
-            throw;
-        }
+        await _deviceActionService.LogDeviceActionAsync(deviceAction, cancellationToken);
 
         return Unit.Value;
     }

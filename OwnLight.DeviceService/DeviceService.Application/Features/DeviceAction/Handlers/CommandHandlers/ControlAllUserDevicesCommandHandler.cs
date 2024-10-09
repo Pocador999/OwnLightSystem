@@ -1,3 +1,4 @@
+using DeviceService.Application.Common.Services.Interfaces;
 using DeviceService.Application.Features.DeviceAction.Commands;
 using DeviceService.Domain.Enums;
 using DeviceService.Domain.Interfaces;
@@ -9,14 +10,14 @@ using Entity = DeviceService.Domain.Entities;
 namespace DeviceService.Application.Features.DeviceAction.Handlers.CommandHandlers;
 
 public class ControlAllUserDevicesCommandHandler(
-    IDeviceRepository deviceRepository,
-    IDeviceActionRepository deviceActionRepository,
+    IDeviceService deviceService,
+    IDeviceActionService deviceActionService,
     IHttpContextAccessor httpContextAccessor,
     IValidator<ControlAllUserDevicesCommand> validator
 ) : IRequestHandler<ControlAllUserDevicesCommand>
 {
-    private readonly IDeviceRepository _deviceRepository = deviceRepository;
-    private readonly IDeviceActionRepository _deviceActionRepository = deviceActionRepository;
+    private readonly IDeviceService _deviceService = deviceService;
+    private readonly IDeviceActionService _deviceActionService = deviceActionService;
     private readonly IHttpContextAccessor _httpContextAccessor = httpContextAccessor;
     private readonly IValidator<ControlAllUserDevicesCommand> _validator = validator;
 
@@ -25,36 +26,29 @@ public class ControlAllUserDevicesCommandHandler(
         CancellationToken cancellationToken
     )
     {
-        await _validator.ValidateAndThrowAsync(request, cancellationToken: cancellationToken);
+        await _validator.ValidateAndThrowAsync(request, cancellationToken);
+        var userId =
+            _httpContextAccessor.HttpContext?.Items["UserId"]?.ToString()
+            ?? throw new UnauthorizedAccessException("Usuário não autenticado.");
 
-        var userId = _httpContextAccessor.HttpContext?.Items["UserId"]?.ToString();
-
-        if (string.IsNullOrEmpty(userId))
-            throw new UnauthorizedAccessException("Usuário não autenticado.");
-
-        var devices = await _deviceRepository.GetDevicesByUserIdAsync(
+        var devices = await _deviceService.GetUserDevicesAsync(
             Guid.Parse(userId),
             pageNumber: 1,
-            pageSize: 30
+            pageSize: 30,
+            cancellationToken
         );
-
-        if (!devices.Any())
-            throw new Exception("Nenhum dispositivo encontrado.");
-
         var actionsToLog = new List<Entity.DeviceAction>();
 
         foreach (var device in devices)
         {
-            if (device.UserId.ToString() != userId)
-            {
+            if (device.UserId != Guid.Parse(userId))
                 throw new UnauthorizedAccessException(
                     $"O dispositivo de id {device.Id} não pertence ao usuário."
                 );
-            }
 
-            device.Status = request.Status;
-
-            if (device.IsDimmable ?? false)
+            if (device.IsDimmable == false)
+                device.Brightness = null;
+            else
                 device.Brightness = request.Status == DeviceStatus.On ? 100 : 0;
 
             var deviceAction = new Entity.DeviceAction
@@ -65,15 +59,17 @@ public class ControlAllUserDevicesCommandHandler(
                     request.Status == DeviceStatus.On
                         ? DeviceActions.TurnOn
                         : DeviceActions.TurnOff,
-                Status = ActionStatus.Success,
             };
 
             actionsToLog.Add(deviceAction);
         }
+        await _deviceService.ControlAllUserDevicesAsync(
+            Guid.Parse(userId),
+            request.Status,
+            cancellationToken
+        );
 
-        await _deviceRepository.ControlAllUserDevicesAsync(Guid.Parse(userId), request.Status);
-
-        await _deviceActionRepository.AddDeviceActionsAsync(actionsToLog);
+        await _deviceActionService.LogDeviceActionsAsync(actionsToLog, cancellationToken);
 
         return Unit.Value;
     }

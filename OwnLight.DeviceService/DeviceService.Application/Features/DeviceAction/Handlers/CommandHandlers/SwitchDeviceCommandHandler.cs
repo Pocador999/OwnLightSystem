@@ -1,6 +1,6 @@
+using DeviceService.Application.Common.Services.Interfaces;
 using DeviceService.Application.Features.DeviceAction.Commands;
 using DeviceService.Domain.Enums;
-using DeviceService.Domain.Interfaces;
 using MediatR;
 using Microsoft.AspNetCore.Http;
 using Entity = DeviceService.Domain.Entities;
@@ -8,81 +8,56 @@ using Entity = DeviceService.Domain.Entities;
 namespace DeviceService.Application.Features.DeviceAction.Handlers.CommandHandlers;
 
 public class SwitchDeviceCommandHandler(
-    IDeviceRepository deviceRepository,
-    IDeviceActionRepository deviceActionRepository,
+    IDeviceService deviceService,
+    IDeviceActionService deviceActionService,
     IHttpContextAccessor httpContextAccessor
 ) : IRequestHandler<SwitchDeviceCommand>
 {
-    private readonly IDeviceRepository _deviceRepository = deviceRepository;
-    private readonly IDeviceActionRepository _deviceActionRepository = deviceActionRepository;
+    private readonly IDeviceService _deviceService = deviceService;
+    private readonly IDeviceActionService _deviceActionService = deviceActionService;
     private readonly IHttpContextAccessor _httpContextAccessor = httpContextAccessor;
 
     public async Task<Unit> Handle(SwitchDeviceCommand request, CancellationToken cancellationToken)
     {
-        var userId = _httpContextAccessor.HttpContext?.Items["UserId"]?.ToString();
+        var userId =
+            _httpContextAccessor.HttpContext?.Items["UserId"]?.ToString()
+            ?? throw new UnauthorizedAccessException("Usuário não autenticado.");
 
-        if (string.IsNullOrEmpty(userId))
-            throw new UnauthorizedAccessException("Usuário não autenticado.");
-
-        var device =
-            await _deviceRepository.GetByIdAsync(request.DeviceId)
-            ?? throw new KeyNotFoundException(
-                $"Dispositivo de id {request.DeviceId} não encontrado."
-            );
+        var device = await _deviceService.GetDeviceByIdAsync(request.DeviceId, cancellationToken);
 
         if (device.UserId.ToString() != userId)
             throw new UnauthorizedAccessException(
                 $"O dispositivo de id {request.DeviceId} não pertence ao usuário."
             );
 
-        try
+        if (device.Status == DeviceStatus.On)
         {
-            if (device.Status == DeviceStatus.Off)
-            {
-                device = await _deviceRepository.ControlDeviceAsync(
-                    request.DeviceId,
-                    DeviceStatus.On
-                );
-                if (device.IsDimmable == true)
-                    device.Brightness = 100;
-            }
-            else
-            {
-                device = await _deviceRepository.ControlDeviceAsync(
-                    request.DeviceId,
-                    DeviceStatus.Off
-                );
-                if (device.IsDimmable == true)
-                    device.Brightness = 0;
-            }
-
-            await _deviceRepository.UpdateAsync(device);
-
-            var deviceAction = new Entity.DeviceAction
-            {
-                DeviceId = device.Id,
-                UserId = Guid.Parse(userId),
-                Action =
-                    device.Status == DeviceStatus.On ? DeviceActions.TurnOn : DeviceActions.TurnOff,
-                Status = ActionStatus.Success,
-            };
-
-            await _deviceActionRepository.CreateAsync(deviceAction);
+            await _deviceService.SwitchDeviceAsync(
+                request.DeviceId,
+                brightness: 0,
+                DeviceStatus.Off,
+                cancellationToken
+            );
         }
-        catch (Exception)
+        else
         {
-            var deviceAction = new Entity.DeviceAction
-            {
-                DeviceId = device.Id,
-                UserId = Guid.Parse(userId),
-                Action =
-                    device.Status == DeviceStatus.On ? DeviceActions.TurnOn : DeviceActions.TurnOff,
-                Status = ActionStatus.Failed,
-            };
-
-            await _deviceActionRepository.CreateAsync(deviceAction);
-            throw;
+            await _deviceService.SwitchDeviceAsync(
+                request.DeviceId,
+                brightness: 100,
+                DeviceStatus.On,
+                cancellationToken
+            );
         }
+
+        var deviceAction = new Entity.DeviceAction
+        {
+            DeviceId = request.DeviceId,
+            Action =
+                device.Status == DeviceStatus.On ? DeviceActions.TurnOff : DeviceActions.TurnOn,
+            UserId = Guid.Parse(userId),
+        };
+
+        await _deviceActionService.LogDeviceActionAsync(deviceAction, cancellationToken);
 
         return Unit.Value;
     }
