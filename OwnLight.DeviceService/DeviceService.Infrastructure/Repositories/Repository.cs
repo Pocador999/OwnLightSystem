@@ -16,36 +16,41 @@ public class Repository<T> : IRepository<T>
         _dbSet = _dataContext.Set<T>();
     }
 
-    protected async Task SaveChangesAsync() => await _dataContext.SaveChangesAsync();
+    protected async Task SaveChangesAsync(CancellationToken cancellationToken) =>
+        await _dataContext.SaveChangesAsync(cancellationToken);
 
-    public async Task<T> CreateAsync(T entity)
+    public async Task<T> CreateAsync(T entity, CancellationToken cancellationToken)
     {
         await _dbSet.AddAsync(entity);
-        await SaveChangesAsync();
+        await SaveChangesAsync(cancellationToken);
         return entity;
     }
 
-    public async Task<T?> UpdateAsync(T entity)
+    public async Task<T?> UpdateAsync(T entity, CancellationToken cancellationToken)
     {
         _dbSet.Update(entity);
-        await SaveChangesAsync();
+        await SaveChangesAsync(cancellationToken);
         return entity;
     }
 
-    public async Task<T?> DeleteAsync(Guid id)
+    public async Task<T?> DeleteAsync(Guid id, CancellationToken cancellationToken)
     {
         var entity = await _dbSet.FindAsync(id);
         if (entity is null)
             return null;
         _dbSet.Remove(entity);
-        await SaveChangesAsync();
+        await SaveChangesAsync(cancellationToken);
         return entity;
     }
 
-    public async Task<IEnumerable<T>> GetAllAsync(int page, int pageSize)
+    public async Task<IEnumerable<T>> GetAllAsync(
+        int page,
+        int pageSize,
+        CancellationToken cancellationToken
+    )
     {
         var skipAmount = (page - 1) * pageSize;
-        return await _dbSet.Skip(skipAmount).Take(pageSize).ToListAsync();
+        return await _dbSet.Skip(skipAmount).Take(pageSize).ToListAsync(cancellationToken);
     }
 
     public async Task<T?> GetByIdAsync(Guid id) => await _dbSet.FindAsync(id);
