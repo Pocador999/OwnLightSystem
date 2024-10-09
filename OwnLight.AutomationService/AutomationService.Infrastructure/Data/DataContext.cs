@@ -3,8 +3,11 @@ using Microsoft.EntityFrameworkCore;
 
 namespace AutomationService.Infrastructure.Data;
 
-public class DataContext(DbContextOptions<DataContext> options) : DbContext(options)
+public class DataContext : DbContext
 {
+    public DataContext(DbContextOptions<DataContext> options)
+        : base(options) { }
+
     public DbSet<Routine> Routines { get; set; }
     public DbSet<RoutineExecutionLog> RoutineExecutionLogs { get; set; }
     public DbSet<Group> Groups { get; set; }

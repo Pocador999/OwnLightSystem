@@ -4,14 +4,19 @@ namespace AutomationService.Domain.Interfaces;
 
 public interface IRoutineRepository : IRepository<Routine>
 {
-    public Task<IEnumerable<Routine>> GetUserRoutinesAsync(
+    Task<IEnumerable<Routine>> GetUserRoutinesAsync(
         Guid userId,
         int page,
         int pageSize,
         CancellationToken cancellationToken = default
     );
-    public Task<Routine?> GetRoutineByNameAsync(
+    Task<Routine?> GetRoutineByNameAsync(
         string routineName,
+        CancellationToken cancellationToken = default
+    );
+
+    Task<IEnumerable<Routine>> GetRoutinesToExecuteAsync(
+        TimeSpan currentTime,
         CancellationToken cancellationToken = default
     );
 }

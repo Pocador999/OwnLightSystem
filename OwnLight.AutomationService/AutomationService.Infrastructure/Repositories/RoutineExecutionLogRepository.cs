@@ -66,7 +66,7 @@ public class RoutineExecutionLogRepository(DataContext dataContext)
     {
         var skipAmount = (page - 1) * pageSize;
         return await _dbSet
-            .Where(r => r.DeviceId == deviceId)
+            .Where(r => r.TargetId == deviceId)
             .Skip(skipAmount)
             .Take(pageSize)
             .ToListAsync(cancellationToken);

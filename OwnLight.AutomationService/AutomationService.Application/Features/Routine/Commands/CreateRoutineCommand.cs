@@ -1,10 +1,12 @@
+using System.Text.Json.Serialization;
 using AutomationService.Domain.Enums;
+using MediatR;
 
-namespace AutomationService.Domain.Entities;
+namespace AutomationService.Application.Features.Routine.Commands;
 
-public class Routine
+public class CreateRoutineCommand : IRequest
 {
-    public Guid Id { get; set; }
+    [JsonIgnore]
     public Guid UserId { get; set; }
     public string Name { get; set; } = null!;
     public TimeSpan ExecutionTime { get; set; }
@@ -12,6 +14,4 @@ public class Routine
     public Guid TargetId { get; set; }
     public RoutineActionType ActionType { get; set; }
     public int? Brightness { get; set; }
-
-    public ICollection<RoutineExecutionLog> ExecutionLogs { get; set; } = [];
 }
