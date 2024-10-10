@@ -17,8 +17,8 @@ public interface IRoutineExecutionLogRepository : IRepository<RoutineExecutionLo
         int pageSize,
         CancellationToken cancellationToken = default
     );
-    Task<IEnumerable<RoutineExecutionLog>> GetByDeviceId(
-        Guid deviceId,
+    Task<IEnumerable<RoutineExecutionLog>> GetByTargetId(
+        Guid targetId,
         int page,
         int pageSize,
         CancellationToken cancellationToken = default

@@ -2,6 +2,7 @@ namespace AutomationService.Domain.Enums;
 
 public enum RoutineActionType
 {
-    Control = 0,
-    Dimmerize = 1,
+    TurnOn = 0,
+    TurnOff = 1,
+    Dim = 2,
 }
