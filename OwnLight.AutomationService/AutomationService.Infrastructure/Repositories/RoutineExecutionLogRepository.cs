@@ -57,8 +57,8 @@ public class RoutineExecutionLogRepository(DataContext dataContext)
             .ToListAsync(cancellationToken);
     }
 
-    public async Task<IEnumerable<RoutineExecutionLog>> GetByDeviceId(
-        Guid deviceId,
+    public async Task<IEnumerable<RoutineExecutionLog>> GetByTargetId(
+        Guid targetId,
         int page,
         int pageSize,
         CancellationToken cancellationToken = default
@@ -66,7 +66,7 @@ public class RoutineExecutionLogRepository(DataContext dataContext)
     {
         var skipAmount = (page - 1) * pageSize;
         return await _dbSet
-            .Where(r => r.DeviceId == deviceId)
+            .Where(r => r.TargetId == targetId)
             .Skip(skipAmount)
             .Take(pageSize)
             .ToListAsync(cancellationToken);
