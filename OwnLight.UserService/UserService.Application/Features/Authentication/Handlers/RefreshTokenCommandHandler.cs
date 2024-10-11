@@ -24,9 +24,10 @@ public class RefreshTokenCommandHandler(
         CancellationToken cancellationToken
     )
     {
-        var user =
-            await _userRepository.FindByIdAsync(request.UserId)
-            ?? return _messageService.CreateNotFoundMessage("Usuário não encontrado.");
+        var user = await _userRepository.FindByIdAsync(request.UserId);
+        
+        if (user == null)
+            return _messageService.CreateNotFoundMessage("Usuário não encontrado.");
 
         var tokenInDb = await _refreshTokenRepository.GetUserTokenAsync(user.Id);
 
