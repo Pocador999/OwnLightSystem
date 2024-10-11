@@ -14,7 +14,5 @@ public class Routine
     public int? Brightness { get; set; }
     public ActionTarget ActionTarget { get; set; }
 
-    public string JwtToken { get; set; } = null!;
-
     public ICollection<RoutineExecutionLog> ExecutionLogs { get; set; } = [];
 }

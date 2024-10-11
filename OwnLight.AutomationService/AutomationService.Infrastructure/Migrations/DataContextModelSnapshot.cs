@@ -99,10 +99,6 @@ namespace AutomationService.Infrastructure.Migrations
                     b.Property<TimeSpan>("ExecutionTime")
                         .HasColumnType("interval");
 
-                    b.Property<string>("JwtToken")
-                        .IsRequired()
-                        .HasColumnType("text");
-
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("text");
