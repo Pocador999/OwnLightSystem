@@ -1,4 +1,4 @@
-using AutomationService.Application.Features.Routine.Command;
+using AutomationService.Application.Features.Routine.Commands;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -16,15 +16,7 @@ public class RoutineController(IMediator mediator) : ControllerBase
     [Route("create")]
     public async Task<IActionResult> CreateRoutine([FromBody] CreateRoutineCommand command)
     {
-        var routineId = await _mediator.Send(command);
-        return Ok(new { Id = routineId });
-    }
-
-    [HttpPost]
-    [Route("execute/{id}")]
-    public async Task<IActionResult> ExecuteRoutine(Guid id)
-    {
-        await _mediator.Send(new ExecuteRoutineCommand { RoutineId = id });
-        return Ok();
+        await _mediator.Send(command);
+        return Ok("Rotina criada com sucesso.");
     }
 }
