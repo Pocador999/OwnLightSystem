@@ -19,6 +19,9 @@ public static class ApplicationServiceRegistration
         services.AddHttpClient<IDeviceServiceClient, DeviceServiceClient>(client =>
             client.BaseAddress = new Uri("http://localhost:5034") // URL do DeviceService
         );
+        services.AddHttpClient<IUserServiceClient, UserServiceClient>(client =>
+            client.BaseAddress = new Uri("http://localhost:5008") // URL do UserService
+        );
 
         services.AddQuartz(q =>
         {
