@@ -10,11 +10,9 @@ public class DeviceServiceClient(HttpClient httpClient) : IDeviceServiceClient
 {
     private readonly HttpClient _httpClient = httpClient;
 
-    public async Task<DeviceServiceResult> ExecuteActionAsync(Routine routine)
+    public async Task<DeviceServiceResult> ExecuteActionAsync(Routine routine, string accessToken)
     {
-        var token = routine.JwtToken;
-
-        if (string.IsNullOrEmpty(token))
+        if (string.IsNullOrEmpty(accessToken))
             throw new UnauthorizedAccessException("Missing JWT token.");
 
         var requestUri = GenerateUriForRoutineAction(routine);
@@ -43,7 +41,7 @@ public class DeviceServiceClient(HttpClient httpClient) : IDeviceServiceClient
 
         request.Headers.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue(
             "Bearer",
-            token
+            accessToken
         );
 
         var response = await _httpClient.SendAsync(request);
@@ -59,11 +57,14 @@ public class DeviceServiceClient(HttpClient httpClient) : IDeviceServiceClient
 
     private static string GenerateUriForRoutineAction(Routine routine)
     {
+        if (routine.ActionTarget != ActionTarget.Device)
+            throw new InvalidOperationException("This method only handles Device target actions.");
+
         return routine.ActionType switch
         {
-            RoutineActionType.TurnOn => $"api/DeviceAction/control/{routine.TargetId}",
-            RoutineActionType.TurnOff => $"api/DeviceAction/control/{routine.TargetId}",
-            RoutineActionType.Dim => $"api/DeviceAction/dim/{routine.TargetId}",
+            RoutineActionType.TurnOn => $"api/DeviceAction/control/{routine.TargetId}", // Corrigido para seguir o formato da versão anterior
+            RoutineActionType.TurnOff => $"api/DeviceAction/control/{routine.TargetId}", // Corrigido para seguir o formato da versão anterior
+            RoutineActionType.Dim => $"api/DeviceAction/dim/{routine.TargetId}", // Mantido para ações de Dimmer
             _ => throw new InvalidOperationException("Invalid action type for device"),
         };
     }
