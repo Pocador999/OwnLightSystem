@@ -1,5 +1,5 @@
 using AutomationService.Application.Common.Services;
-using AutomationService.Application.Features.Routine.Command;
+using AutomationService.Application.Features.Routine.Commands;
 using AutomationService.Domain.Interfaces;
 using MediatR;
 using Microsoft.AspNetCore.Http;
@@ -23,12 +23,9 @@ public class CreateRoutineCommandHandler(
     )
     {
         var userId = _httpContextAccessor.HttpContext?.Items["UserId"]?.ToString();
-        var token = _httpContextAccessor.HttpContext?.Items["JwtToken"]?.ToString();
 
         if (string.IsNullOrEmpty(userId))
-            throw new UnauthorizedAccessException("Falta o ID do usuário.");
-        if (string.IsNullOrEmpty(token))
-            throw new UnauthorizedAccessException("Falta o token JWT.");
+            throw new UnauthorizedAccessException("Falha ao obter o ID do usuário.");
 
         var routine = new Entity.Routine
         {
@@ -39,7 +36,6 @@ public class CreateRoutineCommandHandler(
             TargetId = request.TargetId,
             Brightness = request.Brightness,
             ActionTarget = request.ActionTarget,
-            JwtToken = token,
         };
 
         await _routineRepository.CreateAsync(routine, cancellationToken);

@@ -1,8 +1,7 @@
-using System.Text.Json.Serialization;
 using AutomationService.Domain.Enums;
 using MediatR;
 
-namespace AutomationService.Application.Features.Routine.Command;
+namespace AutomationService.Application.Features.Routine.Commands;
 
 public class CreateRoutineCommand : IRequest<Guid>
 {
