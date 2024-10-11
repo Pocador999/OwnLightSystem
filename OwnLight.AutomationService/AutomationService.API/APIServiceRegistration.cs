@@ -48,7 +48,10 @@ public static class APIServiceRegistration
         services.AddEndpointsApiExplorer();
         services.AddSwaggerGen(c =>
         {
-            c.SwaggerDoc("v1", new OpenApiInfo { Title = "Automation Service API", Version = "v1" });
+            c.SwaggerDoc(
+                "v1",
+                new OpenApiInfo { Title = "Automation Service API", Version = "v1" }
+            );
 
             c.AddSecurityDefinition(
                 "Bearer",
@@ -74,7 +77,7 @@ public static class APIServiceRegistration
                                 Id = "Bearer",
                             },
                         },
-                        new string[] { }
+                        Array.Empty<string>()
                     },
                 }
             );

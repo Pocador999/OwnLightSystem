@@ -74,7 +74,7 @@ public static class APIServiceRegistration
                                 Id = "Bearer",
                             },
                         },
-                        new string[] { }
+                        Array.Empty<string>()
                     },
                 }
             );

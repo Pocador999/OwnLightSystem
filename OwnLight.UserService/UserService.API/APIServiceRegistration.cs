@@ -35,7 +35,6 @@ public static class APIServiceRegistration
                 }
             );
 
-            // Configuração do JWT no Swagger
             c.AddSecurityDefinition(
                 "Bearer",
                 new OpenApiSecurityScheme
