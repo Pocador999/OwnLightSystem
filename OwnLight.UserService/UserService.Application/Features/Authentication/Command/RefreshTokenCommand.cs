@@ -4,8 +4,8 @@ using UserService.Application.Common.Services.Messages;
 
 namespace UserService.Application.Features.Authentication.Command;
 
-public class RefreshTokenCommand : IRequest<Message>
+public class RefreshTokenCommand(Guid userId) : IRequest<Message>
 {
     [JsonIgnore]
-    public string RefreshToken { get; set; } = string.Empty;
+    public Guid UserId { get; set; } = userId;
 }
