@@ -3,6 +3,7 @@ using AutomationService.Application;
 using AutomationService.Infrastructure;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
+using Microsoft.OpenApi.Any;
 using Microsoft.OpenApi.Models;
 
 namespace AutomationService.API;
@@ -80,6 +81,16 @@ public static class APIServiceRegistration
                         Array.Empty<string>()
                     },
                 }
+            );
+
+            c.MapType<TimeSpan>(
+                () =>
+                    new OpenApiSchema
+                    {
+                        Type = "string",
+                        Format = "time-span",
+                        Example = new OpenApiString("HH:mm:ss"),
+                    }
             );
         });
 

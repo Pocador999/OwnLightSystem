@@ -19,4 +19,24 @@ public class RoutineController(IMediator mediator) : ControllerBase
         await _mediator.Send(command);
         return Ok("Rotina criada com sucesso.");
     }
+
+    [Authorize]
+    [HttpPut]
+    [Route("update")]
+    public async Task<IActionResult> UpdateRoutine(Guid Id, [FromBody] UpdateRoutineCommand command)
+    {
+        command.Id = Id;
+        await _mediator.Send(command);
+        return Ok("Rotina atualizada com sucesso.");
+    }
+
+    [Authorize]
+    [HttpDelete]
+    [Route("delete")]
+    public async Task<IActionResult> DeleteRoutine(Guid Id)
+    {
+        var command = new DeleteRoutineCommand { Id = Id };
+        await _mediator.Send(command);
+        return Ok("Rotina deletada com sucesso.");
+    }
 }
