@@ -1,5 +1,7 @@
-using AutomationService.Application.Common.Services;
+using AutoMapper;
+using AutomationService.Application.Common.Services.Interfaces;
 using AutomationService.Application.Features.Routine.Commands;
+using AutomationService.Domain.Enums;
 using AutomationService.Domain.Interfaces;
 using MediatR;
 using Microsoft.AspNetCore.Http;
@@ -9,13 +11,15 @@ namespace AutomationService.Application.Features.Routine.Handlers;
 
 public class CreateRoutineCommandHandler(
     IRoutineRepository routineRepository,
-    RoutineSchedulerService schedulerService,
-    IHttpContextAccessor httpContextAccessor
+    IRoutineSchedulerService schedulerService,
+    IHttpContextAccessor httpContextAccessor,
+    IMapper mapper
 ) : IRequestHandler<CreateRoutineCommand, Guid>
 {
     private readonly IRoutineRepository _routineRepository = routineRepository;
-    private readonly RoutineSchedulerService _schedulerService = schedulerService;
+    private readonly IRoutineSchedulerService _schedulerService = schedulerService;
     private readonly IHttpContextAccessor _httpContextAccessor = httpContextAccessor;
+    private readonly IMapper _mapper = mapper;
 
     public async Task<Guid> Handle(
         CreateRoutineCommand request,
@@ -27,16 +31,14 @@ public class CreateRoutineCommandHandler(
         if (string.IsNullOrEmpty(userId))
             throw new UnauthorizedAccessException("Falha ao obter o ID do usuário.");
 
-        var routine = new Entity.Routine
-        {
-            UserId = Guid.Parse(userId),
-            Name = request.Name,
-            ExecutionTime = request.ExecutionTime,
-            ActionType = request.ActionType,
-            TargetId = request.TargetId,
-            Brightness = request.Brightness,
-            ActionTarget = request.ActionTarget,
-        };
+        if (
+            request.ActionTarget == ActionTarget.Home
+            && request.ActionType == RoutineActionType.Dim
+        )
+            throw new InvalidOperationException("Dimmerização não é suportada para ações em casa.");
+
+        var routine = _mapper.Map<Entity.Routine>(request);
+        routine.UserId = Guid.Parse(userId);
 
         await _routineRepository.CreateAsync(routine, cancellationToken);
         await _schedulerService.ScheduleRoutineAsync(routine);
