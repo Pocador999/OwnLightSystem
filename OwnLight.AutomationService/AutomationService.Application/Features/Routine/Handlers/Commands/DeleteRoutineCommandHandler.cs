@@ -3,7 +3,7 @@ using AutomationService.Application.Features.Routine.Commands;
 using AutomationService.Domain.Interfaces;
 using MediatR;
 
-namespace AutomationService.Application.Features.Routine.Handlers;
+namespace AutomationService.Application.Features.Routine.Handlers.Commands;
 
 public class DeleteRoutineCommandHandler(
     IRoutineRepository routineRepository,

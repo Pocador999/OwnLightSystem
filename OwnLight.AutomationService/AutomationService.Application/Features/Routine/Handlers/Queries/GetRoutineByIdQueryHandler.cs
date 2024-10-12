@@ -3,7 +3,7 @@ using AutomationService.Domain.Interfaces;
 using MediatR;
 using Entity = AutomationService.Domain.Entities;
 
-namespace AutomationService.Application.Features.Routine.Handlers;
+namespace AutomationService.Application.Features.Routine.Handlers.Queries;
 
 public class GetRoutineByIdQueryHandler(IRoutineRepository routineRepository)
     : IRequestHandler<GetRoutineByIdQuery, Entity.Routine>

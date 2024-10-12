@@ -7,7 +7,7 @@ using MediatR;
 using Microsoft.AspNetCore.Http;
 using Entity = AutomationService.Domain.Entities;
 
-namespace AutomationService.Application.Features.Routine.Handlers;
+namespace AutomationService.Application.Features.Routine.Handlers.Commands;
 
 public class CreateRoutineCommandHandler(
     IRoutineRepository routineRepository,

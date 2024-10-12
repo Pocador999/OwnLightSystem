@@ -3,7 +3,7 @@ using AutomationService.Domain.Entities;
 using AutomationService.Domain.Interfaces;
 using MediatR;
 
-namespace AutomationService.Application.Features.Routine.Handlers;
+namespace AutomationService.Application.Features.Routine.Handlers.Commands;
 
 public class LogRoutineExecutionCommandHandler(
     IRoutineExecutionLogRepository routineExecutionLogRepository
