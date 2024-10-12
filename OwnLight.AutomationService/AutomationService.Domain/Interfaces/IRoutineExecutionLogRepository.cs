@@ -17,24 +17,6 @@ public interface IRoutineExecutionLogRepository : IRepository<RoutineExecutionLo
         int pageSize,
         CancellationToken cancellationToken = default
     );
-    Task<IEnumerable<RoutineExecutionLog>> GetByTargetId(
-        Guid targetId,
-        int page,
-        int pageSize,
-        CancellationToken cancellationToken = default
-    );
-    Task<IEnumerable<RoutineExecutionLog>> GetByActionTarget(
-        ActionTarget actionTarget,
-        int page,
-        int pageSize,
-        CancellationToken cancellationToken = default
-    );
-    Task<IEnumerable<RoutineExecutionLog>> GetByRoutineActionType(
-        RoutineActionType actionType,
-        int page,
-        int pageSize,
-        CancellationToken cancellationToken = default
-    );
     Task<IEnumerable<RoutineExecutionLog>> GetByActionStatus(
         ActionStatus actionStatus,
         int page,
