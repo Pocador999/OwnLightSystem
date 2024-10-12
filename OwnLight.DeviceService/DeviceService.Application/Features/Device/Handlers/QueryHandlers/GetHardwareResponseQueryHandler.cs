@@ -20,9 +20,7 @@ public class GetHardwareResponseQueryHandler(IMapper mapper, IDeviceRepository d
         if (request.DeviceIds == null || request.DeviceIds.Length == 0)
             throw new ArgumentException("É necessário informar ao menos um id de dispositivo.");
 
-        var devices = await _deviceRepository.GetDevicesByIdsAsync(
-            request.DeviceIds
-        );
+        var devices = await _deviceRepository.GetDevicesByIdsAsync(request.DeviceIds);
 
         if (!devices.Any())
             throw new KeyNotFoundException("Nenhum dispositivo encontrado para os IDs fornecidos.");

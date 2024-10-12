@@ -27,7 +27,7 @@ public class UpdateDeviceRoomCommandHandler(
 
         _mapper.Map(request, device);
 
-        await _deviceRepository.UpdateAsync(device);
+        await _deviceRepository.UpdateAsync(device, cancellationToken);
 
         return Unit.Value;
     }

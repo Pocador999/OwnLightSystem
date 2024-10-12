@@ -29,7 +29,7 @@ public class UpdateDeviceTypeCommandHandler(
 
         _mapper.Map(request, deviceType);
 
-        await _deviceTypeRepository.UpdateAsync(deviceType);
+        await _deviceTypeRepository.UpdateAsync(deviceType, cancellationToken);
 
         return Unit.Value;
     }

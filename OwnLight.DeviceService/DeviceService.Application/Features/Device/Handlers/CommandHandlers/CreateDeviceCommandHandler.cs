@@ -33,7 +33,7 @@ public class CreateDeviceCommandHandler(
             throw new UnauthorizedAccessException("Usuário não autenticado.");
 
         var deviceType =
-            await _deviceTypeRepository.GetDeviceTypeByNameAsync(request.DeviceType)
+            await _deviceTypeRepository.GetDeviceTypeByNameAsync(request.DeviceType, cancellationToken)
             ?? throw new ArgumentException($"Device type '{request.DeviceType}' not found.");
 
         var device = _mapper.Map<Entity.Device>(request);

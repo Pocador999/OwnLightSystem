@@ -24,7 +24,7 @@ public class CreateDeviceTypeCommandHandler(
     {
         await _validator.ValidateAndThrowAsync(request, cancellationToken: cancellationToken);
         var deviceType = _mapper.Map<Type.DeviceType>(request);
-        await _deviceTypeRepository.CreateAsync(deviceType);
+        await _deviceTypeRepository.CreateAsync(deviceType, cancellationToken);
         return Unit.Value;
     }
 }

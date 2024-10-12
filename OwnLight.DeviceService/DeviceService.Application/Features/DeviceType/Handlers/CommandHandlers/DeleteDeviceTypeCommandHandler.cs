@@ -17,7 +17,7 @@ public class DeleteDeviceTypeCommandHandler(IDeviceTypeRepository deviceTypeRepo
         var deviceType =
             await _deviceTypeRepository.GetByIdAsync(request.Id)
             ?? throw new KeyNotFoundException($"DeviceType with ID {request.Id} not found.");
-        await _deviceTypeRepository.DeleteAsync(deviceType.Id);
+        await _deviceTypeRepository.DeleteAsync(deviceType.Id, cancellationToken);
 
         return Unit.Value;
     }
