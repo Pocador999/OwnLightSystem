@@ -12,4 +12,5 @@ public interface IRepository<T>
     public Task<T> CreateAsync(T entity, CancellationToken cancellationToken = default);
     public Task<T?> UpdateAsync(T entity, CancellationToken cancellationToken = default);
     public Task<T?> DeleteAsync(Guid id, CancellationToken cancellationToken = default);
+    public Task<int> CountAsync(CancellationToken cancellationToken = default);
 }

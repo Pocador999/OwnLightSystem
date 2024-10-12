@@ -89,7 +89,7 @@ public static class APIServiceRegistration
                     {
                         Type = "string",
                         Format = "time-span",
-                        Example = new OpenApiString("HH:mm:ss"),
+                        Example = new OpenApiString("00:00:00"),
                     }
             );
         });
