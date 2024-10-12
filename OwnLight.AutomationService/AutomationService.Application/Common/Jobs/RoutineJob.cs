@@ -1,7 +1,6 @@
 using AutomationService.Application.Common.Services.Interfaces;
 using AutomationService.Application.Features.Routine.Commands;
 using AutomationService.Application.Features.Routine.Queries;
-using AutomationService.Domain.Entities;
 using AutomationService.Domain.Enums;
 using MediatR;
 using Quartz;

@@ -57,15 +57,49 @@ public class DeviceServiceClient(HttpClient httpClient) : IDeviceServiceClient
 
     private static string GenerateUriForRoutineAction(Routine routine)
     {
-        if (routine.ActionTarget != ActionTarget.Device)
-            throw new InvalidOperationException("This method only handles Device target actions.");
-
-        return routine.ActionType switch
+        if (routine.ActionTarget == ActionTarget.Device)
         {
-            RoutineActionType.TurnOn => $"api/DeviceAction/control/{routine.TargetId}", // Corrigido para seguir o formato da versão anterior
-            RoutineActionType.TurnOff => $"api/DeviceAction/control/{routine.TargetId}", // Corrigido para seguir o formato da versão anterior
-            RoutineActionType.Dim => $"api/DeviceAction/dim/{routine.TargetId}", // Mantido para ações de Dimmer
-            _ => throw new InvalidOperationException("Invalid action type for device"),
-        };
+            return routine.ActionType switch
+            {
+                RoutineActionType.TurnOn => $"api/DeviceAction/control/{routine.TargetId}",
+                RoutineActionType.TurnOff => $"api/DeviceAction/control/{routine.TargetId}",
+                RoutineActionType.Dim => $"api/DeviceAction/dim/{routine.TargetId}",
+                _ => throw new InvalidOperationException("Invalid action type for device"),
+            };
+        }
+        else if (routine.ActionTarget == ActionTarget.Group)
+        {
+            return routine.ActionType switch
+            {
+                RoutineActionType.TurnOn => $"api/DeviceAction/control/group/{routine.TargetId}",
+                RoutineActionType.TurnOff => $"api/DeviceAction/control//group/{routine.TargetId}",
+                RoutineActionType.Dim => $"api/DeviceAction/dim/group/{routine.TargetId}",
+                _ => throw new InvalidOperationException("Invalid action type for group"),
+            };
+        }
+        else if (routine.ActionTarget == ActionTarget.Room)
+        {
+            return routine.ActionType switch
+            {
+                RoutineActionType.TurnOn => $"api/DeviceAction/control/room/{routine.TargetId}",
+                RoutineActionType.TurnOff => $"api/DeviceAction/control/room/{routine.TargetId}",
+                RoutineActionType.Dim => $"api/DeviceAction/dim/room/{routine.TargetId}",
+                _ => throw new InvalidOperationException("Invalid action type for room"),
+            };
+        }
+        else if (routine.ActionTarget == ActionTarget.Home)
+        {
+            return routine.ActionType switch
+            {
+                RoutineActionType.TurnOn => $"api/DeviceAction/control/all/user_devices",
+                RoutineActionType.TurnOff => $"api/DeviceAction/control/all/user_devices",
+                RoutineActionType.Dim => throw new InvalidOperationException(
+                    "Dim action is not supported for home"
+                ),
+                _ => throw new InvalidOperationException("Invalid action type for home"),
+            };
+        }
+        else
+            throw new InvalidOperationException("Invalid action target");
     }
 }
