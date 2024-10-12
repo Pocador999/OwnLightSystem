@@ -40,7 +40,6 @@ public class ExceptionHandlingMiddleware(RequestDelegate next)
         }
         else
         {
-            // Outros tipos de exceções
             if (exception is KeyNotFoundException)
                 code = HttpStatusCode.NotFound;
             else if (exception is UnauthorizedAccessException)

@@ -1,3 +1,4 @@
+using System.ComponentModel;
 using System.Text.Json.Serialization;
 using MediatR;
 
@@ -19,6 +20,6 @@ public class CreateDeviceCommand(string name) : IRequest<Guid>
     public required string Name { get; set; } = name;
     public bool IsDimmable { get; set; }
 
-    [JsonIgnore]
-    public required string DeviceType { get; set; } = "Light";
+    [DefaultValue("Light")]
+    public required string DeviceType { get; set; }
 }
