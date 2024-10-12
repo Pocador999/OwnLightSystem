@@ -3,6 +3,7 @@ using AutomationService.Application.Common.Services.Interfaces;
 using AutomationService.Application.Features.Routine.Commands;
 using AutomationService.Domain.Enums;
 using AutomationService.Domain.Interfaces;
+using FluentValidation;
 using MediatR;
 using Microsoft.AspNetCore.Http;
 using Entity = AutomationService.Domain.Entities;
@@ -13,19 +14,22 @@ public class CreateRoutineCommandHandler(
     IRoutineRepository routineRepository,
     IRoutineSchedulerService schedulerService,
     IHttpContextAccessor httpContextAccessor,
-    IMapper mapper
+    IMapper mapper,
+    IValidator<CreateRoutineCommand> validator
 ) : IRequestHandler<CreateRoutineCommand, Guid>
 {
     private readonly IRoutineRepository _routineRepository = routineRepository;
     private readonly IRoutineSchedulerService _schedulerService = schedulerService;
     private readonly IHttpContextAccessor _httpContextAccessor = httpContextAccessor;
     private readonly IMapper _mapper = mapper;
+    private readonly IValidator<CreateRoutineCommand> _validator = validator;
 
     public async Task<Guid> Handle(
         CreateRoutineCommand request,
         CancellationToken cancellationToken
     )
     {
+        await _validator.ValidateAndThrowAsync(request, cancellationToken);
         var userId = _httpContextAccessor.HttpContext?.Items["UserId"]?.ToString();
 
         if (string.IsNullOrEmpty(userId))

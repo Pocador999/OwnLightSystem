@@ -1,6 +1,9 @@
 using System.Reflection;
 using AutomationService.Application.Common.Services;
 using AutomationService.Application.Common.Services.Interfaces;
+using AutomationService.Application.Common.Validations.Routine;
+using AutomationService.Application.Features.Routine.Commands;
+using FluentValidation;
 using MediatR;
 using Microsoft.Extensions.DependencyInjection;
 using Quartz;
@@ -31,6 +34,10 @@ public static class ApplicationServiceRegistration
         });
 
         services.AddQuartzHostedService(q => q.WaitForJobsToComplete = true);
+
+        services.AddTransient<IValidator<CreateRoutineCommand>, CreateRoutineValidator>();
+        services.AddTransient<IValidator<UpdateRoutineCommand>, UpdateRoutineValidator>();
+        services.AddTransient<IValidator<UpdateRoutineNameCommand>, UpdateRoutineNameValidator>();
 
         return services;
     }
