@@ -1,23 +1,18 @@
 using AutoMapper;
-using AutomationService.Application.Common.Services.Interfaces;
 using AutomationService.Application.Features.Routine.Commands;
 using AutomationService.Domain.Interfaces;
 using MediatR;
 
-namespace AutomationService.Application.Features.Routine.Handlers;
+namespace AutomationService.Application.Features.Routine.Handlers.Commands;
 
-public class UpdateRoutineCommandHandler(
-    IRoutineRepository routineRepository,
-    IRoutineSchedulerService schedulerFactory,
-    IMapper mapper
-) : IRequestHandler<UpdateRoutineCommand>
+public class UpdateRoutineNameCommandHandler(IRoutineRepository routineRepository, IMapper mapper)
+    : IRequestHandler<UpdateRoutineNameCommand>
 {
     private readonly IRoutineRepository _routineRepository = routineRepository;
-    private readonly IRoutineSchedulerService _schedulerFactory = schedulerFactory;
     private readonly IMapper _mapper = mapper;
 
     public async Task<Unit> Handle(
-        UpdateRoutineCommand request,
+        UpdateRoutineNameCommand request,
         CancellationToken cancellationToken
     )
     {
@@ -25,10 +20,14 @@ public class UpdateRoutineCommandHandler(
             await _routineRepository.GetByIdAsync(request.Id)
             ?? throw new KeyNotFoundException("Rotina não encontrada.");
 
+        if (request.Name == routine.Name)
+            throw new InvalidOperationException("Nenhum nome foi alterado.");
+        else if (request.Name == "string")
+            throw new InvalidOperationException("Nome inválido.");
+
         _mapper.Map(request, routine);
 
         await _routineRepository.UpdateAsync(routine, cancellationToken);
-        await _schedulerFactory.UpdateRoutineAsync(routine);
 
         return Unit.Value;
     }

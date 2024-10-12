@@ -8,7 +8,6 @@ public class UpdateRoutineCommand : IRequest
 {
     [JsonIgnore]
     public Guid Id { get; set; }
-    public required string Name { get; set; }
     public TimeSpan ExecutionTime { get; set; }
     public RoutineActionType ActionType { get; set; }
     public int? Brightness { get; set; }
