@@ -22,5 +22,19 @@ public class MapperProfile : Profile
                 dest => dest.ActionTarget,
                 opt => opt.MapFrom(src => src.ActionTarget.ToString())
             );
+
+        CreateMap<RoutineExecutionLog, RoutineLogDTO>()
+            .ForMember(
+                dest => dest.ActionType,
+                opt => opt.MapFrom(src => src.ActionType.ToString())
+            )
+            .ForMember(
+                dest => dest.ActionTarget,
+                opt => opt.MapFrom(src => src.ActionTarget.ToString())
+            )
+            .ForMember(
+                dest => dest.ActionStatus,
+                opt => opt.MapFrom(src => src.ActionStatus.ToString())
+            );
     }
 }
