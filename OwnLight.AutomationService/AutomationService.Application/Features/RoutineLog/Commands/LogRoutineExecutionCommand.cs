@@ -1,7 +1,7 @@
 using AutomationService.Domain.Enums;
 using MediatR;
 
-namespace AutomationService.Application.Features.Routine.Commands;
+namespace AutomationService.Application.Features.RoutineLog.Commands;
 
 public class LogRoutineExecutionCommand(
     Guid routineId,

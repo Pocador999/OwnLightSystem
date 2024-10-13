@@ -1,9 +1,9 @@
-using AutomationService.Application.Features.Routine.Commands;
+using AutomationService.Application.Features.RoutineLog.Commands;
 using AutomationService.Domain.Entities;
 using AutomationService.Domain.Interfaces;
 using MediatR;
 
-namespace AutomationService.Application.Features.Routine.Handlers.Commands;
+namespace AutomationService.Application.Features.RoutineLog.Handlers;
 
 public class LogRoutineExecutionCommandHandler(
     IRoutineExecutionLogRepository routineExecutionLogRepository

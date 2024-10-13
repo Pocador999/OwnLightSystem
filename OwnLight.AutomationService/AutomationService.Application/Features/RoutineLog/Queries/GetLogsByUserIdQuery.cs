@@ -1,7 +1,7 @@
 using AutomationService.Application.Contracts.DTOs;
 using MediatR;
 
-namespace AutomationService.Application.Features.Routine.Queries;
+namespace AutomationService.Application.Features.RoutineLog.Queries;
 
 public class GetLogsByUserIdQuery(int pageNumber, int pageSize)
     : IRequest<PaginatedResultDTO<RoutineLogDTO>>

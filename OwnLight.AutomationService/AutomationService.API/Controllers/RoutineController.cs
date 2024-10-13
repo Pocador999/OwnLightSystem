@@ -75,16 +75,4 @@ public class RoutineController(IMediator mediator) : ControllerBase
         var query = new GetAllUserRoutinesQuery(pageNumber, pageSize);
         return Ok(await _mediator.Send(query));
     }
-
-    [Authorize]
-    [HttpGet]
-    [Route("get/user_logs")]
-    public async Task<ActionResult<PaginatedResultDTO<RoutineLogDTO>>> GetRoutineLogsByUserId(
-        [FromQuery] int pageNumber = 1,
-        [FromQuery] int pageSize = 10
-    )
-    {
-        var query = new GetLogsByUserIdQuery(pageNumber, pageSize);
-        return Ok(await _mediator.Send(query));
-    }
 }
