@@ -56,4 +56,19 @@ public class RoutineExecutionLogRepository(DataContext dataContext)
             .Take(pageSize)
             .ToListAsync(cancellationToken);
     }
+
+    public async Task<IEnumerable<RoutineExecutionLog>> GetByTaretId(
+        Guid targetId,
+        int page,
+        int pageSize,
+        CancellationToken cancellationToken = default
+    )
+    {
+        var skipAmount = (page - 1) * pageSize;
+        return await _dbSet
+            .Where(r => r.TargetId == targetId)
+            .Skip(skipAmount)
+            .Take(pageSize)
+            .ToListAsync(cancellationToken);
+    }
 }

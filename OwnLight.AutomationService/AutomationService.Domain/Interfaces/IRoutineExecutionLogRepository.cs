@@ -11,14 +11,23 @@ public interface IRoutineExecutionLogRepository : IRepository<RoutineExecutionLo
         int pageSize,
         CancellationToken cancellationToken = default
     );
+
     Task<IEnumerable<RoutineExecutionLog>> GetByUserId(
         Guid userId,
         int page,
         int pageSize,
         CancellationToken cancellationToken = default
     );
+
     Task<IEnumerable<RoutineExecutionLog>> GetByActionStatus(
         ActionStatus actionStatus,
+        int page,
+        int pageSize,
+        CancellationToken cancellationToken = default
+    );
+
+    Task<IEnumerable<RoutineExecutionLog>> GetByTaretId(
+        Guid targetId,
         int page,
         int pageSize,
         CancellationToken cancellationToken = default
