@@ -1,29 +1,21 @@
 using AutoMapper;
 using AutomationService.Application.Contracts.DTOs;
-using AutomationService.Application.Features.Routine.Queries;
+using AutomationService.Application.Features.RoutineLog.Queries;
 using AutomationService.Domain.Interfaces;
 using MediatR;
 using Microsoft.AspNetCore.Http;
 
-namespace AutomationService.Application.Features.Routine.Handlers.Queries;
+namespace AutomationService.Application.Features.RoutineLog.Handlers;
 
-public class GetLogsByUserIdQueryHandler
-    : IRequestHandler<GetLogsByUserIdQuery, PaginatedResultDTO<RoutineLogDTO>>
+public class GetLogsByUserIdQueryHandler(
+    IRoutineExecutionLogRepository routineRepository,
+    IMapper mapper,
+    IHttpContextAccessor httpContextAccessor
+) : IRequestHandler<GetLogsByUserIdQuery, PaginatedResultDTO<RoutineLogDTO>>
 {
-    private readonly IRoutineExecutionLogRepository _logRepository;
-    private readonly IMapper _mapper;
-    private readonly IHttpContextAccessor _httpContextAccessor;
-
-    public GetLogsByUserIdQueryHandler(
-        IRoutineExecutionLogRepository routineRepository,
-        IMapper mapper,
-        IHttpContextAccessor httpContextAccessor
-    )
-    {
-        _logRepository = routineRepository;
-        _mapper = mapper;
-        _httpContextAccessor = httpContextAccessor;
-    }
+    private readonly IRoutineExecutionLogRepository _logRepository = routineRepository;
+    private readonly IMapper _mapper = mapper;
+    private readonly IHttpContextAccessor _httpContextAccessor = httpContextAccessor;
 
     public async Task<PaginatedResultDTO<RoutineLogDTO>> Handle(
         GetLogsByUserIdQuery request,
