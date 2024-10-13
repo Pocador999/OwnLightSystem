@@ -27,9 +27,9 @@ public class RoutineLogController(IMediator mediator) : ControllerBase
 
     [Authorize]
     [HttpGet]
-    [Route("get/logs_by_routine_id")]
+    [Route("get/by_routine/{routineId}")]
     public async Task<ActionResult<PaginatedResultDTO<RoutineLogDTO>>> GetRoutineLogsByRoutineId(
-        [FromQuery] Guid routineId,
+        Guid routineId,
         [FromQuery] int pageNumber = 1,
         [FromQuery] int pageSize = 10
     )
@@ -40,14 +40,27 @@ public class RoutineLogController(IMediator mediator) : ControllerBase
 
     [Authorize]
     [HttpGet]
-    [Route("get/logs_by_action_status")]
+    [Route("get/by_status/{actionStatus}")]
     public async Task<ActionResult<PaginatedResultDTO<RoutineLogDTO>>> GetRoutineLogsByActionStatus(
-        [FromQuery] ActionStatus actionStatus,
+        ActionStatus actionStatus,
         [FromQuery] int pageNumber = 1,
         [FromQuery] int pageSize = 10
     )
     {
         var query = new GetLogsByActionStatusQuery(actionStatus, pageNumber, pageSize);
+        return Ok(await _mediator.Send(query));
+    }
+
+    [Authorize]
+    [HttpGet]
+    [Route("get/by_target/{targetId}")]
+    public async Task<ActionResult<PaginatedResultDTO<RoutineLogDTO>>> GetRoutineLogsByTargetId(
+        Guid targetId,
+        [FromQuery] int pageNumber = 1,
+        [FromQuery] int pageSize = 10
+    )
+    {
+        var query = new GetLogsByTargetIdQuery(targetId, pageNumber, pageSize);
         return Ok(await _mediator.Send(query));
     }
 }
