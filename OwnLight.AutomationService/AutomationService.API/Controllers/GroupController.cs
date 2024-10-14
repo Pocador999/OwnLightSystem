@@ -73,4 +73,13 @@ public class GroupController(IMediator mediator) : ControllerBase
         var query = new GetUserGroupsQuery(pageNumber, pageSize);
         return Ok(await _mediator.Send(query));
     }
+
+    [Authorize]
+    [HttpGet]
+    [Route("get/user_group/{groupName}")]
+    public async Task<ActionResult<GroupResponseDTO>> GetUserGroup(string groupName)
+    {
+        var query = new GetUserGroupByNameQuery(groupName);
+        return Ok(await _mediator.Send(query));
+    }
 }
