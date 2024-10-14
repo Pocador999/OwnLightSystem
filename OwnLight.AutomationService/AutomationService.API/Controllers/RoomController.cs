@@ -35,4 +35,26 @@ public class RoomController(IMediator mediator) : ControllerBase
         await _mediator.Send(new DeleteRoomCommand { Id = id });
         return Ok("Cômodo removido com sucesso.");
     }
+
+    [Authorize]
+    [HttpPost("add_devices/{groupId}")]
+    public async Task<IActionResult> AddRoomDevices(
+        Guid groupId,
+        [FromBody] AddRoomDevicesCommand command
+    )
+    {
+        command.GroupId = groupId;
+        return Ok(await _mediator.Send(command));
+    }
+
+    [Authorize]
+    [HttpDelete("remove_devices/{groupId}")]
+    public async Task<IActionResult> RemoveRoomDevices(
+        Guid groupId,
+        [FromBody] RemoveRoomDevicesCommand command
+    )
+    {
+        command.GroupId = groupId;
+        return Ok(await _mediator.Send(command));
+    }
 }
