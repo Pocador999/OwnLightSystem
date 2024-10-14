@@ -1,4 +1,5 @@
 using AutomationService.Application.Features.Room.Commands;
+using AutomationService.Application.Features.Room.Queries;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -13,11 +14,8 @@ public class RoomController(IMediator mediator) : ControllerBase
 
     [Authorize]
     [HttpPost("create")]
-    public async Task<IActionResult> CreateRoom([FromBody] CreateRoomCommand command)
-    {
-        var result = await _mediator.Send(command);
-        return Ok(result);
-    }
+    public async Task<IActionResult> CreateRoom([FromBody] CreateRoomCommand command) =>
+        Ok(await _mediator.Send(command));
 
     [Authorize]
     [HttpPut("update/{id}")]
@@ -57,4 +55,16 @@ public class RoomController(IMediator mediator) : ControllerBase
         command.GroupId = groupId;
         return Ok(await _mediator.Send(command));
     }
+
+    [Authorize]
+    [HttpGet("get/user_rooms")]
+    public async Task<IActionResult> GetUserRooms(
+        [FromQuery] int pageNumber = 1,
+        [FromQuery] int pageSize = 10
+    ) => Ok(await _mediator.Send(new GetUserRoomsQuery(pageNumber, pageSize)));
+
+    [Authorize]
+    [HttpGet("get/room_devices/{roomId}")]
+    public async Task<IActionResult> GetRoomDevices(Guid roomId) =>
+        Ok(await _mediator.Send(new GetRoomDevicesQuery(roomId)));
 }

@@ -14,7 +14,6 @@ public class MapperProfile : Profile
         CreateMap<Routine, CreateRoutineCommand>().ReverseMap();
         CreateMap<Routine, UpdateRoutineNameCommand>().ReverseMap();
         CreateMap<Routine, UpdateRoutineCommand>().ReverseMap();
-
         CreateMap<Routine, RoutineResponseDTO>()
             .ForMember(
                 dest => dest.ActionType,
@@ -41,7 +40,6 @@ public class MapperProfile : Profile
 
         CreateMap<CreateGroupCommand, Group>();
         CreateMap<UpdateGroupCommand, Group>();
-
         CreateMap<Group, GroupResponseDTO>();
         CreateMap<Group, GroupDevicesDTO>()
             .ForMember(
@@ -51,5 +49,11 @@ public class MapperProfile : Profile
 
         CreateMap<CreateRoomCommand, Room>();
         CreateMap<UpdateRoomCommand, Room>();
+        CreateMap<Room, RoomResponseDTO>();
+        CreateMap<Room, RoomDevicesDTO>()
+            .ForMember(
+                dest => dest.DeviceIds,
+                opt => opt.MapFrom(src => src.DeviceIdsList.Select(id => id.ToString()).ToList())
+            );
     }
 }
