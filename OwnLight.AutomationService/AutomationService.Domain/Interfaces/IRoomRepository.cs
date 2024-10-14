@@ -10,8 +10,27 @@ public interface IRoomRepository : IRepository<Room>
         int pageSize,
         CancellationToken cancellationToken = default
     );
-    public Task<Room?> GetRoomByNameAsync(
+
+    public Task<Room?> GetUserRoomByNameAsync(
+        Guid userId,
         string roomName,
+        CancellationToken cancellationToken = default
+    );
+
+    public Task AddDevicesToRoomAsync(
+        Guid roomId,
+        Guid[] deviceIds,
+        CancellationToken cancellationToken = default
+    );
+
+    public Task RemoveDevicesFromRoomAsync(
+        Guid roomId,
+        Guid[] deviceIds,
+        CancellationToken cancellationToken = default
+    );
+
+    public Task<Room?> GetRoomDevicesAsync(
+        Guid roomId,
         CancellationToken cancellationToken = default
     );
 }
