@@ -29,7 +29,6 @@ public class RemoveDevicesCommandHandler(IGroupRepository groupRepository)
         );
 
         var response = group.DeviceIds?.Split(',').Select(Guid.Parse).ToArray();
-
         return JsonSerializer.Serialize(response);
     }
 }

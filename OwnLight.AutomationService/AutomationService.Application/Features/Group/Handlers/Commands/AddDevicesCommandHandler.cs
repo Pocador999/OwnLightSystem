@@ -19,6 +19,11 @@ public class AddDevicesCommandHandler(IGroupRepository groupRepository)
         if (request.DeviceIds == null || request.DeviceIds.Length == 0)
             throw new ArgumentException("É necessário informar ao menos um dispositivo.");
 
+        var devices = await _groupRepository.GetGroupDevicesAsync(group.Id, cancellationToken);
+
+        if (group.DeviceIds != null && request.DeviceIds.Any(id => group.DeviceIds.Contains(id.ToString())))
+            throw new InvalidOperationException("Um ou mais dispositivos já estão no grupo.");
+
         await _groupRepository.AddDevicesToGroupAsync(
             group.Id,
             request.DeviceIds,
@@ -26,7 +31,6 @@ public class AddDevicesCommandHandler(IGroupRepository groupRepository)
         );
 
         var response = group.DeviceIds?.Split(',').Select(Guid.Parse).ToList();
-
         return JsonSerializer.Serialize(response);
     }
 }
