@@ -16,9 +16,7 @@ public class Group
     public ICollection<Guid> DeviceIdsList
     {
         get =>
-            string.IsNullOrEmpty(DeviceIds)
-                ? new List<Guid>()
-                : DeviceIds.Split(',').Select(Guid.Parse).ToList();
+            string.IsNullOrEmpty(DeviceIds) ? [] : DeviceIds.Split(',').Select(Guid.Parse).ToList();
         set => DeviceIds = string.Join(',', value);
     }
 }

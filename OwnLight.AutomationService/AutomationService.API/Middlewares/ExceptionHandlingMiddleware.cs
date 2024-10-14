@@ -1,4 +1,5 @@
 using System.Net;
+using AutoMapper;
 using FluentValidation;
 using Newtonsoft.Json;
 
@@ -34,8 +35,23 @@ public class ExceptionHandlingMiddleware(RequestDelegate next)
                 Error = e.ErrorMessage,
             });
 
+            result = JsonConvert.SerializeObject(new { error = "Validation failed", errors });
+        }
+        else if (exception is AutoMapperConfigurationException)
+        {
+            code = HttpStatusCode.InternalServerError;
+            result = JsonConvert.SerializeObject(new { error = "AutoMapper configuration error" });
+        }
+        else if (exception is AutoMapperMappingException autoMapperMappingException)
+        {
+            code = HttpStatusCode.InternalServerError;
             result = JsonConvert.SerializeObject(
-                new { error = "Validation failed", errors = errors }
+                new
+                {
+                    error = "AutoMapper mapping error",
+                    details = CleanExceptionMessage(autoMapperMappingException.Message),
+                    innerException = autoMapperMappingException.InnerException?.Message,
+                }
             );
         }
         else
@@ -56,5 +72,13 @@ public class ExceptionHandlingMiddleware(RequestDelegate next)
         context.Response.StatusCode = (int)code;
 
         return context.Response.WriteAsync(result);
+    }
+
+    private static string CleanExceptionMessage(string message)
+    {
+        if (string.IsNullOrEmpty(message))
+            return string.Empty;
+
+        return message.Replace("\r\n", " ").Replace("\n", " ").Replace("\r", " ").Trim();
     }
 }

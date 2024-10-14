@@ -43,11 +43,8 @@ public class GroupRepository(DataContext dataContext)
         CancellationToken cancellationToken = default
     )
     {
-        var group =
-            await _dbSet.FindAsync([groupId], cancellationToken)
-            ?? throw new KeyNotFoundException("Grupo não encontrado.");
-
-        var currentDeviceIds = string.IsNullOrEmpty(group.DeviceIds)
+        var group = await _dbSet.FindAsync([groupId], cancellationToken);
+        var currentDeviceIds = string.IsNullOrEmpty(group!.DeviceIds)
             ? []
             : group.DeviceIds.Split(',').Select(Guid.Parse).ToList();
 
@@ -67,11 +64,8 @@ public class GroupRepository(DataContext dataContext)
         CancellationToken cancellationToken = default
     )
     {
-        var group =
-            await _dbSet.FindAsync([groupId], cancellationToken)
-            ?? throw new KeyNotFoundException("Grupo não encontrado.");
-
-        var currentDeviceIds = string.IsNullOrEmpty(group.DeviceIds)
+        var group = await _dbSet.FindAsync([groupId], cancellationToken);
+        var currentDeviceIds = string.IsNullOrEmpty(group!.DeviceIds)
             ? []
             : group.DeviceIds.Split(',').Select(Guid.Parse).ToList();
 
@@ -83,4 +77,9 @@ public class GroupRepository(DataContext dataContext)
 
         await SaveChangesAsync(cancellationToken);
     }
+
+    public async Task<Group?> GetGroupDevicesAsync(
+        Guid groupId,
+        CancellationToken cancellationToken = default
+    ) => await _dbSet.FindAsync([groupId], cancellationToken);
 }

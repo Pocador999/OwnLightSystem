@@ -28,4 +28,9 @@ public interface IGroupRepository : IRepository<Group>
         Guid[] deviceIds,
         CancellationToken cancellationToken = default
     );
+
+    public Task<Group?> GetGroupDevicesAsync(
+        Guid groupId,
+        CancellationToken cancellationToken = default
+    );
 }

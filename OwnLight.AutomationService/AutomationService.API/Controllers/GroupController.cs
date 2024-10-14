@@ -66,20 +66,19 @@ public class GroupController(IMediator mediator) : ControllerBase
     [HttpGet]
     [Route("get/user_groups")]
     public async Task<ActionResult<PaginatedResultDTO<GroupResponseDTO>>> GetUserGroups(
-        [FromQuery] int pageNumber,
-        [FromQuery] int pageSize
-    )
-    {
-        var query = new GetUserGroupsQuery(pageNumber, pageSize);
-        return Ok(await _mediator.Send(query));
-    }
+        [FromQuery] int pageNumber = 1,
+        [FromQuery] int pageSize = 10
+    ) => Ok(await _mediator.Send(new GetUserGroupsQuery(pageNumber, pageSize)));
 
     [Authorize]
     [HttpGet]
     [Route("get/user_group/{groupName}")]
-    public async Task<ActionResult<GroupResponseDTO>> GetUserGroup(string groupName)
-    {
-        var query = new GetUserGroupByNameQuery(groupName);
-        return Ok(await _mediator.Send(query));
-    }
+    public async Task<ActionResult<GroupResponseDTO>> GetUserGroup(string groupName) =>
+        Ok(await _mediator.Send(new GetUserGroupByNameQuery(groupName)));
+
+    [Authorize]
+    [HttpGet]
+    [Route("get/group_devices/{groupId}")]
+    public async Task<ActionResult<IEnumerable<Guid>>> GetGroupDevices(Guid groupId) =>
+        Ok(await _mediator.Send(new GetGroupDevicesQuery(groupId)));
 }

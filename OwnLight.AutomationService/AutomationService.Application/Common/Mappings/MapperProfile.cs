@@ -40,6 +40,12 @@ public class MapperProfile : Profile
 
         CreateMap<CreateGroupCommand, Group>();
         CreateMap<UpdateGroupCommand, Group>();
+
         CreateMap<Group, GroupResponseDTO>();
+        CreateMap<Group, GroupDevicesDTO>()
+            .ForMember(
+                dest => dest.DeviceIds,
+                opt => opt.MapFrom(src => src.DeviceIdsList.Select(id => id.ToString()).ToList())
+            );
     }
 }
