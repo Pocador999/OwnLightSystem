@@ -1,3 +1,5 @@
+using System.ComponentModel.DataAnnotations.Schema;
+
 namespace AutomationService.Domain.Entities;
 
 public class Group
@@ -8,6 +10,15 @@ public class Group
     public string? Description { get; set; }
     public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
     public DateTime UpdatedAt { get; set; }
+    public string? DeviceIds { get; set; }
 
-    public ICollection<Guid> DeviceIds { get; set; } = [];
+    [NotMapped]
+    public ICollection<Guid> DeviceIdsList
+    {
+        get =>
+            string.IsNullOrEmpty(DeviceIds)
+                ? new List<Guid>()
+                : DeviceIds.Split(',').Select(Guid.Parse).ToList();
+        set => DeviceIds = string.Join(',', value);
+    }
 }

@@ -3,6 +3,7 @@ using System;
 using AutomationService.Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -11,9 +12,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace AutomationService.Infrastructure.Migrations
 {
     [DbContext(typeof(DataContext))]
-    partial class DataContextModelSnapshot : ModelSnapshot
+    [Migration("20241014014047_FixDeviceIds")]
+    partial class FixDeviceIds
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -37,6 +40,10 @@ namespace AutomationService.Infrastructure.Migrations
                     b.Property<string>("DeviceIds")
                         .HasColumnType("text")
                         .HasColumnName("DeviceIds");
+
+                    b.Property<Guid[]>("DeviceIdsList")
+                        .IsRequired()
+                        .HasColumnType("uuid[]");
 
                     b.Property<string>("Name")
                         .IsRequired()

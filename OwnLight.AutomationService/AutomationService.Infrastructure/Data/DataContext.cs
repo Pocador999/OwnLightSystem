@@ -20,7 +20,10 @@ public class DataContext(DbContextOptions<DataContext> options) : DbContext(opti
             .HasForeignKey(log => log.RoutineId);
 
         modelBuilder.Entity<RoutineExecutionLog>().HasKey(log => log.Id);
+        
         modelBuilder.Entity<Group>().HasKey(g => g.Id);
+        modelBuilder.Entity<Group>().Property(g => g.DeviceIds).HasColumnName("DeviceIds");
+
         modelBuilder.Entity<Room>().HasKey(r => r.Id);
 
         base.OnModelCreating(modelBuilder);
