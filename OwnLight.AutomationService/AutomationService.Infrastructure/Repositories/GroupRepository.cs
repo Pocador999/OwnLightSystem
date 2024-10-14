@@ -26,8 +26,38 @@ public class GroupRepository(DataContext dataContext)
             .ToListAsync(cancellationToken);
     }
 
-    public async Task<Group?> GetGroupByNameAsync(
-        string name,
+    public async Task<Group?> GetUserGroupByNameAsync(
+        Guid userId,
+        string groupName,
         CancellationToken cancellationToken = default
-    ) => await _dbSet.FirstOrDefaultAsync(g => g.Name == name, cancellationToken);
+    )
+    {
+        return await _dbSet
+            .Where(g => g.UserId == userId && g.Name == groupName)
+            .FirstOrDefaultAsync(cancellationToken);
+    }
+
+    public async Task AddDevicesToGroupAsync(
+        Guid groupId,
+        Guid[] deviceIds,
+        CancellationToken cancellationToken = default
+    )
+    {
+        var group =
+            await _dbSet.FindAsync(new object[] { groupId }, cancellationToken)
+            ?? throw new KeyNotFoundException("Grupo não encontrado.");
+
+        var currentDeviceIds = string.IsNullOrEmpty(group.DeviceIds)
+            ? new List<Guid>()
+            : group.DeviceIds.Split(',').Select(Guid.Parse).ToList();
+
+        foreach (var deviceId in deviceIds)
+            if (!currentDeviceIds.Contains(deviceId))
+                currentDeviceIds.Add(deviceId);
+
+        group.DeviceIds = string.Join(',', currentDeviceIds);
+        group.UpdatedAt = DateTime.UtcNow;
+
+        await SaveChangesAsync(cancellationToken);
+    }
 }

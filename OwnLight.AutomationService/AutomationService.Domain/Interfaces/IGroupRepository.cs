@@ -10,8 +10,16 @@ public interface IGroupRepository : IRepository<Group>
         int pageSize,
         CancellationToken cancellationToken = default
     );
-    public Task<Group?> GetGroupByNameAsync(
+
+    public Task<Group?> GetUserGroupByNameAsync(
+        Guid userId,
         string groupName,
+        CancellationToken cancellationToken = default
+    );
+
+    public Task AddDevicesToGroupAsync(
+        Guid groupId,
+        Guid[] deviceIds,
         CancellationToken cancellationToken = default
     );
 }
