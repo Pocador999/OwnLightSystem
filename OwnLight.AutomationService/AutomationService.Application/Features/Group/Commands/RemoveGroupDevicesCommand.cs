@@ -3,7 +3,7 @@ using MediatR;
 
 namespace AutomationService.Application.Features.Group.Commands;
 
-public class AddDevicesCommand(Guid groupId, Guid[] deviceIds) : IRequest<string>
+public class RemoveGroupDevicesCommand(Guid groupId, Guid[] deviceIds) : IRequest<string>
 {
     [JsonIgnore]
     public Guid GroupId { get; set; } = groupId;

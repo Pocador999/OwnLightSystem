@@ -43,7 +43,7 @@ public class GroupController(IMediator mediator) : ControllerBase
     [Route("add_devices/{groupId}")]
     public async Task<IActionResult> AddDevicesToGroup(
         Guid groupId,
-        [FromBody] AddDevicesCommand command
+        [FromBody] AddGroupDevicesCommand command
     )
     {
         command.GroupId = groupId;
@@ -55,7 +55,7 @@ public class GroupController(IMediator mediator) : ControllerBase
     [Route("remove_devices/{groupId}")]
     public async Task<IActionResult> RemoveDevicesFromGroup(
         Guid groupId,
-        [FromBody] RemoveDevicesCommand command
+        [FromBody] RemoveGroupDevicesCommand command
     )
     {
         command.GroupId = groupId;

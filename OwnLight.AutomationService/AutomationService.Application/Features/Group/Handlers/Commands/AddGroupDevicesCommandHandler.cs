@@ -5,12 +5,15 @@ using MediatR;
 
 namespace AutomationService.Application.Features.Group.Handlers.Commands;
 
-public class AddDevicesCommandHandler(IGroupRepository groupRepository)
-    : IRequestHandler<AddDevicesCommand, string>
+public class AddGroupDevicesCommandHandler(IGroupRepository groupRepository)
+    : IRequestHandler<AddGroupDevicesCommand, string>
 {
     private readonly IGroupRepository _groupRepository = groupRepository;
 
-    public async Task<string> Handle(AddDevicesCommand request, CancellationToken cancellationToken)
+    public async Task<string> Handle(
+        AddGroupDevicesCommand request,
+        CancellationToken cancellationToken
+    )
     {
         var group =
             await _groupRepository.GetByIdAsync(request.GroupId)
@@ -21,7 +24,10 @@ public class AddDevicesCommandHandler(IGroupRepository groupRepository)
 
         var devices = await _groupRepository.GetGroupDevicesAsync(group.Id, cancellationToken);
 
-        if (group.DeviceIds != null && request.DeviceIds.Any(id => group.DeviceIds.Contains(id.ToString())))
+        if (
+            group.DeviceIds != null
+            && request.DeviceIds.Any(id => group.DeviceIds.Contains(id.ToString()))
+        )
             throw new InvalidOperationException("Um ou mais dispositivos já estão no grupo.");
 
         await _groupRepository.AddDevicesToGroupAsync(

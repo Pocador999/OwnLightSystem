@@ -5,13 +5,13 @@ using MediatR;
 
 namespace AutomationService.Application.Features.Group.Handlers.Commands;
 
-public class RemoveDevicesCommandHandler(IGroupRepository groupRepository)
-    : IRequestHandler<RemoveDevicesCommand, string>
+public class RemoveGroupDevicesCommandHandler(IGroupRepository groupRepository)
+    : IRequestHandler<RemoveGroupDevicesCommand, string>
 {
     private readonly IGroupRepository _groupRepository = groupRepository;
 
     public async Task<string> Handle(
-        RemoveDevicesCommand request,
+        RemoveGroupDevicesCommand request,
         CancellationToken cancellationToken
     )
     {
@@ -27,8 +27,14 @@ public class RemoveDevicesCommandHandler(IGroupRepository groupRepository)
             request.DeviceIds,
             cancellationToken
         );
+        if (string.IsNullOrEmpty(group.DeviceIds))
+            return JsonSerializer.Serialize(Array.Empty<Guid>());
 
-        var response = group.DeviceIds?.Split(',').Select(Guid.Parse).ToArray();
+        var response = group
+            .DeviceIds?.Split(',')
+            .Where(id => Guid.TryParse(id, out _))
+            .Select(Guid.Parse)
+            .ToArray();
         return JsonSerializer.Serialize(response);
     }
 }
