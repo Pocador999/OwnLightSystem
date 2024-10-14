@@ -1,5 +1,6 @@
 using AutoMapper;
 using AutomationService.Application.Contracts.DTOs;
+using AutomationService.Application.Features.Group.Commands;
 using AutomationService.Application.Features.Routine.Commands;
 using AutomationService.Domain.Entities;
 
@@ -36,5 +37,8 @@ public class MapperProfile : Profile
                 dest => dest.ActionStatus,
                 opt => opt.MapFrom(src => src.ActionStatus.ToString())
             );
+
+        CreateMap<CreateGroupCommand, Group>();
+        CreateMap<UpdateGroupCommand, Group>();
     }
 }
