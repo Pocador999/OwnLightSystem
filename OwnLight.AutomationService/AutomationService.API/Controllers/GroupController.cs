@@ -30,11 +30,10 @@ public class GroupController(IMediator mediator) : ControllerBase
     [Authorize]
     [HttpDelete]
     [Route("delete/{id}")]
-    public async Task<IActionResult> DeleteGroup(Guid id, [FromBody] DeleteGroupCommand command)
+    public async Task<IActionResult> DeleteGroup(Guid id)
     {
-        command.Id = id;
-        await _mediator.Send(command);
-        return Ok("Grupo deletado com sucesso.");
+        await _mediator.Send(new DeleteGroupCommand { Id = id });
+        return Ok("Grupo excluído com sucesso.");
     }
 
     [Authorize]
@@ -46,7 +45,18 @@ public class GroupController(IMediator mediator) : ControllerBase
     )
     {
         command.GroupId = groupId;
-        await _mediator.Send(command);
-        return Ok("Dispositivos adicionados ao grupo com sucesso.");
+        return Ok(await _mediator.Send(command));
+    }
+
+    [Authorize]
+    [HttpDelete]
+    [Route("remove-devices/{groupId}")]
+    public async Task<IActionResult> RemoveDevicesFromGroup(
+        Guid groupId,
+        [FromBody] RemoveDevicesCommand command
+    )
+    {
+        command.GroupId = groupId;
+        return Ok(await _mediator.Send(command));
     }
 }

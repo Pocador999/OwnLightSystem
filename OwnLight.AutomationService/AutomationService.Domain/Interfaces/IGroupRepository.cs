@@ -22,4 +22,10 @@ public interface IGroupRepository : IRepository<Group>
         Guid[] deviceIds,
         CancellationToken cancellationToken = default
     );
+
+    public Task RemoveDevicesFromGroupAsync(
+        Guid groupId,
+        Guid[] deviceIds,
+        CancellationToken cancellationToken = default
+    );
 }

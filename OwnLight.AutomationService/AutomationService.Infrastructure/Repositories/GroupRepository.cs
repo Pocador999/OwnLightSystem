@@ -44,16 +44,39 @@ public class GroupRepository(DataContext dataContext)
     )
     {
         var group =
-            await _dbSet.FindAsync(new object[] { groupId }, cancellationToken)
+            await _dbSet.FindAsync([groupId], cancellationToken)
             ?? throw new KeyNotFoundException("Grupo não encontrado.");
 
         var currentDeviceIds = string.IsNullOrEmpty(group.DeviceIds)
-            ? new List<Guid>()
+            ? []
             : group.DeviceIds.Split(',').Select(Guid.Parse).ToList();
 
         foreach (var deviceId in deviceIds)
             if (!currentDeviceIds.Contains(deviceId))
                 currentDeviceIds.Add(deviceId);
+
+        group.DeviceIds = string.Join(',', currentDeviceIds);
+        group.UpdatedAt = DateTime.UtcNow;
+
+        await SaveChangesAsync(cancellationToken);
+    }
+
+    public async Task RemoveDevicesFromGroupAsync(
+        Guid groupId,
+        Guid[] deviceIds,
+        CancellationToken cancellationToken = default
+    )
+    {
+        var group =
+            await _dbSet.FindAsync([groupId], cancellationToken)
+            ?? throw new KeyNotFoundException("Grupo não encontrado.");
+
+        var currentDeviceIds = string.IsNullOrEmpty(group.DeviceIds)
+            ? []
+            : group.DeviceIds.Split(',').Select(Guid.Parse).ToList();
+
+        foreach (var deviceId in deviceIds)
+            currentDeviceIds.Remove(deviceId);
 
         group.DeviceIds = string.Join(',', currentDeviceIds);
         group.UpdatedAt = DateTime.UtcNow;

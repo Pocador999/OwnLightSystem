@@ -5,12 +5,15 @@ using MediatR;
 
 namespace AutomationService.Application.Features.Group.Handlers.Commands;
 
-public class AddDevicesCommandHandler(IGroupRepository groupRepository)
-    : IRequestHandler<AddDevicesCommand, string>
+public class RemoveDevicesCommandHandler(IGroupRepository groupRepository)
+    : IRequestHandler<RemoveDevicesCommand, string>
 {
     private readonly IGroupRepository _groupRepository = groupRepository;
 
-    public async Task<string> Handle(AddDevicesCommand request, CancellationToken cancellationToken)
+    public async Task<string> Handle(
+        RemoveDevicesCommand request,
+        CancellationToken cancellationToken
+    )
     {
         var group =
             await _groupRepository.GetByIdAsync(request.GroupId)
@@ -19,13 +22,13 @@ public class AddDevicesCommandHandler(IGroupRepository groupRepository)
         if (request.DeviceIds == null || request.DeviceIds.Length == 0)
             throw new ArgumentException("É necessário informar ao menos um dispositivo.");
 
-        await _groupRepository.AddDevicesToGroupAsync(
+        await _groupRepository.RemoveDevicesFromGroupAsync(
             group.Id,
             request.DeviceIds,
             cancellationToken
         );
 
-        var response = group.DeviceIds?.Split(',').Select(Guid.Parse).ToList();
+        var response = group.DeviceIds?.Split(',').Select(Guid.Parse).ToArray();
 
         return JsonSerializer.Serialize(response);
     }
