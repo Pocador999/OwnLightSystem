@@ -1,7 +1,9 @@
 using System.Reflection;
 using AutomationService.Application.Common.Services;
 using AutomationService.Application.Common.Services.Interfaces;
+using AutomationService.Application.Common.Validations.Group;
 using AutomationService.Application.Common.Validations.Routine;
+using AutomationService.Application.Features.Group.Commands;
 using AutomationService.Application.Features.Routine.Commands;
 using FluentValidation;
 using MediatR;
@@ -38,6 +40,9 @@ public static class ApplicationServiceRegistration
         services.AddTransient<IValidator<CreateRoutineCommand>, CreateRoutineValidator>();
         services.AddTransient<IValidator<UpdateRoutineCommand>, UpdateRoutineValidator>();
         services.AddTransient<IValidator<UpdateRoutineNameCommand>, UpdateRoutineNameValidator>();
+
+        services.AddTransient<IValidator<CreateGroupCommand>, CreateGroupValidator>();
+        services.AddTransient<IValidator<UpdateGroupCommand>, UpdateGroupValidator>();
 
         return services;
     }
