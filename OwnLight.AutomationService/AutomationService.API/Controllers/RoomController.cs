@@ -67,4 +67,9 @@ public class RoomController(IMediator mediator) : ControllerBase
     [HttpGet("get/room_devices/{roomId}")]
     public async Task<IActionResult> GetRoomDevices(Guid roomId) =>
         Ok(await _mediator.Send(new GetRoomDevicesQuery(roomId)));
+
+    [Authorize]
+    [HttpGet("get/user_room/{roomName}")]
+    public async Task<IActionResult> GetUserRoomByName(string roomName) =>
+        Ok(await _mediator.Send(new GetUserRoomByNameQuery(roomName)));
 }
