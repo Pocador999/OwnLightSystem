@@ -40,5 +40,6 @@ public class MapperProfile : Profile
 
         CreateMap<CreateGroupCommand, Group>();
         CreateMap<UpdateGroupCommand, Group>();
+        CreateMap<Group, GroupResponseDTO>();
     }
 }

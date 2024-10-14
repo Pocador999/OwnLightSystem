@@ -16,17 +16,9 @@ public class CreateRoutineValidator : AbstractValidator<CreateRoutineCommand>
             .MinimumLength(3)
             .WithMessage("Nome não pode ser menor que 3 caracteres.");
 
-        RuleFor(x => x.ActionTarget)
-            .NotEmpty()
-            .WithMessage("Alvo é obrigatório.")
-            .IsInEnum()
-            .WithMessage("Alvo inválido.");
+        RuleFor(x => x.ActionTarget).IsInEnum().WithMessage("Alvo inválido.");
 
-        RuleFor(x => x.ActionType)
-            .NotEmpty()
-            .WithMessage("Tipo de ação é obrigatório.")
-            .IsInEnum()
-            .WithMessage("Tipo de ação inválido.");
+        RuleFor(x => x.ActionType).IsInEnum().WithMessage("Tipo de ação inválido.");
 
         RuleFor(x => x.ExecutionTime)
             .NotEmpty()

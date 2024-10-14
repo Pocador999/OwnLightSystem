@@ -1,4 +1,6 @@
+using AutomationService.Application.Contracts.DTOs;
 using AutomationService.Application.Features.Group.Commands;
+using AutomationService.Application.Features.Group.Queries;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -38,7 +40,7 @@ public class GroupController(IMediator mediator) : ControllerBase
 
     [Authorize]
     [HttpPost]
-    [Route("add-devices/{groupId}")]
+    [Route("add_devices/{groupId}")]
     public async Task<IActionResult> AddDevicesToGroup(
         Guid groupId,
         [FromBody] AddDevicesCommand command
@@ -50,7 +52,7 @@ public class GroupController(IMediator mediator) : ControllerBase
 
     [Authorize]
     [HttpDelete]
-    [Route("remove-devices/{groupId}")]
+    [Route("remove_devices/{groupId}")]
     public async Task<IActionResult> RemoveDevicesFromGroup(
         Guid groupId,
         [FromBody] RemoveDevicesCommand command
@@ -58,5 +60,17 @@ public class GroupController(IMediator mediator) : ControllerBase
     {
         command.GroupId = groupId;
         return Ok(await _mediator.Send(command));
+    }
+
+    [Authorize]
+    [HttpGet]
+    [Route("get/user_groups")]
+    public async Task<ActionResult<PaginatedResultDTO<GroupResponseDTO>>> GetUserGroups(
+        [FromQuery] int pageNumber,
+        [FromQuery] int pageSize
+    )
+    {
+        var query = new GetUserGroupsQuery(pageNumber, pageSize);
+        return Ok(await _mediator.Send(query));
     }
 }
