@@ -10,6 +10,7 @@
 **OwnLightSystem** is a scalable and modular smart lighting control system designed to manage and monitor various lighting devices within a smart home environment. Leveraging a microservices architecture, OwnLightSystem ensures flexibility, ease of maintenance, and the ability to seamlessly integrate new devices and functionalities.
 
 ## Table of Contents
+
 1. [Architecture Overview](#architecture-overview)
 2. [Summary](#summary)
 3. [Microservices Design](#microservices-design)
@@ -66,81 +67,100 @@ OwnLightSystem employs a **microservices architecture** to ensure scalability, m
 ### DeviceService
 
 **Responsibilities:**
+
 - Registering and controlling devices (e.g., turning on/off).
 
 **Database:**
+
 - Relational or NoSQL, based on scalability and data structure needs.
 
 **Example Tables:**
+
 - `Devices`
 - `DeviceActions`
 - `DeviceTypes`
 
 **Modularity:**
+
 - Supports adding new device types via device type tables or design patterns like the Strategy Pattern for actions.
 
 ### UserService
 
 **Responsibilities:**
+
 - User registration, login, and authentication.
 
 **Database:**
+
 - Relational (SQL), such as PostgreSQL.
 
 **Example Tables:**
+
 - `Users`
 - `RefreshTokens`
 
 **Modularity:**
+
 - Utilizes Identity and JWT patterns to facilitate new authentication methods and access control.
 
 ### AutomationService
 
 **Responsibilities:**
+
 - Managing routines, rooms, and groups.
 
 **Database:**
+
 - Relational (SQL) or NoSQL, depending on query and scalability requirements.
 
 **Example Tables:**
+
 - `Schedules`
 - `Rooms`
 - `Groups`
 - `ScheduleActions` (associates actions with routines)
 
 **Modularity:**
+
 - Employs event-driven patterns or flexible configuration approaches to allow dynamic creation and removal of rooms and groups.
 
 ### EnergyService
 
 **Responsibilities:**
+
 - Monitoring energy usage of devices, rooms, and groups.
 
 **Database:**
+
 - NoSQL (e.g., MongoDB) for high scalability and flexible queries.
 
 **Example Collections:**
+
 - `EnergyUsageDevices`
 - `EnergyUsageRooms`
 - `EnergyUsageGroups`
 
 **Modularity:**
+
 - Designed with a flexible schema to accommodate new data types and metrics.
 
 ## Integration Between Microservices
 
 ### Communication
+
 - **Synchronous:** Utilizes REST APIs or gRPC for real-time interactions.
 - **Asynchronous:** Employs message brokers like RabbitMQ or Kafka for event-driven communication.
 
 ### API Gateway (Ocelot)
 
 **Functions:**
+
 - **Routing:** Directs requests to the appropriate microservice.
 - **Aggregation:** Combines responses from multiple microservices into a single response.
 - **Security:** Implements centralized authentication and authorization.
 
 **Configuration Example:**
+
 ```json
 {
   "ReRoutes": [
@@ -487,7 +507,7 @@ This project is licensed under the MIT License.
 
 For any questions or support, please reach out via:
 
-- **Email:** jvads2005@gmail.com
+- **Email:** <jvads2005@gmail.com>
 - **GitHub Issues:** [OwnLightSystem Issues](https://github.com/Pocador999/OwnLightSystem/issues)
 
 ## Security
