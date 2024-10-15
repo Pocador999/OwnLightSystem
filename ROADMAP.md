@@ -81,4 +81,3 @@ Strengthen security features, including multi-factor authentication (MFA), advan
 ---
 
 *This Roadmap is a living document and will be updated as the project evolves and new requirements emerge.*
-
