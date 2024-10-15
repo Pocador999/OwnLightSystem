@@ -14,7 +14,7 @@ public class DeviceController(IMediator mediator) : ControllerBase
     private readonly IMediator _mediator = mediator;
 
     [Authorize]
-    [HttpGet("{id:guid}")]
+    [HttpGet("by_id/{id}")]
     public async Task<ActionResult<DeviceResponseDTO>> GetById(Guid id)
     {
         var query = new GetDeviceByIdQuery(id);
@@ -55,15 +55,15 @@ public class DeviceController(IMediator mediator) : ControllerBase
 
     [Authorize]
     [HttpPost("create")]
-    public async Task<ActionResult> CreateDevice([FromBody] CreateDeviceCommand command)
+    public async Task<IActionResult> CreateDevice([FromBody] CreateDeviceCommand command)
     {
         var deviceId = await _mediator.Send(command);
         return CreatedAtAction(nameof(GetById), new { id = deviceId }, deviceId);
     }
 
     [Authorize]
-    [HttpPut("update/device_name/{id:guid}")]
-    public async Task<ActionResult> Update(Guid id, [FromBody] UpdateDeviceCommand command)
+    [HttpPut("update/device_name/{id}")]
+    public async Task<IActionResult> Update(Guid id, [FromBody] UpdateDeviceCommand command)
     {
         command.Id = id;
         await _mediator.Send(command);
@@ -71,8 +71,8 @@ public class DeviceController(IMediator mediator) : ControllerBase
     }
 
     [Authorize]
-    [HttpPut("update/device_room/{id:guid}")]
-    public async Task<ActionResult> UpdateDeviceRoom(
+    [HttpPut("update/device_room/{id}")]
+    public async Task<IActionResult> UpdateDeviceRoom(
         Guid id,
         [FromBody] UpdateDeviceRoomCommand command
     )
@@ -83,8 +83,8 @@ public class DeviceController(IMediator mediator) : ControllerBase
     }
 
     [Authorize]
-    [HttpPut("update/device_group/{id:guid}")]
-    public async Task<ActionResult> UpdateDeviceGroup(
+    [HttpPut("update/device_group/{id}")]
+    public async Task<IActionResult> UpdateDeviceGroup(
         Guid id,
         [FromBody] UpdateDeviceGroupCommand command
     )
@@ -95,8 +95,8 @@ public class DeviceController(IMediator mediator) : ControllerBase
     }
 
     [Authorize]
-    [HttpDelete("{id:guid}")]
-    public async Task<ActionResult> Delete(Guid id)
+    [HttpDelete("delete/{id}")]
+    public async Task<IActionResult> Delete(Guid id)
     {
         await _mediator.Send(new DeleteDeviceCommand(id));
         return NoContent();
@@ -126,9 +126,9 @@ public class DeviceController(IMediator mediator) : ControllerBase
     }
 
     [Authorize]
-    [HttpGet("user_devices_by_room")]
+    [HttpGet("user_devices_by_room/{roomId}")]
     public async Task<ActionResult<PaginatedResultDTO<DeviceResponseDTO>>> GetUserDevicesByRoom(
-        [FromQuery] Guid roomId,
+        Guid roomId,
         [FromQuery] int page = 1,
         [FromQuery] int pageSize = 10
     )
@@ -139,9 +139,9 @@ public class DeviceController(IMediator mediator) : ControllerBase
     }
 
     [Authorize]
-    [HttpGet("user_devices_by_group")]
+    [HttpGet("user_devices_by_group/{groupId}")]
     public async Task<ActionResult<PaginatedResultDTO<DeviceResponseDTO>>> GetUserDevicesByGroup(
-        [FromQuery] Guid groupId,
+        Guid groupId,
         [FromQuery] int page = 1,
         [FromQuery] int pageSize = 10
     )

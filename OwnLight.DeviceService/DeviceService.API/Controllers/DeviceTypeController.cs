@@ -12,7 +12,7 @@ namespace DeviceService.API.Controllers
     {
         private readonly IMediator _mediator = mediator;
 
-        [HttpGet("{id}: guid")]
+        [HttpGet("{id}")]
         public async Task<ActionResult<DeviceTypeResponseDTO>> GetById(Guid id)
         {
             var query = new GetDeviceTypeByIdQuery(id);
@@ -40,22 +40,22 @@ namespace DeviceService.API.Controllers
         }
 
         [HttpPost("create")]
-        public async Task<ActionResult> Create([FromBody] CreateDeviceTypeCommand command)
+        public async Task<IActionResult> Create([FromBody] CreateDeviceTypeCommand command)
         {
             await _mediator.Send(command);
             return StatusCode(201);
         }
 
-        [HttpPut("update")]
-        public async Task<ActionResult> Update(Guid id, [FromBody] UpdateDeviceTypeCommand command)
+        [HttpPut("update/{id}")]
+        public async Task<IActionResult> Update(Guid id, [FromBody] UpdateDeviceTypeCommand command)
         {
             command.Id = id;
             await _mediator.Send(command);
             return Ok();
         }
 
-        [HttpDelete("delete/{id:guid}")]
-        public async Task<ActionResult> Delete(Guid id)
+        [HttpDelete("delete/{id}")]
+        public async Task<IActionResult> Delete(Guid id)
         {
             var command = new DeleteDeviceTypeCommand { Id = id };
             await _mediator.Send(command);

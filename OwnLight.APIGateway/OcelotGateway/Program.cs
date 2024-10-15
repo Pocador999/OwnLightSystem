@@ -7,7 +7,7 @@ using Ocelot.Middleware;
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Configuration.AddJsonFile(
-    "Ocelot/UserService/ocelot.user-service.json",
+    "Ocelot/ocelot.json",
     optional: false,
     reloadOnChange: true
 );
