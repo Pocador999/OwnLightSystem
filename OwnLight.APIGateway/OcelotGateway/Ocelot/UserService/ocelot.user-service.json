@@ -1,6 +1,56 @@
 {
     "Routes": [
         {
+            "DownstreamPathTemplate": "/api/Auth/login",
+            "DownstreamScheme": "http",
+            "DownstreamHostAndPorts": [
+                {
+                    "Host": "localhost",
+                    "Port": 5008
+                }
+            ],
+            "UpstreamPathTemplate": "/api/auth/login",
+            "UpstreamHttpMethod": [
+                "POST"
+            ]
+        },
+        {
+            "DownstreamPathTemplate": "/api/Auth/logout/{id}",
+            "DownstreamScheme": "http",
+            "DownstreamHostAndPorts": [
+                {
+                    "Host": "localhost",
+                    "Port": 5008
+                }
+            ],
+            "UpstreamPathTemplate": "/api/auth/logout/{id}",
+            "UpstreamHttpMethod": [
+                "POST"
+            ],
+            "AuthenticationOptions": {
+                "AuthenticationProviderKey": "Bearer",
+                "AllowedScopes": []
+            }
+        },
+        {
+            "DownstreamPathTemplate": "/api/Auth/refresh_token/{userId}",
+            "DownstreamScheme": "http",
+            "DownstreamHostAndPorts": [
+                {
+                    "Host": "localhost",
+                    "Port": 5008
+                }
+            ],
+            "UpstreamPathTemplate": "/api/auth/refresh_token/{userId}",
+            "UpstreamHttpMethod": [
+                "POST"
+            ],
+            "AuthenticationOptions": {
+                "AuthenticationProviderKey": "Bearer",
+                "AllowedScopes": []
+            }
+        },
+        {
             "DownstreamPathTemplate": "/api/User/by_id/{id}",
             "DownstreamScheme": "http",
             "DownstreamHostAndPorts": [
