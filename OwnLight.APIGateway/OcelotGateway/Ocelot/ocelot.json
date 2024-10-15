@@ -1052,6 +1052,78 @@
                 "AuthenticationProviderKey": "Bearer",
                 "AllowedScopes": []
             }
+        },
+        {
+            "DownstreamPathTemplate": "/api/RoutineLog/get/user_logs",
+            "DownstreamScheme": "http",
+            "DownstreamHostAndPorts": [
+                {
+                    "Host": "localhost",
+                    "Port": 5233
+                }
+            ],
+            "UpstreamPathTemplate": "/api/routinelog/get/user_logs",
+            "UpstreamHttpMethod": [
+                "GET"
+            ],
+            "AuthenticationOptions": {
+                "AuthenticationProviderKey": "Bearer",
+                "AllowedScopes": []
+            }
+        },
+        {
+            "DownstreamPathTemplate": "/api/RoutineLog/get/by_routine/{routineId}",
+            "DownstreamScheme": "http",
+            "DownstreamHostAndPorts": [
+                {
+                    "Host": "localhost",
+                    "Port": 5233
+                }
+            ],
+            "UpstreamPathTemplate": "/api/routinelog/get/by_routine/{routineId}",
+            "UpstreamHttpMethod": [
+                "GET"
+            ],
+            "AuthenticationOptions": {
+                "AuthenticationProviderKey": "Bearer",
+                "AllowedScopes": []
+            }
+        },
+        {
+            "DownstreamPathTemplate": "/api/RoutineLog/get/by_status/{actionStatus}",
+            "DownstreamScheme": "http",
+            "DownstreamHostAndPorts": [
+                {
+                    "Host": "localhost",
+                    "Port": 5233
+                }
+            ],
+            "UpstreamPathTemplate": "/api/routinelog/get/by_status/{actionStatus}",
+            "UpstreamHttpMethod": [
+                "GET"
+            ],
+            "AuthenticationOptions": {
+                "AuthenticationProviderKey": "Bearer",
+                "AllowedScopes": []
+            }
+        },
+        {
+            "DownstreamPathTemplate": "/api/RoutineLog/get/by_target/{targetId}",
+            "DownstreamScheme": "http",
+            "DownstreamHostAndPorts": [
+                {
+                    "Host": "localhost",
+                    "Port": 5233
+                }
+            ],
+            "UpstreamPathTemplate": "/api/routinelog/get/by_target/{targetId}",
+            "UpstreamHttpMethod": [
+                "GET"
+            ],
+            "AuthenticationOptions": {
+                "AuthenticationProviderKey": "Bearer",
+                "AllowedScopes": []
+            }
         }
     ]
 }
