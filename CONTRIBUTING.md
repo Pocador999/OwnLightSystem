@@ -58,26 +58,35 @@ We welcome and encourage contributions through pull requests (PRs). Here’s how
 1. **Fork the Repository:**
     - Click the "Fork" button at the top right of the repository page to create a personal copy of the repository.
 2. **Clone Your Fork:**
+
     ```bash
     git clone https://github.com/yourusername/OwnLightSystem.git
     cd OwnLightSystem
     ```
+
 3. **Create a New Branch:**
+
     - It's best to create a new branch for each significant change.
+
     ```bash
     git checkout -b feature/YourFeatureName
     ```
+
 4. **Make Your Changes:**
     - Implement your feature or fix the bug.
 5. **Commit Your Changes:**
     - Write clear and concise commit messages.
+
     ```bash
     git commit -m "Add feature XYZ to improve ABC"
     ```
+
 6. **Push to Your Fork:**
+
     ```bash
     git push origin feature/YourFeatureName
     ```
+
 7. **Open a Pull Request:**
     - Navigate to your fork on GitHub and click the "Compare & pull request" button.
     - Provide a clear description of your changes and the problem they solve.
@@ -106,20 +115,23 @@ Consistency in code style improves readability and maintainability. Please adher
 Write clear and informative commit messages that describe what changes you have made and why. Follow the [Conventional Commits](https://www.conventionalcommits.org/en/v1.0.0/) specification:
 
 - **Format:**
-    ```
+
+    ```md
     <type>[optional scope]: <description>
     ```
+
 - **Types:**
-    - `feat`: A new feature
-    - `fix`: A bug fix
-    - `docs`: Documentation changes
-    - `style`: Code style changes (formatting, missing semi-colons, etc.)
-    - `refactor`: Code refactoring without adding features or fixing bugs
-    - `test`: Adding or updating tests
-    - `chore`: Changes to the build process or auxiliary tools
+  - `feat`: A new feature
+  - `fix`: A bug fix
+  - `docs`: Documentation changes
+  - `style`: Code style changes (formatting, missing semi-colons, etc.)
+  - `refactor`: Code refactoring without adding features or fixing bugs
+  - `test`: Adding or updating tests
+  - `chore`: Changes to the build process or auxiliary tools
 
 - **Example:**
-    ```
+
+    ```md
     feat(DeviceService): add endpoint for registering new devices
     ```
 
@@ -140,6 +152,7 @@ Before you begin, ensure you have met the following requirements:
 ### Setting Up the Development Environment
 
 1. **Clone the Repository:**
+
     ```bash
     git clone https://github.com/yourusername/OwnLightSystem.git
     cd OwnLightSystem
@@ -147,6 +160,7 @@ Before you begin, ensure you have met the following requirements:
 
 2. **Set Up Environment Variables:**
     - Create a `.env` file in the root directory with the necessary configurations.
+
     ```env
     DEVICE_SERVICE_DB_CONNECTION=your_postgresql_connection_string
     USER_SERVICE_DB_CONNECTION=your_postgresql_connection_string
@@ -156,6 +170,7 @@ Before you begin, ensure you have met the following requirements:
 
 3. **Install Dependencies:**
     - Navigate to each microservice directory and install the required packages.
+
     ```bash
     cd DeviceService
     dotnet restore
@@ -168,6 +183,7 @@ Before you begin, ensure you have met the following requirements:
 
 4. **Run the Microservices:**
     - Start each microservice individually.
+
     ```bash
     cd DeviceService
     dotnet run
@@ -179,6 +195,7 @@ Before you begin, ensure you have met the following requirements:
     ```
 
 5. **Start the API Gateway:**
+
     ```bash
     cd ApiGateway
     dotnet run
@@ -186,6 +203,7 @@ Before you begin, ensure you have met the following requirements:
 
 6. **Using Docker Compose (Optional):**
     - If you prefer containerization, use Docker Compose to run all services together.
+
     ```bash
     docker-compose up --build
     ```
@@ -196,9 +214,11 @@ Ensure that your contributions do not break existing functionality by following 
 
 - **Write Unit Tests:** Cover your new features or bug fixes with unit tests.
 - **Run Existing Tests:** Before submitting a PR, run all existing tests to ensure nothing is broken.
+
     ```bash
     dotnet test
     ```
+
 - **Test Locally:** Verify that your changes work as expected in your local development environment.
 
 ## Documentation
@@ -216,17 +236,17 @@ Effective communication is key to successful collaboration. Here are the preferr
 - **GitHub Issues:** For reporting bugs and suggesting enhancements.
 - **Pull Requests:** For contributing code and documentation.
 - **Email:** For direct communication or sensitive issues.
-    - **Contact Email:** [jvads2005@gmail.com](mailto:jvads2005@gmail.com)
+  - **Contact Email:** [jvads2005@gmail.com](mailto:jvads2005@gmail.com)
 
 ## Acknowledgements
 
 - **Open Source Contributors:** Thank you to all contributors who help improve **OwnLightSystem**.
 - **Libraries and Tools:** Acknowledge the tools and libraries that make this project possible.
-    - [.NET](https://dotnet.microsoft.com/)
-    - [PostgreSQL](https://www.postgresql.org/)
-    - [MongoDB](https://www.mongodb.com/)
-    - [Ocelot API Gateway](https://ocelot.readthedocs.io/en/latest/)
-    - [Docker](https://www.docker.com/)
+  - [.NET](https://dotnet.microsoft.com/)
+  - [PostgreSQL](https://www.postgresql.org/)
+  - [MongoDB](https://www.mongodb.com/)
+  - [Ocelot API Gateway](https://ocelot.readthedocs.io/en/latest/)
+  - [Docker](https://www.docker.com/)
 
 ---
 

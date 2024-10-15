@@ -8,11 +8,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
+
 - Placeholder for upcoming features and improvements.
 
 ## [1.0.0] - 2024-10-04
 
-### Added
 - **Microservices Architecture:** Implemented `DeviceService`, `UserService`, `AutomationService`, and `EnergyService` to handle different domains within the OwnLightSystem.
 - **API Gateway:** Set up Ocelot as the API Gateway for routing, aggregation, and centralized security.
 - **Databases:**
@@ -38,22 +38,26 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Set up Docker Compose configuration for containerization.
 
 ### Changed
+
 - Initial setup and configuration of all microservices and the API Gateway.
 - Updated documentation to include detailed architecture, usage examples, and project structure.
 
 ### Deprecated
+
 - N/A
 
 ### Removed
+
 - N/A
 
 ### Fixed
+
 - N/A
 
 ### Security
+
 - Implemented JWT-based authentication for secure access to microservices.
 
 ---
 
 *This Changelog is a living document and will be updated with each release.*
-

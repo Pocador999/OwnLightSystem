@@ -1,4 +1,5 @@
 # FAQ
+
 Welcome to the **OwnLightSystem** FAQ section! Here, you'll find answers to the most frequently asked questions about the project. If you have a question that isn't covered here, feel free to [open an issue](https://github.com/yourusername/OwnLightSystem/issues) or reach out via [email](mailto:jvads2005@gmail.com).
 
 ## Table of Contents
@@ -22,6 +23,7 @@ Welcome to the **OwnLightSystem** FAQ section! Here, you'll find answers to the 
 ### **Q: What technologies does OwnLightSystem use?**
 
 **A:** OwnLightSystem is built using the following technologies:
+
 - **Backend:** .NET 8.0
 - **Databases:** PostgreSQL (relational) and MongoDB (NoSQL)
 - **API Gateway:** Ocelot
@@ -38,6 +40,7 @@ Welcome to the **OwnLightSystem** FAQ section! Here, you'll find answers to the 
 ### **Q: What are the prerequisites for setting up OwnLightSystem locally?**
 
 **A:**
+
 - **.NET 8.0 SDK** or later
 - **PostgreSQL** for relational databases
 - **MongoDB** for NoSQL databases
@@ -47,6 +50,7 @@ Welcome to the **OwnLightSystem** FAQ section! Here, you'll find answers to the 
 ### **Q: How do I clone the OwnLightSystem repository?**
 
 **A:**
+
 ```bash
 git clone https://github.com/yourusername/OwnLightSystem.git
 cd OwnLightSystem
@@ -57,10 +61,12 @@ cd OwnLightSystem
 **A:**
 
 **PostgreSQL:**
+
 - Create separate databases for each microservice (DeviceService, UserService, AutomationService).
 - Update the connection strings in the `.env` file accordingly.
 
 **MongoDB:**
+
 - Ensure MongoDB is running for the EnergyService.
 - Update the connection string in the `.env` file.
 
@@ -108,6 +114,7 @@ docker-compose up --build
 **Endpoint:** `POST /users/register`
 
 **Request Body:**
+
 ```json
 {
     "username": "johndoe",
@@ -117,6 +124,7 @@ docker-compose up --build
 ```
 
 **Response:**
+
 ```json
 {
     "id": 1,
@@ -133,6 +141,7 @@ docker-compose up --build
 **Endpoint:** `POST /devices`
 
 **Request Body:**
+
 ```json
 {
     "name": "Living Room Light",
@@ -141,6 +150,7 @@ docker-compose up --build
 ```
 
 **Response:**
+
 ```json
 {
     "id": 1,
@@ -156,6 +166,7 @@ docker-compose up --build
 **Endpoint:** `GET /energy/usage/devices`
 
 **Response:**
+
 ```json
 {
     "EnergyUsageDevices": [
@@ -200,6 +211,7 @@ Please read our [CONTRIBUTING.md](CONTRIBUTING.md) for more details.
 ### **Q: What guidelines should I follow when contributing?**
 
 **A:**
+
 - Follow the existing code style and conventions.
 - Write clear and concise commit messages.
 - Ensure your code passes all tests.
@@ -213,6 +225,7 @@ Please read our [CONTRIBUTING.md](CONTRIBUTING.md) for more details.
 ### **Q: I'm unable to connect to the PostgreSQL database. What should I do?**
 
 **A:**
+
 - Verify that PostgreSQL is running.
 - Check the connection string in the `.env` file for accuracy.
 - Ensure that the database credentials are correct.
@@ -221,6 +234,7 @@ Please read our [CONTRIBUTING.md](CONTRIBUTING.md) for more details.
 ### **Q: The microservices are not communicating with each other. How can I fix this?**
 
 **A:**
+
 - Ensure that the message broker (RabbitMQ/Kafka) is running.
 - Check the configuration settings in the `.env` file.
 - Verify that all microservices are correctly registered with the message broker.
@@ -229,6 +243,7 @@ Please read our [CONTRIBUTING.md](CONTRIBUTING.md) for more details.
 ### **Q: I'm receiving authentication errors when accessing secured endpoints. What steps should I take?**
 
 **A:**
+
 - Make sure you have registered and logged in to obtain a valid JWT token.
 - Include the JWT token in the Authorization header of your requests:
         ```makefile
@@ -271,6 +286,7 @@ Please read our [CONTRIBUTING.md](CONTRIBUTING.md) for more details.
 ### **Q: How is user data secured in OwnLightSystem?**
 
 **A:**
+
 - **Authentication:** Utilizes JWT (JSON Web Tokens) for secure user authentication.
 - **Authorization:** Implements role-based access control (RBAC) to manage permissions.
 - **Data Encryption:** Sensitive data, such as passwords, are hashed before storage.
@@ -278,7 +294,7 @@ Please read our [CONTRIBUTING.md](CONTRIBUTING.md) for more details.
 
 ### **Q: What should I do if I find a security vulnerability?**
 
-**A:** If you discover a security vulnerability in OwnLightSystem, please report it immediately by emailing jvads2005@gmail.com. We take all security issues seriously and will address them promptly.
+**A:** If you discover a security vulnerability in OwnLightSystem, please report it immediately by emailing <jvads2005@gmail.com>. We take all security issues seriously and will address them promptly.
 
 ### **Q: Does OwnLightSystem support multi-factor authentication (MFA)?**
 
@@ -315,6 +331,7 @@ git pull origin main
 Ensure you have committed or stashed any local changes before pulling updates.
 
 ### **Q: Is there a way to contribute documentation or translations?**
+
 **A:** Absolutely! Contributions to documentation and translations are welcome. Please fork the repository, make your changes, and submit a pull request. Ensure that your contributions adhere to the existing documentation style and guidelines outlined in the [CONTRIBUTING.md](CONTRIBUTING.md) file.
 
 ---
