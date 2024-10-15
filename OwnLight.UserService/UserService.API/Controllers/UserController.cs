@@ -62,13 +62,11 @@ public class UserController(IMediator mediator) : ControllerBase
     {
         var result = await _mediator.Send(command);
 
-        if (int.TryParse(result.StatusCode, out var statusCode))
-        {
-            if (statusCode == StatusCodes.Status201Created)
-                return CreatedAtAction(nameof(GetById), result);
-            if (statusCode == StatusCodes.Status409Conflict)
-                return Conflict(result);
-        }
+        if (result.StatusCode == StatusCodes.Status201Created.ToString())
+            return Ok(result);
+
+        if (result.StatusCode == StatusCodes.Status409Conflict.ToString())
+            return Conflict(result);
 
         return BadRequest(result);
     }
@@ -98,7 +96,7 @@ public class UserController(IMediator mediator) : ControllerBase
     }
 
     [Authorize]
-    [HttpPut("password/{id}")]
+    [HttpPut("update_password/{id}")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
@@ -143,7 +141,7 @@ public class UserController(IMediator mediator) : ControllerBase
     }
 
     [Authorize]
-    [HttpPut("email/{id}")]
+    [HttpPut("update_email/{id}")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
