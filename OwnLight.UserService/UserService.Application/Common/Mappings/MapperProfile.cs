@@ -12,9 +12,10 @@ public class MapperProfile : Profile
     {
         CreateMap<User, UserResponseDTO>().ReverseMap();
         CreateMap<User, AdminResponseDTO>().ReverseMap();
-        CreateMap<User, CreateCommand>().ReverseMap();
-        CreateMap<User, UpdateCommand>().ReverseMap();
-        CreateMap<User, UpdateEmailCommand>().ReverseMap();
-        CreateMap<User, UpdateUsernameCommand>().ReverseMap();
+        CreateMap<CreateCommand, User>();
+        CreateMap<UpdateCommand, User>();
+        CreateMap<UpdateEmailCommand, User>();
+        CreateMap<UpdateUsernameCommand, User>();
+        CreateMap<UpdateProfilePictureCommand, User>();
     }
 }

@@ -33,6 +33,7 @@ public static class ApplicationServiceRegistration
         services.AddTransient<IValidator<UpdatePasswordCommand>, UpdatePasswordCommandValidator>();
         services.AddTransient<IValidator<UpdateEmailCommand>, UpdateEmailCommandValidator>();
         services.AddTransient<IValidator<UpdateUsernameCommand>, UpdateUsernameCommandValidator>();
+        services.AddTransient<IValidator<UpdateProfilePictureCommand>, UpdateProfilePictureValidator>();
 
         services.AddScoped<ITokenService, TokenService>();
         services.AddScoped<IMessageService, MessageService>();

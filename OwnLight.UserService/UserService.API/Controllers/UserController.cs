@@ -123,6 +123,30 @@ public class UserController(IMediator mediator) : ControllerBase
     }
 
     [Authorize]
+    [HttpPut("update_profile_picture/{id}")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    public async Task<ActionResult> UpdateProfilePicture(
+        [FromRoute] Guid id,
+        [FromBody] UpdateProfilePictureCommand command
+    )
+    {
+        command.Id = id;
+        var result = await _mediator.Send(command);
+
+        if (result.StatusCode == StatusCodes.Status200OK.ToString())
+            return Ok(result);
+        if (result.StatusCode == StatusCodes.Status401Unauthorized.ToString())
+            return Unauthorized(result);
+        if (result.StatusCode == StatusCodes.Status404NotFound.ToString())
+            return NotFound(result);
+
+        return BadRequest(result);
+    }
+
+    [Authorize]
     [HttpDelete("delete/{id}")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]

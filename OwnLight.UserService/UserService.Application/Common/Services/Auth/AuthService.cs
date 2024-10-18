@@ -22,7 +22,7 @@ public class AuthService(
         if (!string.IsNullOrEmpty(refreshToken))
         {
             var tokenInDb = await _refreshTokenRepository.GetTokenAsync(refreshToken);
-            if (tokenInDb != null && tokenInDb.UserId == userId && !tokenInDb.IsRevoked)
+            if (tokenInDb != null && tokenInDb.UserId == userId && tokenInDb.IsRevoked == false)
                 await _refreshTokenRepository.RevokeTokenAsync(tokenInDb);
 
             _httpContextAccessor.HttpContext.Response.Cookies.Delete("RefreshToken");
