@@ -6,17 +6,18 @@ namespace UserService.Domain.Entities;
 public class User : Entity
 {
     [Range(3, 50)]
-    public string? Name { get; protected set; }
+    public required string Name { get; set; }
 
     [Range(3, 50)]
-    public string? Username { get; protected set; }
+    public required string Username { get; set; }
 
     [Required]
-    public string? Email { get; protected set; }
+    public required string Email { get; set; }
 
     [Required]
-    public string? Password { get; protected set; }
+    public required string Password { get; set; }
 
+    public string? ProfilePictureUrl { get; set; }
 
     public ICollection<RefreshToken> Tokens { get; set; } = [];
 
