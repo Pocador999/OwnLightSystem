@@ -49,7 +49,6 @@ public class UpdateCommandHandler(
         _mapper.Map(request, user);
 
         await _userRepository.UpdateAsync(user);
-        // Logout user after updating user information (bussiness rule)
         await _authService.LogoutUserAsync(user.Id);
 
         return _messageService.CreateSuccessMessage("Usuário atualizado com sucesso");

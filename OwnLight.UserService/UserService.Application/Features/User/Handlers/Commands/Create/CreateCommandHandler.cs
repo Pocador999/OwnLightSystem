@@ -39,7 +39,16 @@ public class CreateCommandHandler(
         if (existingEmail != null)
             return _messageService.CreateConflictMessage("Esse email já está em uso");
 
-        request.Password = _passwordHasher.HashPassword(new Entity.User(), request.Password);
+        request.Password = _passwordHasher.HashPassword(
+            new Entity.User
+            {
+                Name = request.Name,
+                Username = request.Username,
+                Email = request.Email,
+                Password = request.Password,
+            },
+            request.Password
+        );
         await _userRepository.RegisterAsync(_mapper.Map<Entity.User>(request));
 
         return _messageService.CreateCreatedMessage("Usuário criado com sucesso");
